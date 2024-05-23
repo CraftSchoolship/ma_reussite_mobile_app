@@ -1,11 +1,14 @@
-import AppNavigator from "_/navigations/app.main.navigation";
-import customTheme from "_/themes/customTheme";
+import React from "react";
 import { NativeBaseProvider } from "native-base";
+import AppNavigator from "./src/navigation/AppNavigator";
+import customTheme from "./src/theme/themes/customTheme";
 
-export default function App() {
+const App: React.FC = () => {
   return (
     <NativeBaseProvider theme={customTheme}>
       <AppNavigator />
     </NativeBaseProvider>
   );
-}
+};
+
+export default App;
