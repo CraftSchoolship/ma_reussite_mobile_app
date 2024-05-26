@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import * as Font from "expo-font";
+import { useState, useEffect } from "react";
 
 const useFonts = (fontMap) => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -11,7 +11,7 @@ const useFonts = (fontMap) => {
     };
 
     loadFonts();
-  }, []);
+  }, [fontMap]);
 
   return fontsLoaded;
 };
