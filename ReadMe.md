@@ -1,95 +1,83 @@
-### Structure de Dossiers
+# ma_reussite_mobile_app
 
-```
-mon-projet/
-├── assets/
-│   ├── fonts/
-│   ├── images/
-│   └── ...
-├── src/
-│   ├── api/
-│   │   └── apiClient.js
-│   ├── components/
-│   │   ├── Button/
-│   │   │   ├── Button.js
-│   │   │   ├── Button.styles.js
-│   │   │   └── index.js
-│   │   └── ...
-│   ├── hooks/
-│   │   └── useAuth.js
-│   ├── navigation/
-│   │   ├── AppNavigator.js
-│   │   └── index.js
-│   ├── screens/
-│   │   ├── HomeScreen/
-│   │   │   ├── HomeScreen.js
-│   │   │   └── HomeScreen.styles.js
-│   │   ├── FormScreen/
-│   │   │   ├── FormScreen.js
-│   │   │   └── FormScreen.styles.js
-│   │   └── ...
-│   ├── store/
-│   │   ├── actions/
-│   │   │   └── userActions.js
-│   │   ├── reducers/
-│   │   │   ├── index.js
-│   │   │   └── userReducer.js
-│   │   └── index.js
-│   ├── utils/
-│   │   └── index.js
-│   ├── validation/
-│   │   └── formValidation.js
-│   ├── App.js
-│   └── index.js
-├── .eslintrc.js
-├── .prettierrc
-├── app.json
-└── package.json
-```
+Welcome to **ma_reussite_mobile_app**, a mobile application built with Expo, using Yarn as the package manager, and Native Base as the design system.
 
-### Description des Dossiers
+## Prerequisites
 
-- **assets/** : Contient les ressources statiques telles que les polices et les images.
+Before you start, make sure you have the following installed on your machine:
 
-  - **fonts/** : Fichiers de polices.
-  - **images/** : Fichiers d'images.
+1. **Node.js** (recommended: LTS version) - [Download Node.js](https://nodejs.org/)
+2. **Yarn** - [Install Yarn](https://classic.yarnpkg.com/en/docs/install/)
+3. **Expo CLI** - You can install it globally using npm or yarn:
+   ```sh
+   npm install -g expo-cli
+   # or
+   yarn global add expo-cli
+   ```
 
-- **src/** : Contient le code source de l'application.
+## Installation
 
-  - **api/** : Fichiers relatifs aux appels API et à la gestion des données à distance.
-    - **apiClient.js** : Configuration et gestion des appels API.
-  - **components/** : Composants réutilisables de l'application.
-    - **Button/** : Exemple de composant bouton.
-      - **Button.js** : Composant bouton.
-      - **Button.styles.js** : Styles associés au bouton.
-      - **index.js** : Exportations du composant bouton.
-  - **hooks/** : Contient les hooks personnalisés.
-    - **useAuth.js** : Exemple de hook pour l'authentification.
-  - **navigation/** : Configuration et fichiers de navigation.
-    - **AppNavigator.js** : Configuration du navigateur principal.
-    - **index.js** : Exportations de navigation.
-  - **screens/** : Écrans de l'application.
-    - **HomeScreen/** : Exemple d'écran d'accueil.
-      - **HomeScreen.js** : Composant de l'écran d'accueil.
-      - **HomeScreen.styles.js** : Styles associés à l'écran d'accueil.
-    - **FormScreen/** : Exemple d'écran de formulaire.
-      - **FormScreen.js** : Composant de l'écran de formulaire.
-      - **FormScreen.styles.js** : Styles associés à l'écran de formulaire.
-  - **store/** : Gestion de l'état de l'application.
-    - **actions/** : Actions Redux.
-      - **userActions.js** : Actions liées à l'utilisateur.
-    - **reducers/** : Réducteurs Redux.
-      - **index.js** : Combine tous les réducteurs.
-      - **userReducer.js** : Réducteur lié à l'utilisateur.
-    - **index.js** : Configuration du store Redux.
-  - **utils/** : Fonctions utilitaires et fichiers d'assistance.
-    - **index.js** : Exportations des utilitaires.
-  - **validation/** : Schémas de validation Yup.
-    - **formValidation.js** : Schéma de validation pour les formulaires.
-  - **App.js** : Composant principal de l'application.
-  - **index.js** : Point d'entrée principal de l'application.
+Follow the steps below to set up and run the application on your local machine:
 
-- **.eslintrc.js** : Configuration ESLint.
-- **.prettierrc** : Configuration Prettier.
-- **app.json** : Configuration de l'application Expo.
-- **package.json** : Dépendances et scripts de l'application.
+1. Clone the application repository:
+
+   ```sh
+   git clone https://github.com/CraftSchoolship/ma_reussite_mobile_app.git
+   ```
+
+2. Navigate to the project directory:
+
+   ```sh
+   cd ma_reussite_mobile_app
+   ```
+
+3. Checkout the feature/new_app branch
+
+   ```sh
+   git checkout feature/new_app
+   ```
+
+4. Install the dependencies with Yarn:
+
+   ```sh
+   yarn install
+   ```
+
+## Running the Application
+
+After installing all the dependencies, you can run the application using Expo. Here’s how to do it:
+
+1. Start the application with Expo:
+
+   ```sh
+   expo start or yarn start
+   ```
+
+2. This command will open a new window in your browser with the Expo Dev Tools interface. You can then choose to launch the app on an Android/iOS emulator or scan the QR code with your mobile device to run it directly.
+
+## Using Native Base
+
+This application uses **Native Base** as its design system. Native Base provides a set of ready-to-use components for React Native, making it easy to create attractive and consistent user interfaces. For more information on how to use and customize Native Base components, you can check out the [official Native Base documentation](https://docs.nativebase.io/).
+
+## Troubleshooting
+
+If you encounter issues during the installation or running of the application, here are some common troubleshooting steps:
+
+1. Ensure all dependencies are correctly installed:
+
+   ```sh
+   yarn install
+   ```
+
+2. Verify that you have the latest version of Expo CLI installed:
+
+   ```sh
+   expo --version
+   ```
+
+3. Clear the Yarn and Expo cache if problems persist:
+
+   ```sh
+   yarn cache clean
+   expo start -c
+   ```
