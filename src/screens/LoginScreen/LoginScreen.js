@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import * as Yup from "yup";
 import CustomButton from "../../components/CustomButton";
 import CustomInput from "../../components/CustomInput";
-import { styles } from "./LoginScreen.styles";
+import Banner from "../../components/Banner";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Email invalide").required("Email est requis"),
@@ -24,13 +24,7 @@ const LoginScreen = () => {
   return (
     <ScrollView height={"80%"} flex={1}>
       <VStack width={"full"}>
-        <Box bg={"primary.500"} mt={"20%"} mb={"20%"}>
-          <Image
-            mx={"auto"}
-            source={require("../../../assets/images/ma_reussite.png")}
-            alt="Alternate Text"
-          />
-        </Box>
+        <Banner />
         <VStack mx={"auto"} width="80%">
           <Box alignItems="center">
             <Text color={"black"} fontSize="2xl" bold>
