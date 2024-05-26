@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import { Box, Center, VStack, Text, Link } from "native-base";
 import { Formik } from "formik";
+import { Box, Image, Link, ScrollView, Text, VStack } from "native-base";
+import React, { useState } from "react";
 import * as Yup from "yup";
-import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
+import CustomInput from "../../components/CustomInput";
+import { styles } from "./LoginScreen.styles";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Email invalide").required("Email est requis"),
@@ -21,55 +22,64 @@ const LoginScreen = () => {
   };
 
   return (
-    <Center flex={1} px={4}>
-      <VStack space={4} width="100%" maxW="300px">
-        <Box alignItems="center" mb={6}>
-          <Text color={"black"} fontSize="2xl" bold>
-            S'identifier
-          </Text>
+    <ScrollView height={"80%"} flex={1}>
+      <VStack width={"full"}>
+        <Box bg={"primary.500"} mt={"20%"} mb={"20%"}>
+          <Image
+            mx={"auto"}
+            source={require("../../../assets/images/ma_reussite.png")}
+            alt="Alternate Text"
+          />
         </Box>
-        <Formik
-          initialValues={{ email: "", password: "" }}
-          validationSchema={validationSchema}
-          onSubmit={handleLogin}
-        >
-          {({ handleSubmit, isValid }) => (
-            <>
-              <CustomInput
-                label="Email"
-                name="email"
-                secureTextEntry={false}
-                showPassword={showPassword}
-                setShowPassword={setShowPassword}
-              />
-              <CustomInput
-                label="Mot de passe"
-                name="password"
-                secureTextEntry={true}
-                showPassword={showPassword}
-                setShowPassword={setShowPassword}
-              />
-              <Link
-                _text={{
-                  fontSize: "xs",
-                  fontWeight: "500",
-                  color: "primary.500",
-                }}
-                alignSelf="flex-end"
-                mt={1}
-              >
-                Mot de passe oublié ?
-              </Link>
-              <CustomButton
-                onPress={handleSubmit}
-                title="Se connecter"
-                isDisabled={!isValid}
-              />
-            </>
-          )}
-        </Formik>
+        <VStack mx={"auto"} width="80%">
+          <Box alignItems="center">
+            <Text color={"black"} fontSize="2xl" bold>
+              S'identifier
+            </Text>
+          </Box>
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            validationSchema={validationSchema}
+            onSubmit={handleLogin}
+          >
+            {({ handleSubmit, isValid }) => (
+              <>
+                <CustomInput
+                  label="Email"
+                  name="email"
+                  secureTextEntry={false}
+                  showPassword={showPassword}
+                  setShowPassword={setShowPassword}
+                />
+                <CustomInput
+                  label="Mot de passe"
+                  name="password"
+                  secureTextEntry={true}
+                  showPassword={showPassword}
+                  setShowPassword={setShowPassword}
+                />
+                <Link
+                  _text={{
+                    fontSize: "xs",
+                    fontWeight: "500",
+                    color: "primary.500",
+                  }}
+                  alignSelf="flex-end"
+                  mt={1}
+                >
+                  Mot de passe oublié ?
+                </Link>
+                <CustomButton
+                  onPress={handleSubmit}
+                  title="Se connecter"
+                  isDisabled={!isValid}
+                />
+              </>
+            )}
+          </Formik>
+        </VStack>
       </VStack>
-    </Center>
+    </ScrollView>
   );
 };
 

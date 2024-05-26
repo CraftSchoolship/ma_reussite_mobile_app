@@ -15,7 +15,7 @@ const CustomInput = ({
   const { error, touched } = meta;
 
   return (
-    <FormControl isInvalid={touched && !!error}>
+    <FormControl mt={"10%"} isInvalid={touched && !!error}>
       <FormControl.Label>{label}</FormControl.Label>
       <Input
         color={"black"}
