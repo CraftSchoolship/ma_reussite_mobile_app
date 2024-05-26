@@ -13,12 +13,13 @@ const validationSchema = Yup.object().shape({
     .required("Mot de passe est requis"),
 });
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = (values) => {
     console.log(values);
     // Logique de connexion
+    navigation.navigate("TabNavigator");
   };
 
   return (

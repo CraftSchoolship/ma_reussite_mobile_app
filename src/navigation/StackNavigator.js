@@ -7,15 +7,15 @@ const Stack = createStackNavigator();
 
 const StackNavigator = () => {
   return (
-    <Stack.Navigator initialRouteName="Main">
+    <Stack.Navigator initialRouteName="Login">
       <Stack.Screen
         options={{ headerShown: false }}
-        name="Main"
+        name="TabNavigator"
         component={TabNavigator}
       />
       <Stack.Screen
         options={{ headerShown: false }}
-        name="Form"
+        name="Login"
         component={LoginScreen}
       />
     </Stack.Navigator>
