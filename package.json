@@ -19,7 +19,6 @@
     "@react-navigation/native-stack": "^6.9.26",
     "@react-navigation/stack": "^6.3.29",
     "@reduxjs/toolkit": "^2.2.5",
-    "@types/react-i18next": "^8.1.0",
     "axios": "^1.7.2",
     "expo": "~51.0.8",
     "expo-app-loading": "^2.1.1",
@@ -47,16 +46,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
-    "@types/react": "^18.3.3",
-    "@types/react-native": "^0.73.0",
-    "@types/react-redux": "^7.1.33",
-    "@typescript-eslint/eslint-plugin": "^7.10.0",
-    "@typescript-eslint/parser": "^7.10.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
     "prettier": "^3.2.5",
-    "react-native-svg-transformer": "^1.4.0",
-    "typescript": "^5.4.5"
+    "react-native-svg-transformer": "^1.4.0"
   },
   "private": true
 }
