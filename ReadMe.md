@@ -1,6 +1,3 @@
-Maintenant passons a la navigation. Dans cette application je veux avoir deux types de navigations : le navigation stack et le bottom-tab navigation. Comment faire ceci tout en respectant la structure de l'app ?
-NB: mettez tout ce qui concer la navigation dans le dossier navigation de facon que ca soit plus modulaire.
-
 ### Structure de Dossiers
 
 ```
