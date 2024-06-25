@@ -1,17 +1,13 @@
 import { Formik } from "formik";
-import { Box, Image, Link, ScrollView, Text, VStack } from "native-base";
+import { Box, Link, ScrollView, Text, VStack } from "native-base";
 import React, { useState } from "react";
 import * as Yup from "yup";
-import CustomButton from "../../components/CustomButton";
-import CustomInput from "../../components/CustomInput";
-import { HomeScreenBanner, LoginScreenBanner } from "../../components/Banner";
+import { LoginScreenBanner } from "../components/Banner";
+import CustomButton from "../components/CustomButton";
+import CustomInput from "../components/CustomInput";
+import { loginValidationSchema } from "../validation/formValidation";
 
-const validationSchema = Yup.object().shape({
-  email: Yup.string().email("Email invalide").required("Email est requis"),
-  password: Yup.string()
-    .min(6, "Le mot de passe doit comporter au moins 6 caractères")
-    .required("Mot de passe est requis"),
-});
+loginValidationSchema;
 
 const LoginScreen = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,7 +30,7 @@ const LoginScreen = ({ navigation }) => {
           </Box>
           <Formik
             initialValues={{ email: "", password: "" }}
-            validationSchema={validationSchema}
+            validationSchema={loginValidationSchema}
             onSubmit={handleLogin}
           >
             {({ handleSubmit, isValid }) => (

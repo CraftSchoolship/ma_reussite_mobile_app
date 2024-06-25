@@ -31,13 +31,7 @@ Follow the steps below to set up and run the application on your local machine:
    cd ma_reussite_mobile_app
    ```
 
-3. Checkout the feature/new_app branch
-
-   ```sh
-   git checkout feature/new_app
-   ```
-
-4. Install the dependencies with Yarn:
+3. Install the dependencies with Yarn:
 
    ```sh
    yarn install

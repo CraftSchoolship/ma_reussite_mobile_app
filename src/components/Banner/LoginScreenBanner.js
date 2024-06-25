@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Image } from "native-base";
 
-function Banner() {
+function LoginScreenBanner() {
   return (
     <Box bg={"primary.500"} mt={"20%"} mb={"20%"}>
       <Image
@@ -13,4 +13,4 @@ function Banner() {
   );
 }
 
-export default Banner;
+export default LoginScreenBanner;
