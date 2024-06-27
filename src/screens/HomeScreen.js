@@ -1,5 +1,13 @@
 import { useNavigation } from "@react-navigation/native";
-import { Box, ScrollView, VStack, useDisclose } from "native-base";
+import {
+  Box,
+  ScrollView,
+  VStack,
+  useDisclose,
+  Actionsheet,
+  HStack,
+  Text,
+} from "native-base";
 import { default as React, useEffect, useState } from "react";
 import { ImageBackground } from "react-native";
 import { Calendar } from "react-native-calendars";
@@ -66,7 +74,9 @@ const HomeScreen = () => {
   // const [markedDate, setMarkedDate] = useState(markedDates);
   const [todaysEvents, setTodaysEvents] = useState([]);
   const [today, setToday] = useState();
-  const [selectedDay, setSelectedDay] = useState("");
+  // const [selectedDay, setSelectedDay] = useState("");
+  const [selectedDayEvents, setSelectedDayEvents] = useState([]);
+
   useEffect(() => {
     let currentDay = new Date().toDateString();
     let year = new Date().getFullYear().toString();
@@ -106,9 +116,11 @@ const HomeScreen = () => {
           <Calendar
             markingType={"multi-dot"}
             onDayPress={(day) => {
-              console.log("selected day", day);
-              setSelectedDay(day?.dateString);
-              console.log("selected day", selectedDay);
+              if (markedDates[day.dateString] !== undefined) {
+                setSelectedDayEvents(markedDates[day.dateString].dots);
+                console.log("selectedDayEvents", selectedDayEvents);
+              }
+              onOpen();
             }}
             monthFormat={"MMMM yyyy"}
             onMonthChange={(month) => {
@@ -151,6 +163,42 @@ const HomeScreen = () => {
           </VStack>
           {/* </Box> */}
         </ScrollView>
+
+        <Actionsheet
+          isOpen={isOpen}
+          onClose={() => {
+            setSelectedDayEvents([]);
+            onClose();
+          }}
+        >
+          <Actionsheet.Content bg={"white"}>
+            <Box w="100%" h={60} px={4} justifyContent="center">
+              <Text
+                textAlign={"center"}
+                color={"black"}
+                fontSize="lg"
+                fontWeight="bold"
+              >
+                Événements
+              </Text>
+            </Box>
+            <ScrollView w="100%">
+              <VStack space={4} px={4}>
+                {selectedDayEvents &&
+                  selectedDayEvents.map((eventMarked, index) => (
+                    <CalendarCard
+                      key={index}
+                      tag={eventMarked.tag}
+                      date={"today"}
+                      time={eventMarked.time}
+                      title={eventMarked.title}
+                      details={eventMarked.details}
+                    />
+                  ))}
+              </VStack>
+            </ScrollView>
+          </Actionsheet.Content>
+        </Actionsheet>
       </ImageBackground>
     </Box>
   );
