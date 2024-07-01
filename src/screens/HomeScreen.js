@@ -11,10 +11,9 @@ import {
 import { default as React, useEffect, useState } from "react";
 import { ImageBackground } from "react-native";
 import { Calendar } from "react-native-calendars";
-import HomeScreenBanner from "../components/Banner/HomeScreenBanner";
+import { CalendarCard, HomeScreenBanner } from "../components";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import CalendarLocalConfig from "../utils/CalendarLocalConfig";
-import { CalendarCard, PaymentCard } from "../components/Cards";
 
 CalendarLocalConfig;
 
@@ -23,7 +22,7 @@ const HomeScreen = () => {
   const { isOpen, onOpen, onClose } = useDisclose();
 
   const markedDates = {
-    "2024-06-21": {
+    "2024-07-21": {
       dots: [
         {
           color: "blue",
@@ -48,7 +47,7 @@ const HomeScreen = () => {
         },
       ],
     },
-    "2024-06-24": {
+    "2024-07-28": {
       dots: [
         {
           color: "green",
@@ -67,14 +66,22 @@ const HomeScreen = () => {
         },
       ],
     },
-    "2024-06-17": {
-      dots: [{ key: "event1", color: "red" }],
+    "2024-07-17": {
+      dots: [
+        {
+          color: "red",
+          tag: "examen",
+          time: "14:00-15:00",
+          title: "Machine Learning",
+          details: "Détails...",
+        },
+      ],
     },
   };
   // const [markedDate, setMarkedDate] = useState(markedDates);
   const [todaysEvents, setTodaysEvents] = useState([]);
   const [today, setToday] = useState();
-  // const [selectedDay, setSelectedDay] = useState("");
+  const [selectedDay, setSelectedDay] = useState("");
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
 
   useEffect(() => {
@@ -83,16 +90,17 @@ const HomeScreen = () => {
     let month = new Date().getMonth();
     let day = new Date().getDate().toString();
     let strDay = new Date().getDay();
+    // console.log("strDay...", strDay);
     strDay = CalendarLocalConfig.dayNamesShort[strDay];
     month = CalendarLocalConfig.monthNumbers[month];
     day = day.length === 1 ? "0" + day : day;
 
     currentDay = year + "-" + month + "-" + day;
     setToday(strDay + " " + day);
-    console.log("====================================");
-    console.log("In the useEffect : Date", markedDates[currentDay]?.dots[0]);
-    console.log("strDay : ", strDay);
-    console.log("====================================");
+    // console.log("====================================");
+    // console.log("In the useEffect : Date", markedDates[currentDay]?.dots[0]);
+    // console.log("strDay : ", strDay);
+    // console.log("====================================");
     setTodaysEvents(markedDates[currentDay]?.dots);
   }, []);
 
@@ -116,15 +124,22 @@ const HomeScreen = () => {
           <Calendar
             markingType={"multi-dot"}
             onDayPress={(day) => {
+              const currentDaySelected = new Date(day.timestamp).getDay();
+              setSelectedDay(
+                CalendarLocalConfig.dayNamesShort[currentDaySelected] +
+                  " " +
+                  day.day
+              );
+              // console.log("selectedDay...", selectedDay);
               if (markedDates[day.dateString] !== undefined) {
                 setSelectedDayEvents(markedDates[day.dateString].dots);
-                console.log("selectedDayEvents", selectedDayEvents);
+                // console.log("selectedDayEvents", selectedDayEvents);
               }
               onOpen();
             }}
             monthFormat={"MMMM yyyy"}
             onMonthChange={(month) => {
-              console.log("month changed", month);
+              // console.log("month changed", month);
             }}
             hideArrows={false}
             disableMonthChange={false}
@@ -141,14 +156,14 @@ const HomeScreen = () => {
         </Box>
         <ScrollView
           flexGrow={1}
-          h={"80%"}
+          h={"100%"}
           contentContainerStyle={{ paddingBottom: 80 }}
           // h={"100%"}
           w={"90%"}
           mx={"auto"}
         >
           {/* <Box> */}
-          <VStack w={"full"} space={4} mt={4}>
+          <VStack w={"full"} mb={"20%"} space={4} mt={4}>
             {todaysEvents &&
               todaysEvents.map((eventMarked, index) => (
                 <CalendarCard
@@ -189,7 +204,7 @@ const HomeScreen = () => {
                     <CalendarCard
                       key={index}
                       tag={eventMarked.tag}
-                      date={"today"}
+                      date={selectedDay}
                       time={eventMarked.time}
                       title={eventMarked.title}
                       details={eventMarked.details}

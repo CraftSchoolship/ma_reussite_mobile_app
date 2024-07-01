@@ -7,29 +7,28 @@ import {
   GroupScreen,
   HomeScreen,
   NoteScreen,
+  ParticipantScreen,
   PaymentScreen,
+  SessionScreen,
 } from "../screens";
 
 const Tab = createBottomTabNavigator();
 
-const TabNavigator = () => {
+const TopTabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
-          if (route.name === "Home") {
-            iconName = "home";
-          } else if (route.name === "Payment") {
-            iconName = "euro-symbol";
-          } else if (route.name === "Groups") {
-            iconName = "group";
-          } else if (route.name === "Notes") {
-            iconName = "timeline";
-          } else if (route.name === "Activities") {
-            iconName = "notifications";
+          if (route.name === "Participant") {
+            // iconName = "home";
+          } else if (route.name === "Sessions") {
+            // iconName = "euro-symbol";
           }
+          // else if (route.name === "Sessions Futures") {
+          //   // iconName = "group";
+          // }
 
           return <MaterialIcons name={iconName} size={size} color={color} />;
         },
@@ -44,38 +43,28 @@ const TabNavigator = () => {
         },
         tabBarStyle: {
           backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-          height: "7%",
+          // height: "7%",
         },
         headerShown: false,
       })}
     >
       <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ tabBarLabel: "Home" }}
+        name="Participant"
+        component={ParticipantScreen}
+        options={{ tabBarLabel: "Participants" }}
       />
       <Tab.Screen
-        name="Payment"
-        component={PaymentScreen}
-        options={{ tabBarLabel: "Payement" }}
+        name="Sessions"
+        component={SessionScreen}
+        options={{ tabBarLabel: "Sessions Passées" }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Groups"
         component={GroupScreen}
         options={{ tabBarLabel: "Groupes" }}
-      />
-      <Tab.Screen
-        name="Notes"
-        component={NoteScreen}
-        options={{ tabBarLabel: "Notes" }}
-      />
-      <Tab.Screen
-        name="Activities"
-        component={ActivityScreen}
-        options={{ tabBarLabel: "Activités" }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 };
 
-export default TabNavigator;
+export default TopTabNavigator;

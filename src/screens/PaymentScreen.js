@@ -12,8 +12,7 @@ import {
 } from "native-base";
 import React, { useState } from "react";
 import { ImageBackground } from "react-native";
-import { HomeScreenBanner } from "../components/Banner";
-import { PaymentCard } from "../components/Cards";
+import { HomeScreenBanner, PaymentCard } from "../components";
 
 const PaymentScreen = () => {
   const [sortOrder, setSortOrder] = useState("recent");
@@ -104,7 +103,7 @@ const PaymentScreen = () => {
           mx={"auto"}
           contentContainerStyle={{ paddingBottom: 80 }}
         >
-          <VStack w={"full"} space={4} mt={4}>
+          <VStack w={"full"} mb={"10%"} space={4}>
             {sortedPayments.map((payment, index) => (
               <PaymentCard
                 key={index}

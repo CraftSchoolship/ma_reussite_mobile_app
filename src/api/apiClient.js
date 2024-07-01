@@ -1,106 +1,95 @@
 import axios from "axios";
+import config from "./config";
 
-// URL = "https://test.erp.craftschoolship.com"
-// DB = "bitnami_odoo"
-// user: test@example.com
-// pwd: Temp4Now#
-const ODOO_URL = "https://test.erp.craftschoolship.com/jsonrpc";
-const DB = "bitnami_odoo";
+const url = config.baseUrl;
+const db = config.database;
+const username = config.username;
+const password = config.password;
 
-const odooApi = axios.create({
-  baseURL: ODOO_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-const jsonRpcRequest = (_method, params) => ({
-  jsonrpc: "2.0",
-  method: "call",
-  params,
-  id: new Date().getTime(),
-});
-
-export const authenticate = async (username, password) => {
-  const params = {
-    service: "common",
-    method: "authenticate",
-    args: [DB, username, password, {}],
-  };
-
-  try {
-    const response = await odooApi.post("/", jsonRpcRequest("call", params));
-    return response.data.result;
-  } catch (error) {
-    console.error("Authentication failed", error);
-    throw error;
-  }
+const authenticate = async () => {
+  const authResponse = await axios.post(url, {
+    jsonrpc: "2.0",
+    method: "call",
+    params: {
+      service: "common",
+      method: "login",
+      args: [db, username, password],
+    },
+    id: Math.floor(Math.random() * 1000),
+  });
+  return authResponse.data.result;
 };
 
-export const getPartners = async (uid, password) => {
-  const params = {
-    service: "object",
-    method: "execute_kw",
-    args: [
-      DB,
-      uid,
-      password,
-      "res.partner",
-      "search_read",
-      [
-        [
-          ["is_company", "=", true],
-          ["customer", "=", true],
-        ],
+const fetchPartners = async (sessionId) => {
+  const partnerResponse = await axios.post(url, {
+    jsonrpc: "2.0",
+    method: "call",
+    params: {
+      service: "object",
+      method: "execute_kw",
+      args: [
+        db,
+        sessionId,
+        password,
+        config.model.student,
+        "search_read",
+        [],
+        { fields: ["name", "email"] },
       ],
-      { fields: ["name", "country_id", "comment"], limit: 5 },
-    ],
-  };
-
-  try {
-    const response = await odooApi.post("/", jsonRpcRequest("call", params));
-    return response.data.result;
-  } catch (error) {
-    console.error("Failed to fetch partners", error);
-    throw error;
-  }
+    },
+    id: Math.floor(Math.random() * 1000),
+  });
+  return partnerResponse.data.result;
 };
 
-export const createPartner = async (uid, password, partnerData) => {
-  const params = {
-    service: "object",
-    method: "execute_kw",
-    args: [DB, uid, password, "res.partner", "create", [partnerData]],
-  };
-
-  try {
-    const response = await odooApi.post("/", jsonRpcRequest("call", params));
-    return response.data.result;
-  } catch (error) {
-    console.error("Failed to create partner", error);
-    throw error;
-  }
+const fetchPartnerByEmail = async (sessionId, email) => {
+  const partnerResponse = await axios.post(url, {
+    jsonrpc: "2.0",
+    method: "call",
+    params: {
+      service: "object",
+      method: "execute_kw",
+      args: [
+        db,
+        sessionId,
+        password,
+        config.model.partner,
+        "search_read",
+        [[["email", "=", email]]],
+        { fields: ["id", "name", "email", "meeting_ids"] },
+      ],
+    },
+    id: Math.floor(Math.random() * 1000),
+  });
+  return partnerResponse.data.result;
 };
 
-export const updatePartner = async (uid, password, partnerId, partnerData) => {
-  const params = {
-    service: "object",
-    method: "execute_kw",
-    args: [
-      DB,
-      uid,
-      password,
-      "res.partner",
-      "write",
-      [[partnerId], partnerData],
-    ],
-  };
+const fetchCalendarEvents = async (sessionId) => {
+  const eventsResponse = await axios.post(url, {
+    jsonrpc: "2.0",
+    method: "call",
+    params: {
+      service: "object",
+      method: "execute_kw",
+      args: [
+        db,
+        sessionId,
+        password,
+        "calendar.event",
+        "search_read",
+        [],
+        // [[["active_id", "=", userId]]],
+        { fields: ["id", "name", "start", "stop", "description"] },
+      ],
+    },
+    id: Math.floor(Math.random() * 1000),
+  });
+  return eventsResponse.data.result;
+};
 
-  try {
-    const response = await odooApi.post("/", jsonRpcRequest("call", params));
-    return response.data.result;
-  } catch (error) {
-    console.error("Failed to update partner", error);
-    throw error;
-  }
+export {
+  authenticate,
+  fetchPartners,
+  fetchPartnerByEmail,
+  fetchCalendarEvents,
 };

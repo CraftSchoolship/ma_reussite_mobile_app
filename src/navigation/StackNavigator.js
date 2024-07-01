@@ -1,7 +1,13 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import TabNavigator from "./TabNavigator";
-import { ProfileScreen, LoginScreen } from "../screens";
+import TopTabNavigator from "./TopTabNavigator";
+import {
+  ProfileScreen,
+  LoginScreen,
+  ParticipantScreen,
+  SessionScreen,
+} from "../screens";
 
 const Stack = createStackNavigator();
 
@@ -22,6 +28,16 @@ const StackNavigator = () => {
         // options={{ headerShown: false }}
         name="Profile"
         component={ProfileScreen}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Participants"
+        component={ParticipantScreen}
+      />
+      <Stack.Screen
+        options={{ headerShown: true, headerTitle: "Details" }}
+        name="Sessions"
+        component={SessionScreen}
       />
     </Stack.Navigator>
   );

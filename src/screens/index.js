@@ -5,3 +5,5 @@ export { default as NoteScreen } from "./NoteScreen";
 export { default as ActivityScreen } from "./ActivityScreen";
 export { default as ProfileScreen } from "./ProfileScreen";
 export { default as LoginScreen } from "./LoginScreen";
+export { default as ParticipantScreen } from "./ParticipantScreen";
+export { default as SessionScreen } from "./SessionScreen";

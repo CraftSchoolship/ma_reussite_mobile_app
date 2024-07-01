@@ -1,17 +1,16 @@
-import React from "react";
-import {
-  Center,
-  Box,
-  Avatar,
-  Heading,
-  Text,
-  VStack,
-  HStack,
-  Link,
-  IconButton,
-  Icon,
-} from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
+import {
+  Avatar,
+  Box,
+  Center,
+  Heading,
+  Icon,
+  IconButton,
+  Link,
+  Text,
+  VStack
+} from "native-base";
+import React from "react";
 
 const ProfileScreen = () => {
   return (

@@ -1,14 +1,9 @@
-import React, { useEffect } from "react";
+import * as SplashScreen from "expo-splash-screen";
 import { NativeBaseProvider } from "native-base";
+import React, { useEffect } from "react";
+import useFonts from "./hooks/useFonts";
 import AppNavigator from "./navigation/AppNavigator";
 import customTheme from "./themes/customTheme";
-import * as SplashScreen from "expo-splash-screen";
-import useFonts from "./hooks/useFonts";
-import {
-  ImageBackground,
-  ImageBackgroundBase,
-  SafeAreaView,
-} from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,7 +20,7 @@ const App = () => {
   }, [fontsLoaded]);
 
   if (!fontsLoaded) {
-    return null; // Afficher un écran de chargement ou null
+    return null;
   }
 
   return (

@@ -1,110 +1,78 @@
-import React, { useState } from "react";
-import {
-  Box,
-  VStack,
-  HStack,
-  Text,
-  Button,
-  Icon,
-  Center,
-  Pressable,
-  ScrollView,
-} from "native-base";
-import { MaterialIcons } from "@expo/vector-icons";
-import { ImageBackground, TouchableOpacity } from "react-native";
-import { HomeScreenBanner } from "../components/Banner";
+import { Box, HStack, Pressable, ScrollView, Text, VStack } from "native-base";
+import React from "react";
+import { ImageBackground } from "react-native";
+import { HomeScreenBanner, CircularProgress } from "../components";
 
-const subjects = [
-  { name: "Big Data" },
-  { name: "AWS Cloud" },
-  { name: "Java Avancé" },
-  { name: "Machine Learning" },
-  { name: "SpringBoot" },
-  { name: "Python" },
-  { name: "Sécurité" },
-  { name: "Virtualisation" },
+const groups = [
+  { id: "1", name: "Big Data", progress: 90 },
+  { id: "2", name: "AWS Cloud", progress: 50 },
+  { id: "3", name: "Java Avancé", progress: 60 },
+  { id: "4", name: "Machine Learning", progress: 80 },
+  { id: "5", name: "Springboot", progress: 70 },
 ];
 
-const SubjectsScreen = ({ navigation }) => {
-  const [activeTab, setActiveTab] = useState("current");
-
+const GroupScreen = ({ navigation }) => {
   return (
     <Box flex={1} bg={"white"}>
       <HomeScreenBanner navigation={navigation} />
       <ImageBackground
-        style={{ resizeMode: "contain" }}
+        style={{ resizeMode: "contain", minHeight: "100%" }}
         source={require("../../assets/images/ma_reussite_background.png")}
       >
-        {/* Onglets */}
-        <HStack justifyContent="center" mt={4} mb={2}>
-          <Button
-            onPress={() => setActiveTab("current")}
-            variant={activeTab === "current" ? "solid" : "outline"}
-            mx={1}
+        <Box pt={4} w={"100%"}>
+          <Text
+            color={"black"}
+            textAlign={"center"}
+            fontWeight="bold"
+            fontSize="lg"
           >
-            Liste des matières
-          </Button>
-          <Button
-            onPress={() => setActiveTab("past")}
-            variant={activeTab === "past" ? "solid" : "outline"}
-            mx={1}
-          >
-            Sessions Passées
-          </Button>
-          <Button
-            onPress={() => setActiveTab("future")}
-            variant={activeTab === "future" ? "solid" : "outline"}
-            mx={1}
-          >
-            Sessions Futures
-          </Button>
-        </HStack>
+            Master 1 DevOps
+          </Text>
+        </Box>
 
-        {/* Contenu */}
-        <ScrollView h={600} p={4}>
-          <Box
-            display={"flex"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-            flexDir={"row"}
-            flexWrap={"wrap"}
-            space={4}
-            w={"100%"}
-          >
-            {subjects.map((subject, index) => (
+        <ScrollView
+          h={"80%"}
+          p={2}
+          flexGrow={1}
+          contentContainerStyle={{ paddingBottom: 80 }}
+        >
+          <VStack w={"100%"} mb={"20%"}>
+            {groups.map((group, index) => (
               <Pressable
                 shadow={"9"}
-                mb={5}
-                width="48%"
                 key={index}
-                onPress={() => {}}
+                onPress={() => {
+                  navigation.navigate("Sessions", {
+                    groupName: group.name,
+                  });
+                }}
               >
                 <Box
                   bg="white"
                   p={4}
+                  mx={2}
+                  my={2}
                   rounded="lg"
                   shadow={2}
-                  mb={2}
                   justifyContent="center"
-                  alignItems="center"
                   height="100"
                 >
-                  <Text
-                    color={"black"}
-                    fontWeight="bold"
-                    fontSize="lg"
-                    textAlign="center"
-                  >
-                    {subject.name}
-                  </Text>
+                  <HStack alignItems="center">
+                    <CircularProgress progress={group.progress} />
+                    <Box flex={1} mr={5} alignItems="center">
+                      <Text color={"black"} fontWeight="bold" fontSize="lg">
+                        {group.name}
+                      </Text>
+                    </Box>
+                  </HStack>
                 </Box>
               </Pressable>
             ))}
-          </Box>
+          </VStack>
         </ScrollView>
       </ImageBackground>
     </Box>
   );
 };
 
-export default SubjectsScreen;
+export default GroupScreen;
