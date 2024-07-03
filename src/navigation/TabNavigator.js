@@ -9,15 +9,18 @@ import {
   NoteScreen,
   PaymentScreen,
 } from "../screens";
+import { useRoute } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
+  const propagedRoute = useRoute();
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
           let iconName;
+          route.params = propagedRoute?.params;
 
           if (route.name === "Home") {
             iconName = "home";

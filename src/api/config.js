@@ -7,6 +7,8 @@ const config = {
     partner: "res.partner",
     student: "craft.student",
     calendar: "calendar.event",
+    opCourse: "op.course",
+    opSession: "op.session",
   },
 };
 

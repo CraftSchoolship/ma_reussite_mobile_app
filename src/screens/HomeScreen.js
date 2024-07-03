@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   Box,
   ScrollView,
@@ -14,12 +14,51 @@ import { Calendar } from "react-native-calendars";
 import { CalendarCard, HomeScreenBanner } from "../components";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import CalendarLocalConfig from "../utils/CalendarLocalConfig";
+import {
+  fetchOdooCourses,
+  fetchPartnerByEmail,
+  testtt,
+} from "../api/apiClient";
 
 CalendarLocalConfig;
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const { isOpen, onOpen, onClose } = useDisclose();
+  const route = useRoute();
+  const [partner, setPartner] = useState(null);
+  const [sessionId, setSessionId] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [courses, setCourses] = useState([]);
+  const [password, setPassword] = useState(null);
+
+  useEffect(() => {
+    const { sessionId, email, password } = route?.params;
+    setSessionId(sessionId);
+    setEmail(email);
+    setPassword(password);
+  }, [route]);
+
+  useEffect(() => {
+
+    const fetchPartner = async () => {
+      try {
+        const partnerData = await fetchPartnerByEmail(
+          sessionId,
+          email,
+          password
+        );
+        setPartner(partnerData);
+      } catch (error) {
+        console.error("Error fetching partner:", error);
+      }
+    };
+    fetchPartner();
+  }, [sessionId && email && password]);
+
+  useEffect(() => {
+    partner && console.log("Partner...", partner);
+  }, [partner]);
 
   const markedDates = {
     "2024-07-21": {

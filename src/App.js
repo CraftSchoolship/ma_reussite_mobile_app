@@ -4,6 +4,9 @@ import React, { useEffect } from "react";
 import useFonts from "./hooks/useFonts";
 import AppNavigator from "./navigation/AppNavigator";
 import customTheme from "./themes/customTheme";
+// import "node-libs-react-native/globals";
+import http from "http";
+import https from "https";
 
 SplashScreen.preventAutoHideAsync();
 

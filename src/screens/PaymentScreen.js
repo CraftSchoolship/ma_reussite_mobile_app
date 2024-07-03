@@ -10,22 +10,36 @@ import {
   Text,
   VStack,
 } from "native-base";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ImageBackground } from "react-native";
 import { HomeScreenBanner, PaymentCard } from "../components";
+import { useRoute } from "@react-navigation/native";
 
 const PaymentScreen = () => {
   const [sortOrder, setSortOrder] = useState("recent");
+  const route = useRoute();
+  const { sessionId, email, password } = route.params;
+
+  useEffect(() => {
+    console.log(
+      "sessionId =",
+      sessionId,
+      ", email =",
+      email,
+      ", password =",
+      password
+    );
+  }, [route]);
 
   const payments = [
-    { date: "Août 2024", amount: "800", status: false },
-    { date: "Juillet 2024", amount: "800", status: false },
-    { date: "Juin 2024", amount: "800", status: false },
-    { date: "Mai 2024", amount: "800", status: true },
-    { date: "Avril 2024", amount: "800", status: true },
-    { date: "Mars 2024", amount: "800", status: true },
-    { date: "Février 2024", amount: "800", status: true },
-    { date: "Janvier 2024", amount: "800", status: true },
+    { date: "Août 2024", amount: "800", isPaid: false },
+    { date: "Juillet 2024", amount: "800", isPaid: false },
+    { date: "Juin 2024", amount: "800", isPaid: false },
+    { date: "Mai 2024", amount: "800", isPaid: true },
+    { date: "Avril 2024", amount: "800", isPaid: true },
+    { date: "Mars 2024", amount: "800", isPaid: true },
+    { date: "Février 2024", amount: "800", isPaid: true },
+    { date: "Janvier 2024", amount: "800", isPaid: true },
   ];
 
   const sortedPayments = payments.sort((a, b) => {
@@ -109,7 +123,7 @@ const PaymentScreen = () => {
                 key={index}
                 date={payment.date}
                 amount={payment.amount}
-                isPayed={payment.status}
+                isPayed={payment.isPaid}
               />
             ))}
           </VStack>
