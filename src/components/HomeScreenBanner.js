@@ -14,7 +14,7 @@ function HomeScreenBanner({ navigation }) {
           size="sm"
           w={"70%"}
           ml={2}
-          source={require("../../assets/images/MaReussiteBlack2.png")}
+          source={require("../../assets/images/ma_reussite_other_screens.png")}
           alt="Alternate Text"
         />
         <Avatar

@@ -8,7 +8,6 @@ import {
   useDisclose,
 } from "native-base";
 import { default as React, useEffect, useState } from "react";
-import { ImageBackground } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { jsonrpcRequest } from "../api/apiClient";
 import config from "../api/config";
@@ -16,6 +15,7 @@ import { CalendarCard, HomeScreenBanner } from "../components";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import CalendarLocalConfig from "../utils/CalendarLocalConfig";
 import { formatOdooEvents } from "../utils/MarkedDatesFormatage";
+import BackgroundWrapper from "../components/BackgroundWrapper";
 
 CalendarLocalConfig;
 
@@ -57,7 +57,7 @@ const HomeScreen = () => {
             "description",
           ]
         );
-        console.log("eventsData[0]...", eventsData[0]);
+        // console.log("eventsData[0]...", eventsData[0]);
         setEvents(eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);
@@ -89,11 +89,7 @@ const HomeScreen = () => {
 
   return (
     <Box flex={1} bg={"white"}>
-      <HomeScreenBanner navigation={navigation} />
-      <ImageBackground
-        style={{ resizeMode: "contain" }}
-        source={require("../../assets/images/ma_reussite_background.png")}
-      >
+      <BackgroundWrapper navigation={navigation}>
         <Box
           mt={4}
           mb={6}
@@ -188,7 +184,7 @@ const HomeScreen = () => {
             </ScrollView>
           </Actionsheet.Content>
         </Actionsheet>
-      </ImageBackground>
+      </BackgroundWrapper>
     </Box>
   );
 };

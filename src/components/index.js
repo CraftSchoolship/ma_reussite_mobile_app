@@ -5,3 +5,4 @@ export { default as CalendarCard } from "./CalendarCard";
 export { default as PaymentCard } from "./PaymentCard";
 export { default as LoginScreenBanner } from "./LoginScreenBanner";
 export { default as HomeScreenBanner } from "./HomeScreenBanner";
+export { default as BackgroundWrapper } from "./BackgroundWrapper";

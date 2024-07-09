@@ -1,5 +1,5 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   Box,
   HStack,
@@ -15,9 +15,14 @@ import React, { useEffect, useState } from "react";
 import { ImageBackground } from "react-native";
 import { jsonrpcRequest } from "../api/apiClient";
 import config from "../api/config";
-import { HomeScreenBanner, PaymentCard } from "../components";
+import {
+  BackgroundWrapper,
+  HomeScreenBanner,
+  PaymentCard,
+} from "../components";
 
 const PaymentScreen = () => {
+  const navigation = useNavigation();
   const [sortOrder, setSortOrder] = useState("recent");
   const route = useRoute();
   const { sessionId, email, password } = route.params;
@@ -42,7 +47,7 @@ const PaymentScreen = () => {
   }, [sessionId && password]);
 
   useEffect(() => {
-    payments && console.log("Partner...", new Date().getMinutes(), payments);
+    // payments && console.log("Partner...", new Date().getMinutes(), payments);
   }, [payments]);
 
   const sortedPayments = payments.sort((a, b) => {
@@ -55,11 +60,7 @@ const PaymentScreen = () => {
 
   return (
     <Box flex={1} bg="white">
-      <HomeScreenBanner />
-      <ImageBackground
-        style={{ resizeMode: "contain" }}
-        source={require("../../assets/images/ma_reussite_background.png")}
-      >
+      <BackgroundWrapper navigation={navigation}>
         <HStack
           justifyContent="space-between"
           alignItems="center"
@@ -131,7 +132,7 @@ const PaymentScreen = () => {
             ))}
           </VStack>
         </ScrollView>
-      </ImageBackground>
+      </BackgroundWrapper>
     </Box>
   );
 };

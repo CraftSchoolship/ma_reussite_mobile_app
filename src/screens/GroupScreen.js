@@ -2,11 +2,13 @@ import { useRoute } from "@react-navigation/native";
 import { Box, HStack, Pressable, ScrollView, Text, VStack } from "native-base";
 import React, { useEffect, useState } from "react";
 import { ImageBackground } from "react-native";
-import {
-  jsonrpcRequest
-} from "../api/apiClient";
+import { jsonrpcRequest } from "../api/apiClient";
 import config from "../api/config";
-import { CircularProgress, HomeScreenBanner } from "../components";
+import {
+  BackgroundWrapper,
+  CircularProgress,
+  HomeScreenBanner,
+} from "../components";
 
 const GroupScreen = ({ navigation }) => {
   const [groups, setGroups] = useState([]);
@@ -38,17 +40,13 @@ const GroupScreen = ({ navigation }) => {
     fetchGroups();
   }, [sessionId && email && password]);
 
-  useEffect(() => {
-    groups && console.log("Groups...", groups);
-  }, [groups]);
+  // useEffect(() => {
+  //   groups && console.log("Groups...", groups);
+  // }, [groups]);
 
   return (
     <Box flex={1} bg={"white"}>
-      <HomeScreenBanner navigation={navigation} />
-      <ImageBackground
-        style={{ resizeMode: "contain", minHeight: "100%" }}
-        source={require("../../assets/images/ma_reussite_background.png")}
-      >
+      <BackgroundWrapper navigation={navigation}>
         <Box pt={4} w={"100%"}>
           <Text
             color={"black"}
@@ -101,7 +99,7 @@ const GroupScreen = ({ navigation }) => {
               ))}
           </VStack>
         </ScrollView>
-      </ImageBackground>
+      </BackgroundWrapper>
     </Box>
   );
 };
