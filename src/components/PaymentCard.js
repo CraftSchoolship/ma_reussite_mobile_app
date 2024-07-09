@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Box, HStack, Icon, Link, Text, VStack } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 
-function PaymentCard({ amount, date, isPayed }) {
+function PaymentCard({ amount, name, state }) {
   // const [statusPayment, setStatusPayment] = useState();
 
-  const statusPaymentColor = isPayed ? "success.600" : "danger.600";
-  const statusPaymentText = isPayed ? "Confirmé" : "En attente";
+  const statusPaymentColor = state !== "unpaid" ? "success.600" : "danger.600";
+  const statusPaymentText = state !== "unpaid" ? "Confirmé" : "En attente";
 
   return (
     <Box borderRadius={10} overflow={"hidden"}>
@@ -20,7 +20,7 @@ function PaymentCard({ amount, date, isPayed }) {
           <HStack w={"100%"}>
             <Box w={"65%"}>
               <Text color={"black"} fontSize="lg" fontWeight="bold">
-                {date}
+                {name}
               </Text>
               <Text fontSize={"md"} color="black">
                 Somme : {amount} €

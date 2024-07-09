@@ -3,18 +3,23 @@ import React, { useEffect, useState } from "react";
 import { ImageBackground } from "react-native";
 import { HomeScreenBanner, CircularProgress } from "../components";
 import { useRoute } from "@react-navigation/native";
-import { fetchOdooCourses, fetchOdooSessions } from "../api/apiClient";
+import {
+  fetchOdooGroups,
+  fetchOdooSessions,
+  jsonrpcRequest,
+} from "../api/apiClient";
+import config from "../api/config";
 
-const groups = [
-  { id: "1", name: "Big Data", progress: 90 },
-  { id: "2", name: "AWS Cloud", progress: 50 },
-  { id: "3", name: "Java Avancé", progress: 60 },
-  { id: "4", name: "Machine Learning", progress: 80 },
-  { id: "5", name: "Springboot", progress: 70 },
-];
+// const groups = [
+//   { id: "1", name: "Big Data", progress: 90 },
+//   { id: "2", name: "AWS Cloud", progress: 50 },
+//   { id: "3", name: "Java Avancé", progress: 60 },
+//   { id: "4", name: "Machine Learning", progress: 80 },
+//   { id: "5", name: "Springboot", progress: 70 },
+// ];
 
 const GroupScreen = ({ navigation }) => {
-  const [courses, setCourses] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [sessionId, setSessionId] = useState(null);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
@@ -28,20 +33,24 @@ const GroupScreen = ({ navigation }) => {
   }, [route]);
 
   useEffect(() => {
-    const fetchCourses = async () => {
+    const fetchGroups = async () => {
       try {
-        const coursesData = await fetchOdooCourses(sessionId, password);
-        setCourses(coursesData);
+        const groupsData = await await jsonrpcRequest(
+          sessionId,
+          password,
+          config.model.groups
+        );
+        setGroups(groupsData);
       } catch (error) {
-        console.error("Error fetching courses:", error);
+        console.error("Error fetching groups:", error);
       }
     };
-    fetchCourses();
+    fetchGroups();
   }, [sessionId && email && password]);
 
   useEffect(() => {
-    courses && console.log("Courses...", courses);
-  }, [courses]);
+    groups && console.log("Groups...", groups);
+  }, [groups]);
 
   return (
     <Box flex={1} bg={"white"}>
@@ -68,8 +77,8 @@ const GroupScreen = ({ navigation }) => {
           contentContainerStyle={{ paddingBottom: 80 }}
         >
           <VStack w={"100%"} mb={"20%"}>
-            {courses &&
-              courses.map((group, index) => (
+            {groups &&
+              groups.map((group, index) => (
                 <Pressable
                   shadow={"9"}
                   key={index}

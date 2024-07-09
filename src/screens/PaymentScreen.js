@@ -14,39 +14,42 @@ import React, { useEffect, useState } from "react";
 import { ImageBackground } from "react-native";
 import { HomeScreenBanner, PaymentCard } from "../components";
 import { useRoute } from "@react-navigation/native";
+import { jsonrpcRequest } from "../api/apiClient";
+import config from "../api/config";
 
 const PaymentScreen = () => {
   const [sortOrder, setSortOrder] = useState("recent");
   const route = useRoute();
   const { sessionId, email, password } = route.params;
+  const [payments, setPayments] = useState([]);
 
   useEffect(() => {
-    console.log(
-      "sessionId =",
-      sessionId,
-      ", email =",
-      email,
-      ", password =",
-      password
-    );
-  }, [route]);
+    const fetchPayment = async () => {
+      try {
+        const paymentData = await jsonrpcRequest(
+          sessionId,
+          password,
+          config.model.craftInstallmentLines,
+          [[["invoice_id", "=", 38]]],
+          ["name", "state", "amount", "due_date", "invoice_id"]
+        );
+        setPayments(paymentData);
+      } catch (error) {
+        console.error("Error fetching payments:", error);
+      }
+    };
+    fetchPayment();
+  }, [sessionId && password]);
 
-  const payments = [
-    { date: "Août 2024", amount: "800", isPaid: false },
-    { date: "Juillet 2024", amount: "800", isPaid: false },
-    { date: "Juin 2024", amount: "800", isPaid: false },
-    { date: "Mai 2024", amount: "800", isPaid: true },
-    { date: "Avril 2024", amount: "800", isPaid: true },
-    { date: "Mars 2024", amount: "800", isPaid: true },
-    { date: "Février 2024", amount: "800", isPaid: true },
-    { date: "Janvier 2024", amount: "800", isPaid: true },
-  ];
+  useEffect(() => {
+    payments && console.log("Partner...", new Date().getMinutes(), payments);
+  }, [payments]);
 
   const sortedPayments = payments.sort((a, b) => {
     if (sortOrder === "recent") {
-      return new Date(b.date) - new Date(a.date);
+      return new Date(b.name) - new Date(a.name);
     } else {
-      return new Date(a.date) - new Date(b.date);
+      return new Date(a.name) - new Date(b.name);
     }
   });
 
@@ -121,9 +124,9 @@ const PaymentScreen = () => {
             {sortedPayments.map((payment, index) => (
               <PaymentCard
                 key={index}
-                date={payment.date}
+                name={payment.name}
                 amount={payment.amount}
-                isPayed={payment.isPaid}
+                state={payment.state}
               />
             ))}
           </VStack>

@@ -2,7 +2,7 @@ import React from "react";
 import { Box, HStack, Icon, Text, VStack } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 
-function CalendarCard({ date, time, title, details, tag }) {
+function CalendarCard({ date, tag, time, subject, teacher, classroom }) {
   let tagColor = "";
   if (tag === "cours") {
     tagColor = "tertiary.500";
@@ -34,31 +34,20 @@ function CalendarCard({ date, time, title, details, tag }) {
               mr={0.5}
             />
             <Text color="gray.500">
-              {date}, {time}
+              {date}, {time}, {`(Salle ${classroom})`}
             </Text>
-            {/* <Text
-              color={"black"}
-              fontWeight="bold"
-              fontSize={"lg"}
-              textTransform={"capitalize"}
-            >
-              {tag} :{" "}
-            </Text>
-            <Text color={"black"} fontSize={"lg"} fontWeight="bold">
-              {title}
-            </Text> */}
           </HStack>
-          <HStack>
+          <HStack my={1}>
             <Text
               color={"black"}
               fontWeight="bold"
               fontSize={"lg"}
               textTransform={"capitalize"}
             >
-              {tag} : {title}
+              {tag} : {subject}
             </Text>
           </HStack>
-          <Text color="gray.500">{details}</Text>
+          <Text color="gray.500">{`Prof : ${teacher}`}</Text>
         </VStack>
       </HStack>
     </Box>
