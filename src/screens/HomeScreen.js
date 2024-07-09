@@ -32,16 +32,6 @@ const HomeScreen = () => {
   const [selectedDay, setSelectedDay] = useState("");
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
 
-  const validEventsFilter = (events) => {
-    const filteredValidEvents = [];
-    events?.map((event) => {
-      if (event.rrule) {
-        filteredValidEvents.push(event);
-      }
-    });
-    return filteredValidEvents;
-  };
-
   useEffect(() => {
     const { sessionId, email, password } = route?.params;
     setSessionId(sessionId);
@@ -110,7 +100,6 @@ const HomeScreen = () => {
           mx={"auto"}
           width={"90%"}
           borderRadius={10}
-          // borderColor={"danger"}
           shadow={"9"}
           overflow={"hidden"}
         >
@@ -165,7 +154,6 @@ const HomeScreen = () => {
 
         <Actionsheet
           isOpen={isOpen}
-          // minH={100}
           onClose={() => {
             setSelectedDayEvents([]);
             onClose();

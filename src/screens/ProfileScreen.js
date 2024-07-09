@@ -8,7 +8,7 @@ import {
   IconButton,
   Link,
   Text,
-  VStack
+  VStack,
 } from "native-base";
 import React from "react";
 
@@ -45,9 +45,6 @@ const ProfileScreen = () => {
                 color: "white",
                 size: "xs",
               }}
-              // _hover={{
-              //   bg: "primary.600:alpha.20",
-              // }}
               _pressed={{
                 bg: "primary.600:alpha.20",
               }}
@@ -78,18 +75,3 @@ const ProfileScreen = () => {
 };
 
 export default ProfileScreen;
-
-// import { Center } from 'native-base'
-// import React from 'react'
-// import { Text, View } from 'react-native'
-
-// const ProfileScreen = () => {
-//   return (
-//     <Center flex={1}>
-//     <View>
-//         <Text>ProfileScreen</Text>
-//     </View></Center>
-//   )
-// }
-
-// export default ProfileScreen

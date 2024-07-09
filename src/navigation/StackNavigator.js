@@ -1,13 +1,12 @@
-import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import TabNavigator from "./TabNavigator";
-import TopTabNavigator from "./TopTabNavigator";
+import React from "react";
 import {
-  ProfileScreen,
   LoginScreen,
   ParticipantScreen,
+  ProfileScreen,
   SessionScreen,
 } from "../screens";
+import TabNavigator from "./TabNavigator";
 
 const Stack = createStackNavigator();
 

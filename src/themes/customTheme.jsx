@@ -1,4 +1,3 @@
-// theme.js
 import { extendTheme } from "native-base";
 import { colors } from "./colors";
 import { shadows } from "./shadows";

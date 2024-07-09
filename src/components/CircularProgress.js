@@ -1,8 +1,7 @@
 import React from "react";
-// import { View, Text } from "react-native";
+import { Box, Text } from "native-base";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
-import { Box, Text } from "native-base";
 
 const CircularProgress = ({ progress }) => {
   return (
@@ -10,7 +9,6 @@ const CircularProgress = ({ progress }) => {
       <AnimatedCircularProgress
         size={70}
         width={10}
-        // fill={progress}
         tintColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
         backgroundColor="#CED3DE"
         rotation={0}

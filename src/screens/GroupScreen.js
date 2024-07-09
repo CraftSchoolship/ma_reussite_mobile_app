@@ -1,22 +1,12 @@
+import { useRoute } from "@react-navigation/native";
 import { Box, HStack, Pressable, ScrollView, Text, VStack } from "native-base";
 import React, { useEffect, useState } from "react";
 import { ImageBackground } from "react-native";
-import { HomeScreenBanner, CircularProgress } from "../components";
-import { useRoute } from "@react-navigation/native";
 import {
-  fetchOdooGroups,
-  fetchOdooSessions,
-  jsonrpcRequest,
+  jsonrpcRequest
 } from "../api/apiClient";
 import config from "../api/config";
-
-// const groups = [
-//   { id: "1", name: "Big Data", progress: 90 },
-//   { id: "2", name: "AWS Cloud", progress: 50 },
-//   { id: "3", name: "Java Avancé", progress: 60 },
-//   { id: "4", name: "Machine Learning", progress: 80 },
-//   { id: "5", name: "Springboot", progress: 70 },
-// ];
+import { CircularProgress, HomeScreenBanner } from "../components";
 
 const GroupScreen = ({ navigation }) => {
   const [groups, setGroups] = useState([]);

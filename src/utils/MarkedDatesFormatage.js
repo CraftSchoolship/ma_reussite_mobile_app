@@ -4,7 +4,6 @@ import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 const generateRecurrenceDates = (event) => {
   const rule = RRule.fromString(event.rrule);
   const dates = rule.all();
-  // console.log("dates...", new Date().getMinutes(), dates);
 
   return dates.map((date) => {
     const startDate = new Date(date);

@@ -1,10 +1,7 @@
-import React, { useState } from "react";
-import { Box, HStack, Icon, Link, Text, VStack } from "native-base";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Box, HStack, Link, Text, VStack } from "native-base";
+import React from "react";
 
 function PaymentCard({ amount, name, state }) {
-  // const [statusPayment, setStatusPayment] = useState();
-
   const statusPaymentColor = state !== "unpaid" ? "success.600" : "danger.600";
   const statusPaymentText = state !== "unpaid" ? "Confirmé" : "En attente";
 

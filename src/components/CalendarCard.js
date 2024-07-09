@@ -1,6 +1,6 @@
-import React from "react";
-import { Box, HStack, Icon, Text, VStack } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Box, HStack, Icon, Text, VStack } from "native-base";
+import React from "react";
 
 function CalendarCard({ date, tag, time, subject, teacher, classroom }) {
   let tagColor = "";

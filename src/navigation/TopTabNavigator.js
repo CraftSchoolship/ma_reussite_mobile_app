@@ -1,16 +1,8 @@
-import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialIcons } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import React from "react";
+import { ParticipantScreen, SessionScreen } from "../screens";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
-import {
-  ActivityScreen,
-  GroupScreen,
-  HomeScreen,
-  NoteScreen,
-  ParticipantScreen,
-  PaymentScreen,
-  SessionScreen,
-} from "../screens";
 
 const Tab = createBottomTabNavigator();
 
@@ -22,13 +14,8 @@ const TopTabNavigator = () => {
           let iconName;
 
           if (route.name === "Participant") {
-            // iconName = "home";
           } else if (route.name === "Sessions") {
-            // iconName = "euro-symbol";
           }
-          // else if (route.name === "Sessions Futures") {
-          //   // iconName = "group";
-          // }
 
           return <MaterialIcons name={iconName} size={size} color={color} />;
         },
@@ -43,7 +30,6 @@ const TopTabNavigator = () => {
         },
         tabBarStyle: {
           backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-          // height: "7%",
         },
         headerShown: false,
       })}
@@ -58,11 +44,6 @@ const TopTabNavigator = () => {
         component={SessionScreen}
         options={{ tabBarLabel: "Sessions Passées" }}
       />
-      {/* <Tab.Screen
-        name="Groups"
-        component={GroupScreen}
-        options={{ tabBarLabel: "Groupes" }}
-      /> */}
     </Tab.Navigator>
   );
 };

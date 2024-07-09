@@ -1,7 +1,7 @@
-import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialIcons } from "@expo/vector-icons";
-import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useRoute } from "@react-navigation/native";
+import React from "react";
 import {
   ActivityScreen,
   GroupScreen,
@@ -9,7 +9,7 @@ import {
   NoteScreen,
   PaymentScreen,
 } from "../screens";
-import { useRoute } from "@react-navigation/native";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const Tab = createBottomTabNavigator();
 

@@ -1,11 +1,11 @@
 import { Box } from "native-base";
 import React, { useState } from "react";
 import {
-  View,
-  Text,
   FlatList,
-  TouchableOpacity,
   StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 const sessions = {
@@ -42,7 +42,6 @@ const SessionScreen = () => {
         borderRadius={"md"}
         style={styles.session}
       >
-        {/* {console.log(item.name)} */}
         <Text>{item.date}</Text>
         <Text>{item.time}</Text>
         <Text>{item.attended ? "Présent" : "Absent"}</Text>

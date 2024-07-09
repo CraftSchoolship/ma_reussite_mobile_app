@@ -112,5 +112,4 @@ const shadows = {
   },
 };
 
-// export type IShadow = keyof typeof shadows;
 export { shadows };
