@@ -1,26 +1,31 @@
 import { useRoute } from "@react-navigation/native";
-import { Box, HStack, Pressable, ScrollView, Text, VStack } from "native-base";
+import {
+  Box,
+  Center,
+  HStack,
+  Pressable,
+  ScrollView,
+  Spinner,
+  Text,
+  VStack,
+} from "native-base";
 import React, { useEffect, useState } from "react";
-import { ImageBackground } from "react-native";
 import { jsonrpcRequest } from "../api/apiClient";
 import config from "../api/config";
-import {
-  BackgroundWrapper,
-  CircularProgress,
-  HomeScreenBanner,
-} from "../components";
+import { BackgroundWrapper, CircularProgress } from "../components";
 
 const GroupScreen = ({ navigation }) => {
+  const route = useRoute();
   const [groups, setGroups] = useState([]);
   const [sessionId, setSessionId] = useState(null);
-  const [email, setEmail] = useState(null);
+  const [studentId, setStudentId] = useState(null);
   const [password, setPassword] = useState(null);
-  const route = useRoute();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { sessionId, email, password } = route?.params;
+    const { sessionId, email, password, studentId } = route?.params;
     setSessionId(sessionId);
-    setEmail(email);
+    setStudentId(studentId[0]);
     setPassword(password);
   }, [route]);
 
@@ -35,14 +40,15 @@ const GroupScreen = ({ navigation }) => {
         setGroups(groupsData);
       } catch (error) {
         console.error("Error fetching groups:", error);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchGroups();
-  }, [sessionId && email && password]);
 
-  // useEffect(() => {
-  //   groups && console.log("Groups...", groups);
-  // }, [groups]);
+    if (sessionId && password && studentId) {
+      fetchGroups();
+    }
+  }, [sessionId, studentId, password]);
 
   return (
     <Box flex={1} bg={"white"}>
@@ -57,24 +63,27 @@ const GroupScreen = ({ navigation }) => {
             Master 1 DevOps
           </Text>
         </Box>
-
-        <ScrollView
-          h={"80%"}
-          p={2}
-          flexGrow={1}
-          contentContainerStyle={{ paddingBottom: 80 }}
-        >
-          <VStack w={"100%"} mb={"20%"}>
-            {groups &&
-              groups.map((group, index) => (
+        {loading ? (
+          <Center h={"70%"} w={"90%"} mx={"auto"}>
+            <Spinner size="xl" />
+          </Center>
+        ) : (
+          <ScrollView
+            h={"80%"}
+            p={2}
+            flexGrow={1}
+            contentContainerStyle={{ paddingBottom: 80 }}
+          >
+            <VStack w={"100%"} mb={"20%"}>
+              {groups.map((group, index) => (
                 <Pressable
                   shadow={"9"}
                   key={index}
-                  onPress={() => {
-                    navigation.navigate("Sessions", {
-                      groupName: group.name,
-                    });
-                  }}
+                  // onPress={() => {
+                  //   navigation.navigate("Sessions", {
+                  //     groupName: group.name,
+                  //   });
+                  // }}
                 >
                   <Box
                     bg="white"
@@ -97,8 +106,9 @@ const GroupScreen = ({ navigation }) => {
                   </Box>
                 </Pressable>
               ))}
-          </VStack>
-        </ScrollView>
+            </VStack>
+          </ScrollView>
+        )}
       </BackgroundWrapper>
     </Box>
   );

@@ -11,11 +11,11 @@ import { default as React, useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
 import { jsonrpcRequest } from "../api/apiClient";
 import config from "../api/config";
-import { CalendarCard, HomeScreenBanner } from "../components";
+import { CalendarCard } from "../components";
+import BackgroundWrapper from "../components/BackgroundWrapper";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import CalendarLocalConfig from "../utils/CalendarLocalConfig";
 import { formatOdooEvents } from "../utils/MarkedDatesFormatage";
-import BackgroundWrapper from "../components/BackgroundWrapper";
 
 CalendarLocalConfig;
 
@@ -25,6 +25,7 @@ const HomeScreen = () => {
   const route = useRoute();
   const [sessionId, setSessionId] = useState(null);
   const [password, setPassword] = useState(null);
+  const [studentId, setStudentId] = useState(null);
   const [events, setEvents] = useState(null);
   const [markedDate, setMarkedDate] = useState({});
   const [todaysEvents, setTodaysEvents] = useState([]);
@@ -33,9 +34,10 @@ const HomeScreen = () => {
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
 
   useEffect(() => {
-    const { sessionId, email, password } = route?.params;
+    const { sessionId, email, password, studentId } = route?.params;
     setSessionId(sessionId);
     setPassword(password);
+    setStudentId(studentId[0]);
   }, [route]);
 
   useEffect(() => {
@@ -45,7 +47,7 @@ const HomeScreen = () => {
           sessionId,
           password,
           config.model.craftSession,
-          [[["partner_id", "=", "Test Mobile App"]]],
+          [[["partner_ids", "=", studentId]]],
           [
             "classroom_id",
             "recurrency",
@@ -66,7 +68,7 @@ const HomeScreen = () => {
     if (sessionId && password) {
       fetchEvents();
     }
-  }, [sessionId, password]);
+  }, [sessionId, password, studentId]);
 
   useEffect(() => {
     if (events) {
@@ -125,13 +127,7 @@ const HomeScreen = () => {
             }}
           />
         </Box>
-        <ScrollView
-          flexGrow={1}
-          h={"100%"}
-          contentContainerStyle={{ paddingBottom: 80 }}
-          w={"90%"}
-          mx={"auto"}
-        >
+        <ScrollView flexGrow={1} h={"100%"} w={"90%"} mx={"auto"} mb={"10%"}>
           <VStack w={"full"} mb={"20%"} space={4} mt={4}>
             {todaysEvents &&
               todaysEvents.map((eventMarked, index) => (

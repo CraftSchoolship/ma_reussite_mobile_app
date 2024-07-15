@@ -2,25 +2,42 @@ import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
 import { Box, Link, ScrollView, Text, VStack } from "native-base";
 import React, { useState } from "react";
-import { authenticate } from "../api/apiClient";
+import { authenticate, jsonrpcRequest } from "../api/apiClient";
 import { CustomButton, CustomInput, LoginScreenBanner } from "../components";
 import { loginValidationSchema } from "../validation/formValidation";
+import config from "../api/config";
 
 const LoginScreen = () => {
   const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  
 
   const handleLogin = async (values) => {
+    setLoading(false);
     try {
       const sid = await authenticate(values.email, values.password);
       if (sid) {
         console.log("sid...", sid);
+        const sidAdmin = await authenticate();
+        const partner = await jsonrpcRequest(
+          sidAdmin,
+          config.password,
+          config.model.opStudent,
+
+          [[["email", "=", values.email]]],
+          ["partner_id"]
+        );
+        const partnerid = partner[0].partner_id;
+        console.log("partnerid...", partnerid);
         setError("");
+        setLoading(true);
         navigation.navigate("TabNavigator", {
-          sessionId: sid,
-          email: values.email,
-          password: values.password,
+          sessionId: sidAdmin,
+          email: config.username,
+          password: config.password,
+          studentId: partnerid,
         });
       } else {
         setError("Nom d'utilisateur ou mot de passe incorrect !");
@@ -28,6 +45,8 @@ const LoginScreen = () => {
     } catch (error) {
       console.error("Odoo JSON-RPC Error:", error);
       setError("Nom d'utilisateur ou mot de passe incorrect !");
+    } finally {
+      setLoading(true); // Arrête le chargement une fois les paiements chargés
     }
   };
 
@@ -82,6 +101,7 @@ const LoginScreen = () => {
                   onPress={handleSubmit}
                   title="Se connecter"
                   isDisabled={!isValid}
+                  loading={loading}
                 />
               </>
             )}

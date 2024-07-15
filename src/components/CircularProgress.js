@@ -3,13 +3,20 @@ import { Box, Text } from "native-base";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
-const CircularProgress = ({ progress = 0 }) => {
+const CircularProgress = ({
+  progress = 0,
+  width = 10,
+  size = 70,
+  note = false,
+}) => {
+  const fillProgress = note ? Math.round((progress * 100) / 20) : progress;
+
   return (
     <Box alignItems={"center"} justifyContent={"center"}>
       <AnimatedCircularProgress
-        size={70}
-        width={10}
-        fill={progress}
+        size={size}
+        width={width}
+        fill={fillProgress}
         tintColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
         backgroundColor="#CED3DE"
         rotation={0}
@@ -18,7 +25,7 @@ const CircularProgress = ({ progress = 0 }) => {
       >
         {() => (
           <Text color={"black"} fontSize={"lg"} fontWeight={"bold"}>
-            {progress}%
+            {note ? `${progress}` : `${progress}%`}
           </Text>
         )}
       </AnimatedCircularProgress>

@@ -1,10 +1,17 @@
 import React from "react";
-import { Button } from "native-base";
+import { Button, HStack, Spinner, Text } from "native-base";
 
-const CustomButton = ({ onPress, title, isDisabled }) => {
+const CustomButton = ({ onPress, title, isDisabled, loading = true }) => {
   return (
     <Button onPress={onPress} isDisabled={isDisabled} mt={"15%"}>
-      {title}
+      {loading ? (
+        <Text>{title}</Text>
+      ) : (
+        <HStack>
+          <Spinner size="sm" color="white" />
+          <Text>{` ${title}`}</Text>
+        </HStack>
+      )}
     </Button>
   );
 };

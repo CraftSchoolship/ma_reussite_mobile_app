@@ -4,7 +4,10 @@ import config from "./config";
 const url = config.baseUrl;
 const db = config.database;
 
-const authenticate = async (username, password) => {
+const authenticate = async (
+  username = config.username,
+  password = config.password
+) => {
   const authResponse = await axios.post(url, {
     jsonrpc: "2.0",
     method: "call",
@@ -48,4 +51,24 @@ const jsonrpcRequest = async (
   return response.data.result;
 };
 
-export { authenticate, jsonrpcRequest };
+const jsonrpcRequestWrite = async (
+  sessionId,
+  password,
+  model,
+  recordId,
+  fields
+) => {
+  const response = await axios.post(url, {
+    jsonrpc: "2.0",
+    method: "call",
+    params: {
+      service: "object",
+      method: "execute_kw",
+      args: [db, sessionId, password, model, "write", [[recordId], fields]],
+    },
+    id: Math.floor(Math.random() * 1000),
+  });
+  return response.data.result;
+};
+
+export { authenticate, jsonrpcRequest, jsonrpcRequestWrite };

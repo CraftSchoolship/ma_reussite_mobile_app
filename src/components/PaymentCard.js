@@ -1,9 +1,30 @@
-import { Box, HStack, Link, Text, VStack } from "native-base";
+import { Box, HStack, Pressable, Text, VStack } from "native-base";
 import React from "react";
 
-function PaymentCard({ amount, name, state }) {
-  const statusPaymentColor = state !== "unpaid" ? "success.600" : "danger.600";
-  const statusPaymentText = state !== "unpaid" ? "Confirmé" : "En attente";
+const PaymentCard = ({
+  amount,
+  name,
+  state,
+  date,
+  product_id,
+  display_name,
+  partner_id,
+  handlePress,
+}) => {
+  const statusPayment =
+    state !== "not_paid"
+      ? { color: "success.600", text: "Payé" }
+      : { color: "danger.600", text: "Non Payé" };
+
+  const paymentDetails = {
+    amount: amount,
+    name: name,
+    state: state,
+    date: date,
+    product_id: product_id,
+    display_name: display_name,
+    partner_id: partner_id,
+  };
 
   return (
     <Box borderRadius={10} overflow={"hidden"}>
@@ -17,7 +38,7 @@ function PaymentCard({ amount, name, state }) {
           <HStack w={"100%"}>
             <Box w={"65%"}>
               <Text color={"black"} fontSize="lg" fontWeight="bold">
-                {name}
+                {product_id[1]} {date.split("-")[0]}
               </Text>
               <Text fontSize={"md"} color="black">
                 Somme : {amount} €
@@ -33,32 +54,32 @@ function PaymentCard({ amount, name, state }) {
               <Box
                 mt={2}
                 alignSelf="flex-end"
-                bg={statusPaymentColor}
+                bg={statusPayment.color}
                 px={4}
                 py={0.5}
                 // shadow={1}
                 rounded="xl"
               >
-                <Text color={"white"}>{statusPaymentText}</Text>
+                <Text color={"white"}>{statusPayment.text}</Text>
               </Box>
             </Box>
           </HStack>
           <HStack>
-            <Text color="gray.500">Détails du paiement...</Text>
-            <Link
-              _text={{
-                fontWeight: "500",
-                color: "blue.500",
+            {/* <Text color="gray.500">Détails du paiement...</Text> */}
+            <Pressable
+              onPress={() => {
+                handlePress(paymentDetails);
               }}
-              ml={3}
             >
-              Voir plus
-            </Link>
+              <Text underline={true} fontWeight="500" color="blue.500">
+                Voir plus...
+              </Text>
+            </Pressable>
           </HStack>
         </VStack>
       </HStack>
     </Box>
   );
-}
+};
 
 export default PaymentCard;
