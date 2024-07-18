@@ -4,10 +4,6 @@ import React, { useEffect } from "react";
 import useFonts from "./src/hooks/useFonts";
 import AppNavigator from "./src/navigation/AppNavigator";
 import customTheme from "./src/themes/customTheme";
-// import "node-libs-react-native/globals";
-import http from "http";
-import https from "https";
-import { ImageBackground } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -28,14 +24,9 @@ const App = () => {
   }
 
   return (
-    // <ImageBackground
-    //   style={{ resizeMode: "contain" }}
-    //   source={require("./assets/images/ma_reussite_background.png")}
-    // >
-    <NativeBaseProvider theme={customTheme}>
+    <NativeBaseProvider isSSR theme={customTheme}>
       <AppNavigator />
     </NativeBaseProvider>
-    // </ImageBackground>
   );
 };
 
