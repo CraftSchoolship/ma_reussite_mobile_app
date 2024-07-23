@@ -1,8 +1,9 @@
+import { env } from "../../env";
 const config = {
   baseUrl: "https://test.erp.craftschoolship.com/jsonrpc",
   database: "bitnami_odoo",
-  username: "test@example.com",
-  password: "Temp4Now#",
+  username: env.MA_REUSSITE_APP_USERNAME,
+  password: env.MA_REUSSITE_APP_PASSWORD,
   model: {
     accountMove: "account.move",
     accountMoveLine: "account.move.line",
@@ -13,9 +14,11 @@ const config = {
     craftInstallmentLines: "craft.installment.lines",
     craftSession: "craft.session",
     craftStudent: "craft.student",
+    craftParentChildLine: "craft.parent.child.line",
     groups: "op.batch",
     opActivity: "op.activity",
     opCourse: "op.course",
+    opParents: "op.parent",
     opSession: "op.session",
     opStudent: "op.student",
     parents: "craft.parent",

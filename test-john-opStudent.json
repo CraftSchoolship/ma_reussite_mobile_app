@@ -1,0 +1,20 @@
+[
+    {
+        "display_name": "John Craft Doe",
+        "email": "test@email.com",
+        "id": 3,
+        "is_parent": false,
+        "is_student": false,
+        "name": "John Craft Doe",
+        "partner_id": [
+            130,
+            "John Craft Doe"
+        ],
+        "qrcode": "02000100000200093",
+        "self": [
+            130,
+            "John Craft Doe"
+        ],
+        "user_id": false
+    }
+]

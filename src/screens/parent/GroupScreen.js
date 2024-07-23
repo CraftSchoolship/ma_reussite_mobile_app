@@ -10,9 +10,9 @@ import {
   VStack,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import { jsonrpcRequest } from "../api/apiClient";
-import config from "../api/config";
-import { BackgroundWrapper, CircularProgress } from "../components";
+import { jsonrpcRequest } from "../../api/apiClient";
+import config from "../../api/config";
+import { BackgroundWrapper, CircularProgress } from "../../components";
 
 const GroupScreen = ({ navigation }) => {
   const route = useRoute();

@@ -1,9 +1,9 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Box, Center, HStack, Spinner, Text } from "native-base";
 import React, { useEffect, useState } from "react";
-import { BackgroundWrapper, CircularProgress } from "../components";
-import config from "../api/config";
-import { jsonrpcRequest } from "../api/apiClient";
+import { BackgroundWrapper, CircularProgress } from "../../components";
+import config from "../../api/config";
+import { jsonrpcRequest } from "../../api/apiClient";
 
 const NoteScreen = () => {
   const route = useRoute();

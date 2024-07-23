@@ -2,10 +2,10 @@ import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
 import { Box, StatusBar, Text, VStack } from "native-base";
 import React, { useRef, useState } from "react";
-import { authenticate, jsonrpcRequest } from "../api/apiClient";
-import config from "../api/config";
-import { CustomButton, CustomInput, LoginScreenBanner } from "../components";
-import { loginValidationSchema } from "../validation/formValidation";
+import { authenticate, jsonrpcRequest } from "../../api/apiClient";
+import config from "../../api/config";
+import { CustomButton, CustomInput, LoginScreenBanner } from "../../components";
+import { loginValidationSchema } from "../../validation/formValidation";
 
 const LoginScreen = () => {
   const input1Ref = useRef(null);
@@ -19,22 +19,49 @@ const LoginScreen = () => {
     setLoading(false);
     try {
       const sidAdmin = await authenticate();
-      const partners = await jsonrpcRequest(
+      const partner = await jsonrpcRequest(
         sidAdmin,
         config.password,
         config.model.partner,
-        [[["email", "=", values.email]]],
-        ["self"]
+        [[["email", "=", values.email]]]
+        // ["self", "is_student", "is_parent"]
       );
-      if (partners.length > 0) {
-        const partnerid = partners[0].self;
+      console.log(partner);
+      if (partner.length > 0) {
+        const partnerid = partner[0].self;
         setError("");
-        setLoading(true);
+        const role =
+          (partner[0].is_student && "is_student") ||
+          (partner[0].is_parent && "is_parent");
+        // console.log("Role...", role);
+        // switch (role) {
+        //   case "is_student":
+        //     setLoading(true);
+        //     navigation.navigate("TabNavigator", {
+        //       sessionId: sidAdmin,
+        //       email: config.username,
+        //       password: config.password,
+        //       partnerid: partnerid,
+        //     });
+        //     break;
+        //   case "is_parent":
+        //     setLoading(true);
+        //     navigation.navigate("TabNavigator", {
+        //       sessionId: sidAdmin,
+        //       email: config.username,
+        //       password: config.password,
+        //       partnerid: partnerid,
+        //     });
+        //     break;
+        //   default:
+        //     break;
+        // }
         navigation.navigate("TabNavigator", {
           sessionId: sidAdmin,
           email: config.username,
           password: config.password,
           partnerid: partnerid,
+          role: role,
         });
       } else {
         setError("Nom d'utilisateur ou mot de passe incorrect !");

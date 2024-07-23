@@ -3,19 +3,19 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useRoute } from "@react-navigation/native";
 import React from "react";
 import {
-  ActivityScreen,
-  GlobalHomeScreen,
-  GroupScreen,
-  HomeScreen,
-  HomeScreensWrapper,
-  NoteScreen,
-  PaymentScreen,
+  ParentActivityScreen,
+  ParentGlobalHomeScreen,
+  ParentGroupScreen,
+  ParentHomeScreen,
+  ParentHomeScreensWrapper,
+  ParentNoteScreen,
+  ParentPaymentScreen,
 } from "../screens";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const Tab = createBottomTabNavigator();
 
-const TabNavigator = () => {
+export const ParentTabNavigator = () => {
   const propagedRoute = useRoute();
   return (
     <Tab.Navigator
@@ -49,38 +49,38 @@ const TabNavigator = () => {
         },
         tabBarStyle: {
           backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-          height: "7%",
+          minHeight: "7%",
         },
         headerShown: false,
       })}
     >
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        component={ParentHomeScreen}
         options={{ tabBarLabel: "Home" }}
       />
       <Tab.Screen
         name="Payment"
-        component={PaymentScreen}
+        component={ParentPaymentScreen}
         options={{ tabBarLabel: "Payement" }}
       />
       <Tab.Screen
         name="Groups"
-        component={GroupScreen}
+        component={ParentGroupScreen}
         options={{ tabBarLabel: "Groupes" }}
       />
       <Tab.Screen
         name="Notes"
-        component={NoteScreen}
+        component={ParentNoteScreen}
         options={{ tabBarLabel: "Notes" }}
       />
       <Tab.Screen
         name="Activities"
-        component={ActivityScreen}
+        component={ParentActivityScreen}
         options={{ tabBarLabel: "Activités" }}
       />
     </Tab.Navigator>
   );
 };
 
-export default TabNavigator;
+// export default ParentTabNavigator;

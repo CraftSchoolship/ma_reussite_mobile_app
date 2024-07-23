@@ -16,9 +16,13 @@ import {
   VStack,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import { jsonrpcRequest } from "../api/apiClient";
-import config from "../api/config";
-import { BackgroundWrapper, PaymentCard, PaymentCardPlus } from "../components";
+import { jsonrpcRequest } from "../../api/apiClient";
+import config from "../../api/config";
+import {
+  BackgroundWrapper,
+  PaymentCard,
+  PaymentCardPlus,
+} from "../../components";
 
 const PaymentScreen = () => {
   const route = useRoute();
@@ -160,6 +164,7 @@ const PaymentScreen = () => {
           </Center>
         ) : (
           <ScrollView
+            // onScrollEndDrag={() => console.log("End of scroll")}
             flexGrow={1}
             h={"80%"}
             w={"90%"}
@@ -168,7 +173,7 @@ const PaymentScreen = () => {
             contentContainerStyle={{ paddingBottom: 80 }}
           >
             <VStack w={"full"} mb={"10%"} space={4} minH={"80%"}>
-              {console.log("payments.length...", payments.length)}
+              {/* {console.log("payments.length...", payments.length)} */}
               {payments.length > 0 ? (
                 payments.map((payment, index) => (
                   <PaymentCard

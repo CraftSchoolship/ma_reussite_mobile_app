@@ -1,7 +1,3 @@
-/* -------------------------------------------------------------------------- */
-/*                                  VERSION 1                                 */
-/* -------------------------------------------------------------------------- */
-
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -10,18 +6,20 @@ import {
   Box,
   Button,
   Center,
+  Checkbox,
   Heading,
+  HStack,
   Icon,
   IconButton,
   Link,
+  Pressable,
   ScrollView,
   Text,
   VStack,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import { jsonrpcRequest } from "../api/apiClient";
-import config from "../api/config";
-import QRCode from "react-native-qrcode-svg";
+import { jsonrpcRequest } from "../../api/apiClient";
+import config from "../../api/config";
 
 const ProfileScreen = () => {
   const route = useRoute();
@@ -29,51 +27,83 @@ const ProfileScreen = () => {
   const [sessionId, setSessionId] = useState(null);
   const [password, setPassword] = useState(null);
   const [partnerid, setPartnerid] = useState(null);
+  const [selectedChild, setSelectedChild] = useState(null);
+  const [listOfChildren, setListOfChildren] = useState(null);
   const [avatarUri, setAvatarUri] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState();
   const [userInformation, setUserInformation] = useState();
 
   useEffect(() => {
-    const { sessionId, email, password, partnerid } = route?.params;
+    const {
+      sessionId,
+      password,
+      partnerid,
+      selectedChild,
+      listOfChildren,
+      user,
+    } = route?.params;
     setSessionId(sessionId);
     setPassword(password);
     setPartnerid(partnerid);
+    setSelectedChild(selectedChild);
+    setListOfChildren(listOfChildren);
+    setUser(user);
   }, [route]);
 
   useEffect(() => {
+    console.log("(ProfileScreen) - selectedChild...", selectedChild);
+    console.log("(ProfileScreen) - listOfChildren...", listOfChildren);
+
     const loadProfileImage = async () => {
       try {
-        const cachedAvatar = await AsyncStorage.getItem("avatar_1024");
+        const cachedAvatar = await AsyncStorage.getItem("image_1024");
         if (cachedAvatar) {
           setAvatarUri(`data:image/png;base64,${cachedAvatar}`);
         }
+        let userData = [];
+        switch (user && user) {
+          case "parent":
+            userData = await jsonrpcRequest(
+              sessionId,
+              config.password,
+              config.model.parents,
+              [[["contact_id", "=", partnerid]]],
+              ["image_1024", "name", "email"]
+            );
+            break;
 
-        const userData = await jsonrpcRequest(
-          sessionId,
-          config.password,
-          config.model.opStudent,
-          [[["partner_id", "=", partnerid]]],
-          ["avatar_1024", "name", "email", "qrcode"]
-        );
+          default:
+            userData = await jsonrpcRequest(
+              sessionId,
+              config.password,
+              config.model.opStudent,
+              [[["partner_id", "=", partnerid]]],
+              ["image_1024", "name", "email"]
+            );
+            break;
+        }
 
-        // console.log("userData...", userData);
+        console.log("(Profile) - userData...", userData);
+        console.log("(Profile) - listOfChildren...", listOfChildren);
 
-        if (userData.length > 0 && userData[0].avatar_1024) {
-          const { avatar_1024, name, email, qrcode } = userData[0];
+        if (userData.length > 0) {
+          const { image_1024, name, email } = userData[0];
           setUserInformation({
             name: name,
             email: email,
-            qrcode: qrcode,
           });
-          const base64Image = avatar_1024;
-          const newAvatarUri = `data:image/png;base64,${base64Image}`;
+          if (userData[0].image_1024) {
+            const base64Image = image_1024;
+            const newAvatarUri = `data:image/png;base64,${base64Image}`;
 
-          if (newAvatarUri !== avatarUri) {
-            setAvatarUri(newAvatarUri);
-            await AsyncStorage.setItem("avatar_1024", base64Image);
+            if (newAvatarUri !== avatarUri) {
+              setAvatarUri(newAvatarUri);
+              await AsyncStorage.setItem("image_1024", base64Image);
+            }
           }
         } else {
-          await AsyncStorage.removeItem("avatar_1024");
+          await AsyncStorage.removeItem("image_1024");
           console.log("No avatar found for the user.");
         }
       } catch (error) {
@@ -86,10 +116,10 @@ const ProfileScreen = () => {
     if (sessionId && password && partnerid) {
       loadProfileImage();
     }
-  }, [sessionId, password, partnerid, avatarUri]);
+  }, [sessionId, password, partnerid, avatarUri, listOfChildren]);
 
   return (
-    <Box flex={1} p={4} bg="white">
+    <Box flex={1} bg="white">
       <Center>
         {loading ? (
           <Avatar
@@ -151,11 +181,11 @@ const ProfileScreen = () => {
         contentContainerStyle={{ paddingBottom: 80 }}
       >
         <Box mt={4}>
-          <Heading color={"black"} size="md">
+          <Heading mx={4} color={"black"} size="md">
             Contact
           </Heading>
           <Box h={"100%"} justifyContent={"space-between"}>
-            <VStack>
+            <VStack mx={4}>
               <Text mt={2} color={"black"} bold>
                 Adresse email :
               </Text>
@@ -165,25 +195,47 @@ const ProfileScreen = () => {
                 </Text>
               </Link>
             </VStack>
-            <Box mx={"auto"} my={10}>
-              <QRCode
-                size={150}
-                value={userInformation && userInformation.qrcode}
-              ></QRCode>
-            </Box>
-            <Box>
-              <Button
-                mx={"auto"}
-                bgColor={"danger.600"}
-                w={"80%"}
-                onPress={() => navigation.navigate("Login")}
-              >
-                Déconnexion
-              </Button>
-            </Box>
+
+            {listOfChildren &&
+              listOfChildren.map((child, index) => (
+                <Pressable py={4} key={index} bgColor={"gray.100"}>
+                  <HStack px={4} justifyContent={"space-between"}>
+                    <Text color={"black"} textAlign={"center"}>
+                      Name : {child.partner_id[1]}, Partner ID:{" "}
+                      {child.partner_id[0]}, ID: {child.id}
+                    </Text>
+                    {child.id === selectedChild.id ? (
+                      <Checkbox
+                        value="danger"
+                        colorScheme="success"
+                        aria-label="label"
+                        size={"md"}
+                        accessibilityLabel="This is a dummy checkbox"
+                        defaultIsChecked
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </HStack>
+                  {console.log("selectedChild...", selectedChild)}
+                </Pressable>
+              ))}
           </Box>
         </Box>
       </ScrollView>
+      <Box bottom={"5%"}>
+        <Button
+          mx={"auto"}
+          bgColor={"danger.600"}
+          w={"80%"}
+          onPress={() => {
+            AsyncStorage.clear();
+            navigation.navigate("Login");
+          }}
+        >
+          Déconnexion
+        </Button>
+      </Box>
     </Box>
   );
 };

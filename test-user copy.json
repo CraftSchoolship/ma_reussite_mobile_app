@@ -1,0 +1,194 @@
+[
+    {
+        "email": "admin@example.com",
+        "id": 2,
+        "self": [
+            3,
+            "Administrator"
+        ]
+    },
+    {
+        "email": "al.capone@email.com",
+        "id": 122,
+        "self": [
+            136,
+            "Alphonse Gabriel Capone"
+        ]
+    },
+    {
+        "email": "student@example.com",
+        "id": 127,
+        "self": [
+            144,
+            "Bonnie Parker"
+        ]
+    },
+    {
+        "email": "charles.parker@email.com",
+        "id": 142,
+        "self": [
+            145,
+            "Charles Parker"
+        ]
+    },
+    {
+        "email": "emma.parker@email.com",
+        "id": 141,
+        "self": [
+            146,
+            "Emma Parker"
+        ]
+    },
+    {
+        "email": "frank.costello@email.com",
+        "id": 123,
+        "self": [
+            135,
+            "Frank Costello"
+        ]
+    },
+    {
+        "email": "sagufic@mailinator.com",
+        "id": 118,
+        "self": [
+            125,
+            "Hanna Dora Carrillo Wiley"
+        ]
+    },
+    {
+        "email": "mohamed.ithar.daouadi@horizon-tech.tn",
+        "id": 7,
+        "self": [
+            14,
+            "ithar"
+        ]
+    },
+    {
+        "email": "joe.masseria@email.com",
+        "id": 120,
+        "self": [
+            138,
+            "Joe Masseria"
+        ]
+    },
+    {
+        "email": "test@email.com",
+        "id": 126,
+        "self": [
+            130,
+            "John Craft Doe"
+        ]
+    },
+    {
+        "email": "email@email.com",
+        "id": 119,
+        "self": [
+            131,
+            "John Doe"
+        ]
+    },
+    {
+        "email": "khalil.galalem@craftschoolship.com",
+        "id": 49,
+        "self": [
+            51,
+            "Khalil Galalem"
+        ]
+    },
+    {
+        "email": "lucky.lucciano@email.com",
+        "id": 125,
+        "self": [
+            134,
+            "Lucky Lucciano"
+        ]
+    },
+    {
+        "email": "meyer.lansky@email.com",
+        "id": 124,
+        "self": [
+            133,
+            "Meyer Lansky"
+        ]
+    },
+    {
+        "email": "papa.adiouma.dione@horizon-tech.tn",
+        "id": 50,
+        "self": [
+            52,
+            "Papa Adiouma Dione"
+        ]
+    },
+    {
+        "email": "berthonge@gmail.com",
+        "id": 47,
+        "self": [
+            13,
+            "Patrick  Saint"
+        ]
+    },
+    {
+        "email": "rayen.dhmaied@craftschoolship.com",
+        "id": 46,
+        "self": [
+            49,
+            "Rayen Dhmaied"
+        ]
+    },
+    {
+        "email": "salima.hlima@gmail.com",
+        "id": 48,
+        "self": [
+            50,
+            "Salima Helima"
+        ]
+    },
+    {
+        "email": "salvatore.maranzano@email.com",
+        "id": 121,
+        "self": [
+            137,
+            "Salvatore Maranzano"
+        ]
+    },
+    {
+        "email": "some.dude@example.com",
+        "id": 85,
+        "self": [
+            89,
+            "Some Dude"
+        ]
+    },
+    {
+        "email": "khalil.galalem@horizon-tech.tn",
+        "id": 140,
+        "self": [
+            147,
+            "Test Keycloak"
+        ]
+    },
+    {
+        "email": "test@example.com",
+        "id": 51,
+        "self": [
+            54,
+            "Test Mobile App"
+        ]
+    },
+    {
+        "email": "wael.mbarek@horizon-tech.tn",
+        "id": 8,
+        "self": [
+            15,
+            "Wael Mbarek"
+        ]
+    },
+    {
+        "email": "yesmine.arous4@gmail.com",
+        "id": 84,
+        "self": [
+            88,
+            "Yesmine Arous"
+        ]
+    }
+]

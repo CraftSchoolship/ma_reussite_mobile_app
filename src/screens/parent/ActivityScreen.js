@@ -12,9 +12,9 @@ import {
   Actionsheet,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import { BackgroundWrapper } from "../components";
-import config from "../api/config";
-import { jsonrpcRequest } from "../api/apiClient";
+import { BackgroundWrapper } from "../../components";
+import config from "../../api/config";
+import { jsonrpcRequest } from "../../api/apiClient";
 
 const ActivityScreen = () => {
   const route = useRoute();

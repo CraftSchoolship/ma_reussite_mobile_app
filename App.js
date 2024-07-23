@@ -27,7 +27,7 @@ const App = () => {
           onMessage={handleWebViewMessage}
         />
         <Button w={"50%"} mx={"auto"} mb={"2%"} onPress={onAccept}>
-          Accept
+          J'accepte
         </Button>
       </NativeBaseProvider>
     );

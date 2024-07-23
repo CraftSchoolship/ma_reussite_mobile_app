@@ -1,0 +1,152 @@
+[
+    {
+        "id": 2,
+        "partner_id": [
+            144,
+            "Bonnie Parker"
+        ]
+    }
+]
+
+{
+    "__last_update": "2024-07-10 18:44:02",
+    "access_token": false,
+    "active": true,
+    "activity_calendar_event_id": false,
+    "activity_date_deadline": false,
+    "activity_exception_decoration": false,
+    "activity_exception_icon": false,
+    "activity_ids": [],
+    "activity_state": false,
+    "activity_summary": false,
+    "activity_type_icon": false,
+    "activity_type_id": false,
+    "activity_user_id": false,
+    "alarm_ids": [],
+    "allday": false,
+    "attendance_line": [
+        1
+    ],
+    "attendance_qrcode_strategy": "scan-students",
+    "attendee_ids": [
+        1
+    ],
+    "attendee_status": "needsAction",
+    "byday": false,
+    "categ_ids": [],
+    "class_id": [
+        4,
+        "Master 1"
+    ],
+    "class_ids": [],
+    "classroom_id": [
+        1,
+        "Brazzaville"
+    ],
+    "color": 1,
+    "count": 0,
+    "create_date": "2024-05-16 13:11:11",
+    "create_uid": [
+        2,
+        "Administrator"
+    ],
+    "day": 0,
+    "description": false,
+    "display_description": false,
+    "display_name": "Master 1 - CI/CD pipeline (Berthonge Mibambou) :01:00PM-01:00PM",
+    "display_time": "05/16/2024 at (13:00:00 To 13:00:00) (Africa/Tunis)",
+    "duration": 0,
+    "end_type": false,
+    "event_id": [
+        1,
+        "Master 1 - CI/CD pipeline (Berthonge Mibambou) :01:00PM-01:00PM"
+    ],
+    "event_tz": false,
+    "follow_recurrence": false,
+    "fri": false,
+    "has_message": true,
+    "id": 1,
+    "interval": 0,
+    "invalid_email_partner_ids": [],
+    "is_highlighted": false,
+    "is_organizer_alone": false,
+    "level_id": [
+        6,
+        "Fourth level"
+    ],
+    "location": false,
+    "message_attachment_count": 0,
+    "message_follower_ids": [
+        46
+    ],
+    "message_has_error": false,
+    "message_has_error_counter": 0,
+    "message_has_sms_error": false,
+    "message_ids": [
+        160,
+        141
+    ],
+    "message_is_follower": false,
+    "message_main_attachment_id": false,
+    "message_needaction": false,
+    "message_needaction_counter": 0,
+    "message_partner_ids": [
+        3
+    ],
+    "mon": false,
+    "month_by": false,
+    "my_activity_date_deadline": false,
+    "name": "Master 1 - CI/CD pipeline (Berthonge Mibambou) :01:00PM-01:00PM",
+    "opportunity_id": false,
+    "partner_id": [
+        3,
+        "Administrator"
+    ],
+    "partner_ids": [
+        3
+    ],
+    "privacy": "public",
+    "recurrence_id": false,
+    "recurrence_update": "self_only",
+    "recurrency": false,
+    "res_id": 0,
+    "res_model": false,
+    "res_model_id": false,
+    "rrule": false,
+    "rrule_type": false,
+    "sat": false,
+    "show_as": "busy",
+    "start": "2024-05-16 12:00:00",
+    "start_date": false,
+    "state": "done",
+    "stop": "2024-05-16 12:00:00",
+    "stop_date": false,
+    "subject_id": [
+        4,
+        "CI/CD pipeline"
+    ],
+    "sun": false,
+    "teacher_id": [
+        2,
+        "Berthonge Mibambou"
+    ],
+    "thu": false,
+    "timing": "13:00 - 13:00",
+    "tue": false,
+    "until": false,
+    "user_id": [
+        2,
+        "Administrator"
+    ],
+    "videocall_channel_id": false,
+    "videocall_location": false,
+    "videocall_source": "custom",
+    "website_message_ids": [],
+    "wed": false,
+    "weekday": false,
+    "write_date": "2024-07-10 18:44:02",
+    "write_uid": [
+        2,
+        "Administrator"
+    ]
+}
