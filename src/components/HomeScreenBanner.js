@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"; // Import 
 import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   Avatar,
+  Badge,
   Box,
   HStack,
   Image,
@@ -10,58 +11,80 @@ import {
   VStack,
 } from "native-base";
 import React, { useEffect, useMemo, useState } from "react";
-import { jsonrpcRequest } from "../api/apiClient";
+import { getObject, jsonrpcRequest } from "../api/apiClient";
 import config from "../api/config";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
-function HomeScreenBanner({ user, selectedChild, listOfChildren }) {
+function HomeScreenBanner() {
   const route = useRoute();
   const navigation = useNavigation();
-  const [sessionId, setSessionId] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [partnerid, setPartnerid] = useState(null);
+  const [connectedUser, setConnectedUser] = useState({
+    sessionId: "",
+    email: "",
+    password: "",
+    partnerid: "",
+    role: "",
+  });
+  const [usersChildren, setUsersChildren] = useState({
+    listOfChildren: [],
+    selectedChild: {},
+  });
   const [loading, setLoading] = useState(true);
-  const [avatarUri, setAvatarUri] = useState(null);
+  const [imageUri, setImageUri] = useState(null);
   const [account, setAccount] = useState();
 
   useEffect(() => {
-    const { sessionId, email, password, partnerid } = route?.params || {};
-    if (sessionId && password && partnerid) {
-      setSessionId(sessionId);
-      setPassword(password);
-      setPartnerid(partnerid[0]);
-    }
+    const getConnectedUser = async () => {
+      try {
+        const connectedUser = await getObject("connectedUser");
+        setConnectedUser(connectedUser);
+        const usersChildren = await getObject("children");
+        setUsersChildren(usersChildren);
+
+        if (!connectedUser || !usersChildren)
+          throw new Error("No connectedUser found");
+      } catch (error) {
+        console.error("Error while getting connectedUser:", error);
+      }
+    };
+    if (route) getConnectedUser();
   }, [route]);
 
   useMemo(async () => {
-    const cachedAvatar = await AsyncStorage.getItem("avatar_1024");
-    if (cachedAvatar) {
-      setAvatarUri(`data:image/png;base64,${cachedAvatar}`);
+    const cachedImage = await AsyncStorage.getItem("image_1024");
+    if (cachedImage) {
+      setImageUri(`data:image/png;base64,${cachedImage}`);
     }
     setLoading(false);
-  }, [sessionId, partnerid]);
+  }, [connectedUser]);
 
   useEffect(() => {
     const fetchProfileImage = async () => {
+      // console.log("(Banner) - connectedUser...", connectedUser.partnerid);
+      const { sessionId, email, password, partnerid, role } = connectedUser;
       try {
         const userData = await jsonrpcRequest(
           sessionId,
-          config.password,
-          config.model.opStudent,
-          [[["partner_id", "=", partnerid]]],
-          ["avatar_1024"]
+          password,
+          config.model.partner,
+          // []
+          [[["id", "=", partnerid[0]]]],
+          ["image_1024"]
         );
 
-        if (userData.length > 0 && userData[0].avatar_1024) {
-          const { avatar_1024 } = userData[0];
-          const base64Image = avatar_1024;
-          const newAvatarUri = `data:image/png;base64,${base64Image}`;
+        // console.log("Fetched user data:", userData);
 
-          if (newAvatarUri !== avatarUri) {
-            setAvatarUri(newAvatarUri);
-            await AsyncStorage.setItem("avatar_1024", base64Image);
+        if (userData?.length > 0 && userData[0]?.image_1024) {
+          const { image_1024 } = userData[0];
+          const base64Image = image_1024;
+          const newImageUri = `data:image/png;base64,${base64Image}`;
+
+          if (newImageUri !== imageUri) {
+            setImageUri(newImageUri);
+            await AsyncStorage.setItem("image_1024", base64Image);
           }
         } else {
-          await AsyncStorage.removeItem("avatar_1024");
+          await AsyncStorage.removeItem("image_1024");
           console.log("No avatar found for the user.");
         }
       } catch (error) {
@@ -69,30 +92,25 @@ function HomeScreenBanner({ user, selectedChild, listOfChildren }) {
       }
     };
 
-    if (sessionId && password && partnerid) {
+    if (connectedUser) {
       fetchProfileImage();
     }
-  }, [sessionId, password, partnerid, avatarUri]);
+  }, [connectedUser, imageUri]);
 
   const goToProfile = () => {
     navigation.navigate("Profile", {
-      sessionId: sessionId,
-      password: password,
-      partnerid: partnerid,
-      selectedChild: selectedChild,
-      listOfChildren: listOfChildren,
-      user: user,
+      children: usersChildren,
     });
   };
   useEffect(() => {
-    if (selectedChild) {
-      // console.log("selectedChild...", selectedChild);
-      // console.log("listOfChildren...", listOfChildren);
+    if (Object.keys(usersChildren.selectedChild).length > 0) {
       setAccount(
-        <Text color={"black"}>Compte de {selectedChild.partner_id[1]}</Text>
+        <Text color={"white"} fontWeight={"medium"}>
+          {usersChildren.selectedChild.partner_id[1]}
+        </Text>
       );
     }
-  }, [selectedChild]);
+  }, [usersChildren]);
 
   return (
     <Box bg="white">
@@ -117,7 +135,7 @@ function HomeScreenBanner({ user, selectedChild, listOfChildren }) {
             ) : (
               <Avatar
                 size="md"
-                source={{ uri: avatarUri }}
+                source={{ uri: imageUri }}
                 onError={(e) => {
                   console.error("Error displaying image:", e.nativeEvent.error);
                 }}
@@ -125,7 +143,17 @@ function HomeScreenBanner({ user, selectedChild, listOfChildren }) {
             )}
           </Pressable>
         </HStack>
-        <Box ml={8}>{account && account}</Box>
+        <Box
+          alignSelf={"baseline"}
+          ml={8}
+          px={2}
+          py={0.5}
+          mb={1}
+          borderRadius={"sm"}
+          bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
+        >
+          {account && account}
+        </Box>
       </VStack>
     </Box>
   );

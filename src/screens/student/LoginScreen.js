@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
 import { Box, StatusBar, Text, VStack } from "native-base";
 import React, { useRef, useState } from "react";
-import { authenticate, jsonrpcRequest } from "../../api/apiClient";
+import { authenticate, jsonrpcRequest, storeObject } from "../../api/apiClient";
 import config from "../../api/config";
 import { CustomButton, CustomInput, LoginScreenBanner } from "../../components";
 import { loginValidationSchema } from "../../validation/formValidation";
@@ -25,56 +25,40 @@ const LoginScreen = () => {
         config.model.partner,
         [[["email", "=", values.email]]],
         ["self", "is_student", "is_parent"]
-        // [ // opStudent
-        //   "display_name",
-        //   "email",
-        //   "id",
-        //   "is_parent",
-        //   "is_student",
-        //   "name",
-        //   "partner_id",
-        //   "qrcode",
-        //   "self",
-        //   "user_id",
-        // ]
       );
-      console.log(partner);
+      // console.log(partner);
       if (partner.length > 0) {
         const partnerid = partner[0].self;
         setError("");
         const role =
-          (partner[0].is_student && "is_student") ||
-          (partner[0].is_parent && "is_parent");
-        console.log("Role...", role);
+          (partner[0].is_student && "student") ||
+          (partner[0].is_parent && "parent");
+
+        // !===============================================
+
+        await storeObject("connectedUser", {
+          sessionId: sidAdmin,
+          email: config.username,
+          password: config.password,
+          partnerid: partnerid,
+          role: role,
+        });
+
+        // !===============================================
+
         switch (role) {
-          case "is_student":
+          case "student":
             setLoading(true);
-            navigation.navigate("TabNavigator", {
-              sessionId: sidAdmin,
-              email: config.username,
-              password: config.password,
-              partnerid: partnerid,
-            });
+
+            navigation.navigate("TabNavigator");
             break;
-          case "is_parent":
+          case "parent":
             setLoading(true);
-            navigation.navigate("ParentTabNavigator", {
-              sessionId: sidAdmin,
-              email: config.username,
-              password: config.password,
-              partnerid: partnerid,
-            });
+            navigation.navigate("ParentTabNavigator");
             break;
           default:
             break;
         }
-        // navigation.navigate("TabNavigator", {
-        //   sessionId: sidAdmin,
-        //   email: config.username,
-        //   password: config.password,
-        //   partnerid: partnerid,
-        //   role: role,
-        // });
       } else {
         setError("Nom d'utilisateur ou mot de passe incorrect !");
       }

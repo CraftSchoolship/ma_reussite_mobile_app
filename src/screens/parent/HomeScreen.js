@@ -10,7 +10,7 @@ import {
 } from "native-base";
 import { default as React, useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
-import { jsonrpcRequest } from "../../api/apiClient";
+import { getObject, jsonrpcRequest, storeObject } from "../../api/apiClient";
 import config from "../../api/config";
 import { CalendarCard } from "../../components";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
@@ -18,15 +18,15 @@ import MA_REUSSITE_CUSTOM_COLORS from "../../themes/variables";
 import CalendarLocalConfig from "../../utils/CalendarLocalConfig";
 import { formatOdooEvents } from "../../utils/MarkedDatesFormatage";
 
-CalendarLocalConfig;
-
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const { isOpen, onOpen, onClose } = useDisclose();
   const route = useRoute();
-  const [sessionId, setSessionId] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [partnerid, setPartnerid] = useState(null);
+  const { isOpen, onOpen, onClose } = useDisclose();
+  const [connectedUser, setConnectedUser] = useState(null);
+  const [usersChildren, setUsersChildren] = useState({
+    listOfChildren: [],
+    selectedChild: {},
+  });
   const [events, setEvents] = useState(null);
   const [markedDate, setMarkedDate] = useState({});
   const [todaysEvents, setTodaysEvents] = useState([]);
@@ -37,93 +37,118 @@ const HomeScreen = () => {
   const [selectedChild, setSelectedChild] = useState(null);
 
   useEffect(() => {
-    const { sessionId, email, password, partnerid } = route?.params;
-    setSessionId(sessionId);
-    setPassword(password);
-    setPartnerid(partnerid);
-    // console.log(
-    //   "{ sessionId, email, password, partnerid }...",
-    //   sessionId,
-    //   password,
-    //   partnerid
-    // );
+    const getConnectedUser = async () => {
+      try {
+        const user = await getObject("connectedUser");
+        if (!user) throw new Error("No connectedUser found");
+        setConnectedUser(user);
+
+        const childrenData = (await getObject("children")) || {};
+        setUsersChildren(childrenData);
+      } catch (error) {
+        console.error("Error while getting connectedUser:", error);
+      }
+    };
+    getConnectedUser();
   }, [route]);
 
   useEffect(() => {
-    const fetchEvents = async () => {
+    const loadData = async () => {
       try {
+        if (!connectedUser) throw new Error("Missing connectedUser data");
+
         const fetchedChildren = await jsonrpcRequest(
-          sessionId,
-          password,
+          connectedUser.sessionId,
+          connectedUser.password,
           config.model.opParents,
-          [[["name", "=", partnerid[0]]]],
+          [[["name", "=", connectedUser.partnerid[0]]]],
           ["student_ids"]
         );
-        if (fetchedChildren.length > 0) {
-          // setChildren(fetchedChildren);
-          const fchildren = fetchedChildren[0].student_ids;
-          console.log("fetchedChildren...", fchildren);
-          // !===========================================
-          const students = await jsonrpcRequest(
-            sessionId,
-            password,
-            config.model.opStudent,
-            [],
-            // [[["id", "=", fetchedChildren[0].student_ids[0]]]]
-            ["id", "partner_id"]
-          );
-          // setSelectedChild(selectedChild[0]);
-          // console.log("students...", students);
 
-          const children = [];
-          students.map((student) => {
-            for (let i = 0; i < fchildren.length; i++) {
-              if (fchildren[i] === student.id) children.push(student);
-            }
-          });
-          console.log("children...", children);
-          setChildren(children);
-          setSelectedChild(children[0]);
+        if (!fetchedChildren.length || !fetchedChildren[0].student_ids.length)
+          throw new Error("No children found");
 
-          // !==============================================
+        const studentIds = fetchedChildren[0].student_ids;
+        const students = await jsonrpcRequest(
+          connectedUser.sessionId,
+          connectedUser.password,
+          config.model.opStudent,
+          [],
+          ["id", "partner_id"]
+        );
 
-          const eventsData = await jsonrpcRequest(
-            sessionId,
-            password,
-            config.model.craftSession,
-            [[["partner_ids", "=", children[0].partner_id[0]]]],
-            [
-              "classroom_id",
-              "recurrency",
-              "rrule",
-              "start",
-              "stop",
-              "subject_id",
-              "teacher_id",
-              "description",
-            ]
-          );
-          // console.log("eventsData...", eventsData[0]);
-          setEvents(eventsData);
-        }
+        const childrenList = students.filter((student) =>
+          studentIds.includes(student.id)
+        );
+        // console.log("childrenList...", childrenList);
+        if (!childrenList.length) throw new Error("No matching students found");
+
+        setChildren(childrenList);
+        const initialSelectedChild =
+          route.params?.selectedChild || childrenList[0];
+        setSelectedChild(initialSelectedChild);
+
+        await storeObject("children", {
+          listOfChildren: childrenList,
+          selectedChild: initialSelectedChild,
+        });
       } catch (error) {
         console.error("Error fetching events:", error);
       }
     };
-    if (sessionId && password) {
-      fetchEvents();
+
+    if (connectedUser) {
+      loadData();
     }
-  }, [sessionId, password, partnerid]);
+  }, [connectedUser, route.params?.selectedChild]);
 
   useEffect(() => {
-    if (events) {
-      const formatedOdooEvents = formatOdooEvents(events);
-      setMarkedDate(formatedOdooEvents);
+    const fetchMarkedDates = async () => {
+      try {
+        if (!connectedUser || !children.length) return;
+
+        const initialSelectedChild = usersChildren.selectedChild || children[0];
+        // console.log(
+        //   "(fetchMarkedDates) - initialSelectedChild...",
+        //   initialSelectedChild
+        // );
+        const eventsData = await jsonrpcRequest(
+          connectedUser.sessionId,
+          connectedUser.password,
+          config.model.craftSession,
+          [[["partner_ids", "=", initialSelectedChild.partner_id[0]]]],
+          [
+            "classroom_id",
+            "recurrency",
+            "rrule",
+            "start",
+            "stop",
+            "subject_id",
+            "teacher_id",
+            "description",
+          ]
+        );
+
+        setEvents(eventsData);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+
+    if (children.length && usersChildren.selectedChild) {
+      fetchMarkedDates();
     }
-  }, [events]);
+  }, [children, usersChildren.selectedChild]);
 
   useEffect(() => {
-    const today = new Date();
+    if (events && usersChildren.selectedChild) {
+      const formattedOdooEvents = formatOdooEvents(events);
+      setMarkedDate(formattedOdooEvents);
+    }
+  }, [events, usersChildren.selectedChild]);
+
+  useEffect(() => {
+    const today = new Date(); 
     const year = today.getFullYear();
     const month = (today.getMonth() + 1).toString().padStart(2, "0");
     const day = today.getDate().toString().padStart(2, "0");
@@ -131,7 +156,7 @@ const HomeScreen = () => {
 
     const currentDay = `${year}-${month}-${day}`;
     setToday(`${dayOfWeek} ${day}`);
-    setTodaysEvents(markedDate[currentDay]?.dots);
+    setTodaysEvents(markedDate[currentDay]?.dots || []);
   }, [markedDate]);
 
   return (
@@ -139,10 +164,8 @@ const HomeScreen = () => {
       <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
       {children.length > 0 && (
         <BackgroundWrapper
-          user="parent"
           selectedChild={selectedChild}
           listOfChildren={children}
-          // setSelectedChild={setSelectedChild}
           navigation={navigation}
         >
           <Box
@@ -219,22 +242,38 @@ const HomeScreen = () => {
                 w="100%"
                 flexGrow={1}
                 mx={"auto"}
-                // mb={"5%"}
                 contentContainerStyle={{ paddingBottom: 40 }}
               >
                 <VStack space={4} px={4}>
-                  {selectedDayEvents &&
+                  {selectedDayEvents.length > 0 ? (
                     selectedDayEvents.map((eventMarked, index) => (
                       <CalendarCard
                         key={index}
                         tag={eventMarked.tag}
-                        date={today}
+                        date={selectedDay}
                         time={eventMarked.time}
                         subject={eventMarked.subject}
                         teacher={eventMarked.teacher}
                         classroom={eventMarked.classroom}
                       />
-                    ))}
+                    ))
+                  ) : (
+                    <Box
+                      mx={"auto"}
+                      width={"100%"}
+                      bg={"white"}
+                      justifyContent={"center"}
+                    >
+                      <Text
+                        textAlign={"center"}
+                        color={"black"}
+                        fontSize="md"
+                        fontWeight="bold"
+                      >
+                        Aucun événement aujourd'hui.
+                      </Text>
+                    </Box>
+                  )}
                 </VStack>
               </ScrollView>
             </Actionsheet.Content>

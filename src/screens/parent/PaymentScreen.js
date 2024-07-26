@@ -16,7 +16,7 @@ import {
   VStack,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import { jsonrpcRequest } from "../../api/apiClient";
+import { getObject, jsonrpcRequest } from "../../api/apiClient";
 import config from "../../api/config";
 import {
   BackgroundWrapper,
@@ -35,12 +35,28 @@ const PaymentScreen = () => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [paymentDetails, setPaymentDetails] = useState({});
+  const [selectedChild, setSelectedChild] = useState({});
 
   useEffect(() => {
-    const { sessionId, email, password, partnerid } = route?.params;
-    setSessionId(sessionId);
-    setPassword(password);
-    setPartnerid(partnerid[0]);
+    console.log("route...", route);
+    const fetchUserData = async () => {
+      try {
+        const children = await getObject("children");
+        setSelectedChild(children.selectedChild);
+
+        const { sessionId, email, password, partnerid } = await getObject(
+          "connectedUser"
+        );
+
+        setSessionId(sessionId);
+        setPassword(password);
+        setPartnerid(partnerid[0]);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
   }, [route]);
 
   const handlePress = (paymentDetails) => {
@@ -50,12 +66,14 @@ const PaymentScreen = () => {
 
   useEffect(() => {
     const fetchPayment = async () => {
+      if (!sessionId || !password || !partnerid) return;
+
       try {
         const paymentState = await jsonrpcRequest(
           sessionId,
           password,
           config.model.accountMove,
-          [[["partner_id", "=", partnerid]]],
+          [[["partner_id", "=", selectedChild?.partner_id[0]]]],
           ["name", "payment_state"]
         );
 
@@ -63,7 +81,7 @@ const PaymentScreen = () => {
           sessionId,
           password,
           config.model.accountMoveLine,
-          [[["partner_id", "=", partnerid]]],
+          [[["partner_id", "=", selectedChild?.partner_id[0]]]],
           [
             "date",
             "display_name",
@@ -75,17 +93,18 @@ const PaymentScreen = () => {
           ]
         );
 
-        const paymentTab = [];
-        paymentDetails.map((payment) => {
+        const paymentTab = paymentDetails.reduce((acc, payment) => {
           if (payment.product_id) {
-            paymentState.forEach((state) => {
-              if (state.name === payment.move_name) {
-                const data = { ...payment, ...state };
-                paymentTab.push(data);
-              }
-            });
+            const state = paymentState.find(
+              (state) => state.name === payment.move_name
+            );
+            if (state) {
+              acc.push({ ...payment, ...state });
+            }
           }
-        });
+          return acc;
+        }, []);
+
         setPayments(paymentTab);
       } catch (error) {
         console.error("Error fetching payments:", error);
@@ -94,14 +113,8 @@ const PaymentScreen = () => {
       }
     };
 
-    if (sessionId && password && partnerid) {
-      fetchPayment();
-    }
-  }, [sessionId, password, partnerid]);
-
-  useEffect(() => {
-    // payments && console.log("Partner...", new Date().getMinutes(), payments);
-  }, [payments]);
+    fetchPayment();
+  }, [sessionId, password, partnerid, selectedChild]);
 
   return (
     <Box flex={1} bg="white">
@@ -150,12 +163,7 @@ const PaymentScreen = () => {
               );
             }}
           >
-            {/* <Menu.Item color={"black"} onPress={() => setSortOrder("recent")}>
-                Plus récents
-              </Menu.Item>
-              <Menu.Item color={"black"} onPress={() => setSortOrder("oldest")}>
-                Plus anciens
-              </Menu.Item> */}
+            {/* Menu items */}
           </Menu>
         </HStack>
         {loading ? (
@@ -164,7 +172,6 @@ const PaymentScreen = () => {
           </Center>
         ) : (
           <ScrollView
-            // onScrollEndDrag={() => console.log("End of scroll")}
             flexGrow={1}
             h={"80%"}
             w={"90%"}
@@ -173,7 +180,6 @@ const PaymentScreen = () => {
             contentContainerStyle={{ paddingBottom: 80 }}
           >
             <VStack w={"full"} mb={"10%"} space={4} minH={"80%"}>
-              {/* {console.log("payments.length...", payments.length)} */}
               {payments.length > 0 ? (
                 payments.map((payment, index) => (
                   <PaymentCard
@@ -186,7 +192,6 @@ const PaymentScreen = () => {
                     state={payment.payment_state}
                     partner_id={payment.partner_id}
                     handlePress={handlePress}
-                    onOpen={onOpen}
                   />
                 ))
               ) : (
@@ -209,7 +214,6 @@ const PaymentScreen = () => {
         <Actionsheet
           isOpen={isOpen}
           onClose={() => {
-            // setSelectedDayEvents([]);
             onClose();
           }}
         >

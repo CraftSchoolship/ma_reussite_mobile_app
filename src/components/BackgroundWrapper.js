@@ -7,12 +7,12 @@ const BackgroundWrapper = ({
   selectedChild,
   navigation,
   listOfChildren,
-  user,
+  // role,
 }) => {
   return (
     <>
       <HomeScreenBanner
-        user={user}
+        // role={role}
         listOfChildren={listOfChildren}
         selectedChild={selectedChild}
         navigation={navigation}

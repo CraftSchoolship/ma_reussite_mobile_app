@@ -18,87 +18,93 @@ import {
   VStack,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import { jsonrpcRequest } from "../../api/apiClient";
+import { getObject, jsonrpcRequest, storeObject } from "../../api/apiClient";
 import config from "../../api/config";
+import MA_REUSSITE_CUSTOM_COLORS from "../../themes/variables";
 
 const ProfileScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const [sessionId, setSessionId] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [partnerid, setPartnerid] = useState(null);
-  const [selectedChild, setSelectedChild] = useState(null);
-  const [listOfChildren, setListOfChildren] = useState(null);
-  const [avatarUri, setAvatarUri] = useState(null);
+  const [connectedUser, setConnectedUser] = useState({
+    sessionId: "",
+    email: "",
+    password: "",
+    partnerid: "",
+    role: "",
+  });
+  const [usersChildren, setUsersChildren] = useState({
+    listOfChildren: [],
+    selectedChild: {},
+  });
+  const [imageUri, setImageUri] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState();
   const [userInformation, setUserInformation] = useState();
 
   useEffect(() => {
-    const {
-      sessionId,
-      password,
-      partnerid,
-      selectedChild,
-      listOfChildren,
-      user,
-    } = route?.params;
-    setSessionId(sessionId);
-    setPassword(password);
-    setPartnerid(partnerid);
-    setSelectedChild(selectedChild);
-    setListOfChildren(listOfChildren);
-    setUser(user);
+    const getConnectedUser = async () => {
+      try {
+        const connectedUser = await getObject("connectedUser");
+        setConnectedUser(connectedUser);
+        const usersChildren = route.params?.children;
+        setUsersChildren(usersChildren);
+
+        // console.log(
+        //   "(Profile) - usersChildren...",
+        //   usersChildren.selectedChild
+        // );
+
+        if (!connectedUser || !usersChildren)
+          throw new Error("No connectedUser found");
+      } catch (error) {
+        console.error("Error while getting connectedUser:", error);
+      }
+    };
+    if (route) getConnectedUser();
   }, [route]);
 
   useEffect(() => {
-    console.log("(ProfileScreen) - selectedChild...", selectedChild);
-    console.log("(ProfileScreen) - listOfChildren...", listOfChildren);
-
     const loadProfileImage = async () => {
       try {
-        const cachedAvatar = await AsyncStorage.getItem("image_1024");
-        if (cachedAvatar) {
-          setAvatarUri(`data:image/png;base64,${cachedAvatar}`);
+        const cachedImage = await AsyncStorage.getItem("image_1024");
+        if (cachedImage) {
+          setImageUri(`data:image/png;base64,${cachedImage}`);
         }
         let userData = [];
-        switch (user && user) {
+        switch (connectedUser.role) {
           case "parent":
             userData = await jsonrpcRequest(
-              sessionId,
-              config.password,
+              connectedUser.sessionId,
+              connectedUser.password,
               config.model.parents,
-              [[["contact_id", "=", partnerid]]],
-              ["image_1024", "name", "email"]
+              [[["contact_id", "=", connectedUser.partnerid[0]]]],
+              ["image_1024", "name", "email", "contact_id"]
             );
             break;
 
           default:
             userData = await jsonrpcRequest(
-              sessionId,
-              config.password,
+              connectedUser.sessionId,
+              connectedUser.password,
               config.model.opStudent,
-              [[["partner_id", "=", partnerid]]],
+              [[["partner_id", "=", connectedUser.partnerid[0]]]],
               ["image_1024", "name", "email"]
             );
             break;
         }
 
-        console.log("(Profile) - userData...", userData);
-        console.log("(Profile) - listOfChildren...", listOfChildren);
-
-        if (userData.length > 0) {
+        if (userData && Array.isArray(userData) && userData.length > 0) {
           const { image_1024, name, email } = userData[0];
+
           setUserInformation({
             name: name,
             email: email,
           });
-          if (userData[0].image_1024) {
+          if (image_1024) {
             const base64Image = image_1024;
-            const newAvatarUri = `data:image/png;base64,${base64Image}`;
+            const newImageUri = `data:image/png;base64,${base64Image}`;
 
-            if (newAvatarUri !== avatarUri) {
-              setAvatarUri(newAvatarUri);
+            if (newImageUri !== imageUri) {
+              setImageUri(newImageUri);
               await AsyncStorage.setItem("image_1024", base64Image);
             }
           }
@@ -113,10 +119,10 @@ const ProfileScreen = () => {
       }
     };
 
-    if (sessionId && password && partnerid) {
+    if (connectedUser) {
       loadProfileImage();
     }
-  }, [sessionId, password, partnerid, avatarUri, listOfChildren]);
+  }, [connectedUser, imageUri, usersChildren]);
 
   return (
     <Box flex={1} bg="white">
@@ -132,7 +138,7 @@ const ProfileScreen = () => {
         ) : (
           <Avatar
             size="2xl"
-            source={{ uri: avatarUri }}
+            source={{ uri: imageUri }}
             onError={(e) => {
               console.error("Error displaying image:", e.nativeEvent.error);
             }}
@@ -195,31 +201,77 @@ const ProfileScreen = () => {
                 </Text>
               </Link>
             </VStack>
-
-            {listOfChildren &&
-              listOfChildren.map((child, index) => (
-                <Pressable py={4} key={index} bgColor={"gray.100"}>
-                  <HStack px={4} justifyContent={"space-between"}>
-                    <Text color={"black"} textAlign={"center"}>
-                      Name : {child.partner_id[1]}, Partner ID:{" "}
-                      {child.partner_id[0]}, ID: {child.id}
-                    </Text>
-                    {child.id === selectedChild.id ? (
-                      <Checkbox
-                        value="danger"
-                        colorScheme="success"
-                        aria-label="label"
-                        size={"md"}
-                        accessibilityLabel="This is a dummy checkbox"
-                        defaultIsChecked
-                      />
-                    ) : (
-                      ""
-                    )}
-                  </HStack>
-                  {console.log("selectedChild...", selectedChild)}
-                </Pressable>
-              ))}
+            <ScrollView mt={5}>
+              {usersChildren.listOfChildren &&
+                usersChildren.listOfChildren.map((child, index) => (
+                  <Pressable
+                    py={2}
+                    my={1}
+                    key={index}
+                    bgColor={"gray.200"}
+                    onPress={async () => {
+                      try {
+                        await storeObject("children", {
+                          listOfChildren: usersChildren.listOfChildren,
+                          selectedChild: child,
+                        });
+                        navigation.navigate("Home", {
+                          selectedChild: child,
+                        });
+                      } catch (error) {}
+                    }}
+                  >
+                    <HStack px={4} justifyContent={"space-between"}>
+                      <HStack>
+                        <Avatar
+                          size="sm"
+                          mr={2}
+                          bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
+                        >
+                          <IconButton
+                            icon={
+                              <Icon
+                                as={MaterialIcons}
+                                name="person"
+                                size="lg"
+                                color="white"
+                                mx={"auto"}
+                              />
+                            }
+                            borderRadius="full"
+                            _icon={{
+                              color: "white",
+                              size: "xs",
+                            }}
+                            _pressed={{
+                              bg: "primary.600:alpha.20",
+                            }}
+                          />
+                        </Avatar>
+                        <Text
+                          color={"black"}
+                          fontWeight={"bold"}
+                          fontSize={"lg"}
+                        >
+                          {child.partner_id[1]}
+                        </Text>
+                      </HStack>
+                      {child.id === usersChildren.selectedChild.id ? (
+                        <Checkbox
+                          value="danger"
+                          colorScheme="white"
+                          aria-label="label"
+                          size={"md"}
+                          accessibilityLabel="This is a dummy checkbox"
+                          isChecked
+                        />
+                      ) : (
+                        ""
+                      )}
+                    </HStack>
+                  </Pressable>
+                ))}
+            </ScrollView>
           </Box>
         </Box>
       </ScrollView>

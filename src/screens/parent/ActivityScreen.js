@@ -14,7 +14,8 @@ import {
 import React, { useEffect, useState } from "react";
 import { BackgroundWrapper } from "../../components";
 import config from "../../api/config";
-import { jsonrpcRequest } from "../../api/apiClient";
+import { getObject, jsonrpcRequest } from "../../api/apiClient";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ActivityScreen = () => {
   const route = useRoute();
@@ -25,14 +26,29 @@ const ActivityScreen = () => {
   const [activities, setActivities] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclose();
   const [selectedActivity, setSelectedActivity] = useState();
+  const [selectedChild, setSelectedChild] = useState(null);
 
   useEffect(() => {
-    const { sessionId, email, password, partnerid } = route?.params;
-    setSessionId(sessionId);
-    setPassword(password);
-    setPartnerid(partnerid[1]);
-  }, [route]);
+    const fetchUserData = async () => {
+      try {
+        const { sessionId, email, password, partnerid } = await getObject(
+          "connectedUser"
+        );
+        setSessionId(sessionId);
+        setPassword(password);
+        setPartnerid(partnerid[0]);
 
+        const storedSelectedChild = await AsyncStorage.getItem("selectedChild");
+        if (storedSelectedChild) {
+          setSelectedChild(JSON.parse(storedSelectedChild));
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
   useEffect(() => {
     const fetchActivities = async () => {
       try {
