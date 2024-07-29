@@ -37,7 +37,8 @@ const PaymentScreen = () => {
   const [paymentDetails, setPaymentDetails] = useState({});
 
   useEffect(() => {
-    const { sessionId, email, password, partnerid } = route?.params;
+    const connectedUser = route?.params;
+    const { sessionId, email, password, partnerid } = connectedUser;
     setSessionId(sessionId);
     setPassword(password);
     setPartnerid(partnerid[0]);
@@ -164,7 +165,6 @@ const PaymentScreen = () => {
           </Center>
         ) : (
           <ScrollView
-            // onScrollEndDrag={() => console.log("End of scroll")}
             flexGrow={1}
             h={"80%"}
             w={"90%"}
@@ -173,7 +173,7 @@ const PaymentScreen = () => {
             contentContainerStyle={{ paddingBottom: 80 }}
           >
             <VStack w={"full"} mb={"10%"} space={4} minH={"80%"}>
-              {/* {console.log("payments.length...", payments.length)} */}
+              {console.log("payments.length...", payments.length)}
               {payments.length > 0 ? (
                 payments.map((payment, index) => (
                   <PaymentCard

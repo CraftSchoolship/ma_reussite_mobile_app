@@ -23,65 +23,89 @@ import {
   PaymentCard,
   PaymentCardPlus,
 } from "../../components";
+import { useAppContext } from "../../hooks/AppProvider";
 
 const PaymentScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { isOpen, onOpen, onClose } = useDisclose();
   const [sortOrder, setSortOrder] = useState("recent");
-  const [sessionId, setSessionId] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [partnerid, setPartnerid] = useState(null);
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [paymentDetails, setPaymentDetails] = useState({});
-  const [selectedChild, setSelectedChild] = useState({});
+  const [connectedUser, setConnectedUser] = useState({
+    sessionId: "",
+    email: "",
+    password: "",
+    partnerid: "",
+    role: "",
+  });
+  const [childrenList, setChildrenList] = useState([]);
+  // const [selectedChild, setSelectedChild] = useState({});
+  const { selectedChild, setSelectedChild } = useAppContext();
 
   useEffect(() => {
-    console.log("route...", route);
-    const fetchUserData = async () => {
+    const getConnectedUser = async () => {
+      if (!connectedUser) return;
       try {
-        const children = await getObject("children");
-        setSelectedChild(children.selectedChild);
+        const connectedUser = await getObject("connectedUser");
+        setConnectedUser(connectedUser);
+        if (connectedUser) {
+          if (!selectedChild) return;
 
-        const { sessionId, email, password, partnerid } = await getObject(
-          "connectedUser"
-        );
-
-        setSessionId(sessionId);
-        setPassword(password);
-        setPartnerid(partnerid[0]);
+          const selectedChild = await getObject("selectedChild");
+          setSelectedChild(selectedChild);
+        }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error while getting connectedUser:", error);
       }
     };
-
-    fetchUserData();
-  }, [route]);
+    getConnectedUser();
+  }, [route, setSelectedChild]);
 
   const handlePress = (paymentDetails) => {
     setPaymentDetails(paymentDetails);
     onOpen();
   };
 
+  // New useEffect for fetching payments based on user role
   useEffect(() => {
     const fetchPayment = async () => {
-      if (!sessionId || !password || !partnerid) return;
-
       try {
+        if (
+          !connectedUser ||
+          !connectedUser.sessionId ||
+          !connectedUser.password ||
+          !connectedUser.partnerid
+        ) {
+          return;
+        }
+        let domain = [];
+        switch (connectedUser?.role) {
+          case "parent":
+            if (!selectedChild?.partner_id) return;
+            domain = [["partner_id", "=", selectedChild?.partner_id[0]]];
+            break;
+          case "student":
+            domain = [["partner_id", "=", connectedUser?.partnerid[0]]];
+            break;
+          default:
+            console.error("Unsupported role:", connectedUser?.role);
+            return;
+        }
         const paymentState = await jsonrpcRequest(
-          sessionId,
-          password,
+          connectedUser?.sessionId,
+          connectedUser?.password,
           config.model.accountMove,
-          [[["partner_id", "=", selectedChild?.partner_id[0]]]],
+          [domain],
           ["name", "payment_state"]
         );
 
         const paymentDetails = await jsonrpcRequest(
-          sessionId,
-          password,
+          connectedUser?.sessionId,
+          connectedUser?.password,
           config.model.accountMoveLine,
-          [[["partner_id", "=", selectedChild?.partner_id[0]]]],
+          [domain],
           [
             "date",
             "display_name",
@@ -93,18 +117,17 @@ const PaymentScreen = () => {
           ]
         );
 
-        const paymentTab = paymentDetails.reduce((acc, payment) => {
+        const paymentTab = [];
+        paymentDetails.map((payment) => {
           if (payment.product_id) {
-            const state = paymentState.find(
-              (state) => state.name === payment.move_name
-            );
-            if (state) {
-              acc.push({ ...payment, ...state });
-            }
+            paymentState.forEach((state) => {
+              if (state.name === payment.move_name) {
+                const data = { ...payment, ...state };
+                paymentTab.push(data);
+              }
+            });
           }
-          return acc;
-        }, []);
-
+        });
         setPayments(paymentTab);
       } catch (error) {
         console.error("Error fetching payments:", error);
@@ -113,8 +136,12 @@ const PaymentScreen = () => {
       }
     };
 
-    fetchPayment();
-  }, [sessionId, password, partnerid, selectedChild]);
+    if (connectedUser && selectedChild) fetchPayment();
+  }, [connectedUser, selectedChild]);
+
+  useEffect(() => {
+    // payments && console.log("Partner...", new Date().getMinutes(), payments);
+  }, [payments]);
 
   return (
     <Box flex={1} bg="white">
@@ -163,7 +190,12 @@ const PaymentScreen = () => {
               );
             }}
           >
-            {/* Menu items */}
+            {/* <Menu.Item color={"black"} onPress={() => setSortOrder("recent")}>
+                Plus récents
+              </Menu.Item>
+              <Menu.Item color={"black"} onPress={() => setSortOrder("oldest")}>
+                Plus anciens
+              </Menu.Item> */}
           </Menu>
         </HStack>
         {loading ? (
@@ -172,6 +204,7 @@ const PaymentScreen = () => {
           </Center>
         ) : (
           <ScrollView
+            // onScrollEndDrag={() => console.log("End of scroll")}
             flexGrow={1}
             h={"80%"}
             w={"90%"}
@@ -180,7 +213,8 @@ const PaymentScreen = () => {
             contentContainerStyle={{ paddingBottom: 80 }}
           >
             <VStack w={"full"} mb={"10%"} space={4} minH={"80%"}>
-              {payments.length > 0 ? (
+              {/* {console.log("payments.length...", payments.length)} */}
+              {payments?.length > 0 ? (
                 payments.map((payment, index) => (
                   <PaymentCard
                     key={index}
@@ -192,6 +226,7 @@ const PaymentScreen = () => {
                     state={payment.payment_state}
                     partner_id={payment.partner_id}
                     handlePress={handlePress}
+                    onOpen={onOpen}
                   />
                 ))
               ) : (
@@ -214,6 +249,7 @@ const PaymentScreen = () => {
         <Actionsheet
           isOpen={isOpen}
           onClose={() => {
+            // setSelectedDayEvents([]);
             onClose();
           }}
         >

@@ -34,7 +34,8 @@ const HomeScreen = () => {
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
 
   useEffect(() => {
-    const { sessionId, email, password, partnerid } = route?.params;
+    const connectedUser = route?.params;
+    const { sessionId, email, password, partnerid } = connectedUser;
     setSessionId(sessionId);
     setPassword(password);
     setPartnerid(partnerid[0]);

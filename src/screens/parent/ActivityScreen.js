@@ -1,82 +1,135 @@
 import * as FileSystem from "expo-file-system";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import {
+  Actionsheet,
   Box,
-  Text,
-  Image,
-  ScrollView,
-  Pressable,
+  Center,
   HStack,
+  Icon,
+  IconButton,
+  Menu,
+  Pressable,
+  ScrollView,
+  Spinner,
+  Text,
   VStack,
   useDisclose,
-  Actionsheet,
 } from "native-base";
 import React, { useEffect, useState } from "react";
 import { BackgroundWrapper } from "../../components";
 import config from "../../api/config";
 import { getObject, jsonrpcRequest } from "../../api/apiClient";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAppContext } from "../../hooks/AppProvider";
 
 const ActivityScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const [sessionId, setSessionId] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [partnerid, setPartnerid] = useState(null);
-  const [activities, setActivities] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclose();
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedActivity, setSelectedActivity] = useState();
-  const [selectedChild, setSelectedChild] = useState(null);
+  const [connectedUser, setConnectedUser] = useState({
+    sessionId: "",
+    email: "",
+    password: "",
+    partnerid: "",
+    role: "",
+  });
+  
+  const { selectedChild, setSelectedChild } = useAppContext();
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const getConnectedUser = async () => {
+      if (!connectedUser) return;
       try {
-        const { sessionId, email, password, partnerid } = await getObject(
-          "connectedUser"
-        );
-        setSessionId(sessionId);
-        setPassword(password);
-        setPartnerid(partnerid[0]);
+        const connectedUser = await getObject("connectedUser");
+        setConnectedUser(connectedUser);
+        if (connectedUser) {
+          if (!selectedChild) return;
 
-        const storedSelectedChild = await AsyncStorage.getItem("selectedChild");
-        if (storedSelectedChild) {
-          setSelectedChild(JSON.parse(storedSelectedChild));
+          const selectedChild = await getObject("selectedChild");
+          setSelectedChild(selectedChild);
         }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error while getting connectedUser:", error);
       }
     };
+    getConnectedUser();
+  }, [route, setSelectedChild]);
 
-    fetchUserData();
-  }, []);
   useEffect(() => {
     const fetchActivities = async () => {
       try {
+        if (
+          !connectedUser ||
+          !connectedUser.sessionId ||
+          !connectedUser.password ||
+          !connectedUser.partnerid
+        ) {
+          return;
+        }
+
+        let domain = [];
+        switch (connectedUser.role) {
+          case "parent":
+            if (!selectedChild?.partner_id) return;
+            domain = [["student_id", "=", selectedChild.partner_id[1]]];
+            break;
+          case "student":
+            domain = [["student_id", "=", connectedUser.partnerid[1]]];
+            break;
+          default:
+            console.error("Unsupported role:", connectedUser.role);
+            return;
+        }
+
         const activitiesData = await jsonrpcRequest(
-          sessionId,
-          config.password,
+          connectedUser?.sessionId,
+          connectedUser?.password,
           config.model.opActivity,
-          [[["student_id", "=", partnerid]]],
+          [domain],
           ["student_id", "type_id", "date", "description"]
         );
 
-        if (activitiesData.length > 0) {
+        if (activitiesData?.length > 0) {
           setActivities(activitiesData);
         }
       } catch (error) {
-        console.error("Error fetching profile image:", error);
+        console.error("Error fetching activities:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (sessionId && password && partnerid) {
-      fetchActivities();
-    }
-  }, [sessionId, password, partnerid]);
+    if (connectedUser && selectedChild) fetchActivities();
+  }, [connectedUser, selectedChild]);
 
   return (
     <Box flex={1} bg={"white"}>
       <BackgroundWrapper navigation={navigation}>
-        <Box>
+        <HStack
+          justifyContent="space-between"
+          alignItems="center"
+          mt={4}
+          mb={4}
+          mx={"auto"}
+          // w={"80%"}
+        >
+          <Text
+            textAlign={"center"}
+            color={"black"}
+            fontSize="lg"
+            fontWeight="bold"
+          >
+            Activités
+          </Text>
+        </HStack>
+        {loading ? (
+          <Center h={"70%"} w={"90%"} mx={"auto"}>
+            <Spinner size="xl" />
+          </Center>
+        ) : (
           <ScrollView
             p={4}
             h={"100%"}
@@ -91,7 +144,6 @@ const ActivityScreen = () => {
                   p={4}
                   my={0.5}
                   borderRadius={"md"}
-                  // onPress={() => navigation.navigate("Sessions")}
                 >
                   <HStack justifyContent={"space-between"}>
                     <Text color={"black"} fontWeight={"bold"}>
@@ -135,7 +187,7 @@ const ActivityScreen = () => {
               </Box>
             )}
           </ScrollView>
-        </Box>
+        )}
 
         <Actionsheet
           isOpen={isOpen}

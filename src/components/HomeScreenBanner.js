@@ -1,8 +1,7 @@
-import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   Avatar,
-  Badge,
   Box,
   HStack,
   Image,
@@ -14,6 +13,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { getObject, jsonrpcRequest } from "../api/apiClient";
 import config from "../api/config";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { useAppContext } from "../hooks/AppProvider";
 
 function HomeScreenBanner() {
   const route = useRoute();
@@ -25,30 +25,29 @@ function HomeScreenBanner() {
     partnerid: "",
     role: "",
   });
-  const [usersChildren, setUsersChildren] = useState({
-    listOfChildren: [],
-    selectedChild: {},
-  });
+  const [childrenList, setChildrenList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [imageUri, setImageUri] = useState(null);
   const [account, setAccount] = useState();
+  const { selectedChild, setSelectedChild } = useAppContext();
+  // const [ selectedChild, setSelectedChild ] = useState();
 
   useEffect(() => {
     const getConnectedUser = async () => {
       try {
         const connectedUser = await getObject("connectedUser");
         setConnectedUser(connectedUser);
-        const usersChildren = await getObject("children");
-        setUsersChildren(usersChildren);
 
-        if (!connectedUser || !usersChildren)
-          throw new Error("No connectedUser found");
+        if (connectedUser?.role === "parent") {
+          const storedSelectedChild = await getObject("selectedChild");
+          setSelectedChild(storedSelectedChild);
+        }
       } catch (error) {
         console.error("Error while getting connectedUser:", error);
       }
     };
-    if (route) getConnectedUser();
-  }, [route]);
+    getConnectedUser();
+  }, [route, setSelectedChild]);
 
   useMemo(async () => {
     const cachedImage = await AsyncStorage.getItem("image_1024");
@@ -60,19 +59,15 @@ function HomeScreenBanner() {
 
   useEffect(() => {
     const fetchProfileImage = async () => {
-      // console.log("(Banner) - connectedUser...", connectedUser.partnerid);
-      const { sessionId, email, password, partnerid, role } = connectedUser;
+      const { sessionId, password, partnerid } = connectedUser;
       try {
         const userData = await jsonrpcRequest(
           sessionId,
           password,
           config.model.partner,
-          // []
           [[["id", "=", partnerid[0]]]],
           ["image_1024"]
         );
-
-        // console.log("Fetched user data:", userData);
 
         if (userData?.length > 0 && userData[0]?.image_1024) {
           const { image_1024 } = userData[0];
@@ -92,25 +87,26 @@ function HomeScreenBanner() {
       }
     };
 
-    if (connectedUser) {
+    if (connectedUser.partnerid) {
       fetchProfileImage();
     }
   }, [connectedUser, imageUri]);
 
   const goToProfile = () => {
     navigation.navigate("Profile", {
-      children: usersChildren,
+      children: childrenList,
     });
   };
+
   useEffect(() => {
-    if (Object.keys(usersChildren.selectedChild).length > 0) {
+    if (connectedUser.role === "parent" && selectedChild?.partner_id) {
       setAccount(
         <Text color={"white"} fontWeight={"medium"}>
-          {usersChildren.selectedChild.partner_id[1]}
+          {selectedChild.partner_id[1]}
         </Text>
       );
     }
-  }, [usersChildren]);
+  }, [connectedUser.role, selectedChild]);
 
   return (
     <Box bg="white">
@@ -143,17 +139,19 @@ function HomeScreenBanner() {
             )}
           </Pressable>
         </HStack>
-        <Box
-          alignSelf={"baseline"}
-          ml={8}
-          px={2}
-          py={0.5}
-          mb={1}
-          borderRadius={"sm"}
-          bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
-        >
-          {account && account}
-        </Box>
+        {connectedUser.role === "parent" && selectedChild?.partner_id && (
+          <Box
+            alignSelf={"baseline"}
+            ml={8}
+            px={2}
+            py={0.5}
+            mb={1}
+            borderRadius={"sm"}
+            bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
+          >
+            {account}
+          </Box>
+        )}
       </VStack>
     </Box>
   );

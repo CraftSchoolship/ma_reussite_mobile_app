@@ -3,7 +3,6 @@ import {
   Actionsheet,
   Box,
   ScrollView,
-  StatusBar,
   Text,
   VStack,
   useDisclose,
@@ -17,106 +16,78 @@ import BackgroundWrapper from "../../components/BackgroundWrapper";
 import MA_REUSSITE_CUSTOM_COLORS from "../../themes/variables";
 import CalendarLocalConfig from "../../utils/CalendarLocalConfig";
 import { formatOdooEvents } from "../../utils/MarkedDatesFormatage";
+import { useAppContext } from "../../hooks/AppProvider";
+
+CalendarLocalConfig;
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const route = useRoute();
   const { isOpen, onOpen, onClose } = useDisclose();
-  const [connectedUser, setConnectedUser] = useState(null);
-  const [usersChildren, setUsersChildren] = useState({
-    listOfChildren: [],
-    selectedChild: {},
-  });
+  const route = useRoute();
+
   const [events, setEvents] = useState(null);
   const [markedDate, setMarkedDate] = useState({});
   const [todaysEvents, setTodaysEvents] = useState([]);
-  const [today, setToday] = useState();
+  const [today, setToday] = useState("");
   const [selectedDay, setSelectedDay] = useState("");
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
-  const [children, setChildren] = useState([]);
-  const [selectedChild, setSelectedChild] = useState(null);
+  const [connectedUser, setConnectedUser] = useState({
+    sessionId: "",
+    email: "",
+    password: "",
+    partnerid: "",
+    role: "",
+  });
+  const [childrenList, setChildrenList] = useState([]);
+  const { selectedChild, setSelectedChild } = useAppContext();
 
   useEffect(() => {
     const getConnectedUser = async () => {
       try {
-        const user = await getObject("connectedUser");
-        if (!user) throw new Error("No connectedUser found");
-        setConnectedUser(user);
-
-        const childrenData = (await getObject("children")) || {};
-        setUsersChildren(childrenData);
+        const connectedUser = await getObject("connectedUser");
+        if (connectedUser) {
+          setConnectedUser(connectedUser);
+          const childrenList = await getObject("children");
+          setChildrenList(childrenList);
+          const selectedChild = await getObject("selectedChild");
+          setSelectedChild(selectedChild);
+        }
       } catch (error) {
         console.error("Error while getting connectedUser:", error);
       }
     };
     getConnectedUser();
-  }, [route]);
+  }, [route, setSelectedChild]);
 
   useEffect(() => {
-    const loadData = async () => {
+    const fetchEvents = async () => {
       try {
-        if (!connectedUser) throw new Error("Missing connectedUser data");
-
-        const fetchedChildren = await jsonrpcRequest(
-          connectedUser.sessionId,
-          connectedUser.password,
-          config.model.opParents,
-          [[["name", "=", connectedUser.partnerid[0]]]],
-          ["student_ids"]
-        );
-
-        if (!fetchedChildren.length || !fetchedChildren[0].student_ids.length)
-          throw new Error("No children found");
-
-        const studentIds = fetchedChildren[0].student_ids;
-        const students = await jsonrpcRequest(
-          connectedUser.sessionId,
-          connectedUser.password,
-          config.model.opStudent,
-          [],
-          ["id", "partner_id"]
-        );
-
-        const childrenList = students.filter((student) =>
-          studentIds.includes(student.id)
-        );
-        // console.log("childrenList...", childrenList);
-        if (!childrenList.length) throw new Error("No matching students found");
-
-        setChildren(childrenList);
-        const initialSelectedChild =
-          route.params?.selectedChild || childrenList[0];
-        setSelectedChild(initialSelectedChild);
-
-        await storeObject("children", {
-          listOfChildren: childrenList,
-          selectedChild: initialSelectedChild,
-        });
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    };
-
-    if (connectedUser) {
-      loadData();
-    }
-  }, [connectedUser, route.params?.selectedChild]);
-
-  useEffect(() => {
-    const fetchMarkedDates = async () => {
-      try {
-        if (!connectedUser || !children.length) return;
-
-        const initialSelectedChild = usersChildren.selectedChild || children[0];
-        // console.log(
-        //   "(fetchMarkedDates) - initialSelectedChild...",
-        //   initialSelectedChild
-        // );
+        if (
+          !connectedUser ||
+          !connectedUser.sessionId ||
+          !connectedUser.password ||
+          !connectedUser.partnerid
+        ) {
+          return;
+        }
+        let domain = [];
+        switch (connectedUser?.role) {
+          case "parent":
+            if (!selectedChild?.partner_id) return;
+            domain = [["partner_ids", "=", selectedChild?.partner_id[0]]];
+            break;
+          case "student":
+            domain = [["partner_ids", "=", connectedUser?.partnerid[0]]];
+            break;
+          default:
+            console.error("Unsupported role:", connectedUser?.role);
+            return;
+        }
         const eventsData = await jsonrpcRequest(
-          connectedUser.sessionId,
-          connectedUser.password,
+          connectedUser?.sessionId,
+          connectedUser?.password,
           config.model.craftSession,
-          [[["partner_ids", "=", initialSelectedChild.partner_id[0]]]],
+          [domain],
           [
             "classroom_id",
             "recurrency",
@@ -128,27 +99,23 @@ const HomeScreen = () => {
             "description",
           ]
         );
-
         setEvents(eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
     };
-
-    if (children.length && usersChildren.selectedChild) {
-      fetchMarkedDates();
-    }
-  }, [children, usersChildren.selectedChild]);
+    if (connectedUser && selectedChild) fetchEvents();
+  }, [connectedUser, selectedChild]);
 
   useEffect(() => {
-    if (events && usersChildren.selectedChild) {
-      const formattedOdooEvents = formatOdooEvents(events);
-      setMarkedDate(formattedOdooEvents);
+    if (events) {
+      const formatedOdooEvents = formatOdooEvents(events);
+      setMarkedDate(formatedOdooEvents);
     }
-  }, [events, usersChildren.selectedChild]);
+  }, [events]);
 
   useEffect(() => {
-    const today = new Date(); 
+    const today = new Date();
     const year = today.getFullYear();
     const month = (today.getMonth() + 1).toString().padStart(2, "0");
     const day = today.getDate().toString().padStart(2, "0");
@@ -156,130 +123,106 @@ const HomeScreen = () => {
 
     const currentDay = `${year}-${month}-${day}`;
     setToday(`${dayOfWeek} ${day}`);
-    setTodaysEvents(markedDate[currentDay]?.dots || []);
+    setTodaysEvents(markedDate[currentDay]?.dots);
   }, [markedDate]);
 
   return (
     <Box flex={1} bg={"white"}>
-      <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
-      {children.length > 0 && (
-        <BackgroundWrapper
-          selectedChild={selectedChild}
-          listOfChildren={children}
-          navigation={navigation}
+      <BackgroundWrapper navigation={navigation}>
+        <Box
+          mt={4}
+          mb={6}
+          mx={"auto"}
+          width={"90%"}
+          borderRadius={10}
+          shadow={"9"}
+          overflow={"hidden"}
         >
-          <Box
-            mt={4}
-            mb={6}
-            mx={"auto"}
-            width={"90%"}
-            borderRadius={10}
-            shadow={"9"}
-            overflow={"hidden"}
-          >
-            <Calendar
-              markingType={"multi-dot"}
-              onDayPress={(day) => {
-                const currentDaySelected = new Date(day.timestamp).getDay();
-                setSelectedDay(
-                  `${CalendarLocalConfig.dayNamesShort[currentDaySelected]} ${day.day}`
-                );
-                if (markedDate[day.dateString] !== undefined) {
-                  setSelectedDayEvents(markedDate[day.dateString].dots);
-                }
-                onOpen();
-              }}
-              monthFormat={"MMMM yyyy"}
-              hideArrows={false}
-              disableMonthChange={false}
-              firstDay={1}
-              markedDates={markedDate}
-              theme={{
-                selectedDayBackgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-                todayTextColor: "white",
-                todayBackgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-                arrowColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-                monthTextColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-              }}
-            />
-          </Box>
-          <ScrollView flexGrow={1} h={"100%"} w={"90%"} mx={"auto"} mb={"10%"}>
-            <VStack w={"full"} mb={"20%"} space={4} mt={4}>
-              {todaysEvents &&
-                todaysEvents.map((eventMarked, index) => (
-                  <CalendarCard
-                    key={index}
-                    tag={eventMarked.tag}
-                    date={today}
-                    time={eventMarked.time}
-                    subject={eventMarked.subject}
-                    teacher={eventMarked.teacher}
-                    classroom={eventMarked.classroom}
-                  />
-                ))}
-            </VStack>
-          </ScrollView>
-
-          <Actionsheet
-            isOpen={isOpen}
-            onClose={() => {
-              setSelectedDayEvents([]);
-              onClose();
+          <Calendar
+            markingType={"multi-dot"}
+            onDayPress={(day) => {
+              const currentDaySelected = new Date(day.timestamp).getDay();
+              setSelectedDay(
+                `${CalendarLocalConfig.dayNamesShort[currentDaySelected]} ${day.day}`
+              );
+              if (markedDate[day.dateString] !== undefined) {
+                setSelectedDayEvents(markedDate[day.dateString].dots);
+              }
+              onOpen();
             }}
-          >
-            <Actionsheet.Content bg={"white"}>
-              <Box w="100%" h={60} px={4} justifyContent="center">
-                <Text
-                  textAlign={"center"}
-                  color={"black"}
-                  fontSize="lg"
-                  fontWeight="bold"
-                >
-                  Événements
-                </Text>
-              </Box>
-              <ScrollView
-                w="100%"
-                flexGrow={1}
-                mx={"auto"}
-                contentContainerStyle={{ paddingBottom: 40 }}
+            monthFormat={"MMMM yyyy"}
+            hideArrows={false}
+            disableMonthChange={false}
+            firstDay={1}
+            markedDates={markedDate}
+            theme={{
+              selectedDayBackgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
+              todayTextColor: "white",
+              todayBackgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
+              arrowColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
+              monthTextColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
+            }}
+          />
+        </Box>
+        <ScrollView flexGrow={1} h={"100%"} w={"90%"} mx={"auto"} mb={"10%"}>
+          <VStack w={"full"} mb={"20%"} space={4} mt={4}>
+            {todaysEvents &&
+              todaysEvents.map((eventMarked, index) => (
+                <CalendarCard
+                  key={index}
+                  tag={eventMarked.tag}
+                  date={today}
+                  time={eventMarked.time}
+                  subject={eventMarked.subject}
+                  teacher={eventMarked.teacher}
+                  classroom={eventMarked.classroom}
+                />
+              ))}
+          </VStack>
+        </ScrollView>
+
+        <Actionsheet
+          isOpen={isOpen}
+          onClose={() => {
+            setSelectedDayEvents([]);
+            onClose();
+          }}
+        >
+          <Actionsheet.Content bg={"white"}>
+            <Box w="100%" h={60} px={4} justifyContent="center">
+              <Text
+                textAlign={"center"}
+                color={"black"}
+                fontSize="lg"
+                fontWeight="bold"
               >
-                <VStack space={4} px={4}>
-                  {selectedDayEvents.length > 0 ? (
-                    selectedDayEvents.map((eventMarked, index) => (
-                      <CalendarCard
-                        key={index}
-                        tag={eventMarked.tag}
-                        date={selectedDay}
-                        time={eventMarked.time}
-                        subject={eventMarked.subject}
-                        teacher={eventMarked.teacher}
-                        classroom={eventMarked.classroom}
-                      />
-                    ))
-                  ) : (
-                    <Box
-                      mx={"auto"}
-                      width={"100%"}
-                      bg={"white"}
-                      justifyContent={"center"}
-                    >
-                      <Text
-                        textAlign={"center"}
-                        color={"black"}
-                        fontSize="md"
-                        fontWeight="bold"
-                      >
-                        Aucun événement aujourd'hui.
-                      </Text>
-                    </Box>
-                  )}
-                </VStack>
-              </ScrollView>
-            </Actionsheet.Content>
-          </Actionsheet>
-        </BackgroundWrapper>
-      )}
+                Événements
+              </Text>
+            </Box>
+            <ScrollView
+              w="100%"
+              flexGrow={1}
+              mx={"auto"}
+              contentContainerStyle={{ paddingBottom: 40 }}
+            >
+              <VStack space={4} px={4}>
+                {selectedDayEvents &&
+                  selectedDayEvents.map((eventMarked, index) => (
+                    <CalendarCard
+                      key={index}
+                      tag={eventMarked.tag}
+                      date={today}
+                      time={eventMarked.time}
+                      subject={eventMarked.subject}
+                      teacher={eventMarked.teacher}
+                      classroom={eventMarked.classroom}
+                    />
+                  ))}
+              </VStack>
+            </ScrollView>
+          </Actionsheet.Content>
+        </Actionsheet>
+      </BackgroundWrapper>
     </Box>
   );
 };

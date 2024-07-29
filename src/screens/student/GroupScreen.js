@@ -23,7 +23,8 @@ const GroupScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { sessionId, email, password, partnerid } = route?.params;
+    const connectedUser = route?.params;
+    const { sessionId, email, password, partnerid } = connectedUser;
     setSessionId(sessionId);
     setPartnerid(partnerid[0]);
     setPassword(password);

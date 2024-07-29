@@ -36,3 +36,7 @@ yarn-error.*
 
 # environnement variables
 env.js
+
+# testValues
+p.json
+test-*

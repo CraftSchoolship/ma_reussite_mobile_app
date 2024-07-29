@@ -1,11 +1,16 @@
 import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
 import { Box, StatusBar, Text, VStack } from "native-base";
-import React, { useRef, useState } from "react";
-import { authenticate, jsonrpcRequest, storeObject } from "../../api/apiClient";
-import config from "../../api/config";
-import { CustomButton, CustomInput, LoginScreenBanner } from "../../components";
-import { loginValidationSchema } from "../../validation/formValidation";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  authenticate,
+  jsonrpcRequest,
+  storeArray,
+  storeObject,
+} from "../api/apiClient";
+import config from "../api/config";
+import { CustomButton, CustomInput, LoginScreenBanner } from "../components";
+import { loginValidationSchema } from "../validation/formValidation";
 
 const LoginScreen = () => {
   const input1Ref = useRef(null);
@@ -13,7 +18,16 @@ const LoginScreen = () => {
   const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // initial state should be false
+  const [connectedUser, setConnectedUser] = useState({
+    sessionId: "",
+    email: "",
+    password: "",
+    partnerid: "",
+    role: "",
+  });
+  const [selectedChild, setSelectedChild] = useState({});
+  const [children, setChildren] = useState([]);
 
   const handleLogin = async (values) => {
     setLoading(false);
@@ -26,15 +40,13 @@ const LoginScreen = () => {
         [[["email", "=", values.email]]],
         ["self", "is_student", "is_parent"]
       );
-      // console.log(partner);
+
       if (partner.length > 0) {
         const partnerid = partner[0].self;
         setError("");
         const role =
           (partner[0].is_student && "student") ||
           (partner[0].is_parent && "parent");
-
-        // !===============================================
 
         await storeObject("connectedUser", {
           sessionId: sidAdmin,
@@ -44,21 +56,13 @@ const LoginScreen = () => {
           role: role,
         });
 
-        // !===============================================
-
-        switch (role) {
-          case "student":
-            setLoading(true);
-
-            navigation.navigate("TabNavigator");
-            break;
-          case "parent":
-            setLoading(true);
-            navigation.navigate("ParentTabNavigator");
-            break;
-          default:
-            break;
-        }
+        setConnectedUser({
+          sessionId: sidAdmin,
+          email: config.username,
+          password: config.password,
+          partnerid: partnerid,
+          role: role,
+        });
       } else {
         setError("Nom d'utilisateur ou mot de passe incorrect !");
       }
@@ -66,9 +70,73 @@ const LoginScreen = () => {
       console.error("Odoo JSON-RPC Error:", error);
       setError("Nom d'utilisateur ou mot de passe incorrect !");
     } finally {
-      setLoading(true);
+      setLoading(true); // reset loading state
     }
   };
+
+  useEffect(() => {
+    if (connectedUser?.role !== "parent") return;
+
+    const loadParentData = async () => {
+      try {
+        if (!connectedUser) throw new Error("Missing connectedUser data");
+
+        const fetchedChildren = await jsonrpcRequest(
+          connectedUser.sessionId,
+          connectedUser.password,
+          config.model.opParents,
+          [[["name", "=", connectedUser.partnerid[0]]]],
+          ["student_ids"]
+        );
+
+        if (!fetchedChildren.length || !fetchedChildren[0].student_ids.length)
+          throw new Error("No children found");
+
+        const studentIds = fetchedChildren[0].student_ids;
+        const students = await jsonrpcRequest(
+          connectedUser.sessionId,
+          connectedUser.password,
+          config.model.opStudent,
+          [],
+          ["id", "partner_id"]
+        );
+
+        const childrenList = students.filter((student) =>
+          studentIds.includes(student.id)
+        );
+
+        if (!childrenList.length) throw new Error("No matching students found");
+
+        setChildren(childrenList);
+        const initialSelectedChild = childrenList[0];
+        setSelectedChild(initialSelectedChild);
+
+        await storeArray("children", childrenList);
+        await storeObject("selectedChild", initialSelectedChild);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+
+    if (connectedUser?.role) {
+      loadParentData();
+    }
+  }, [connectedUser]);
+
+  useEffect(() => {
+    switch (connectedUser?.role) {
+      case "student":
+        navigation.navigate("TabNavigator", connectedUser);
+        break;
+      case "parent":
+        if (children.length > 0 && Object.keys(selectedChild).length > 0) {
+          navigation.navigate("ParentTabNavigator");
+        }
+        break;
+      default:
+        break;
+    }
+  }, [children, selectedChild, connectedUser]);
 
   return (
     <>

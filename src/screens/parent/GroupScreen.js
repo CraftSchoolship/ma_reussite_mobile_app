@@ -1,41 +1,93 @@
-import { useRoute } from "@react-navigation/native";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import {
+  Actionsheet,
   Box,
   Center,
   HStack,
+  Icon,
+  IconButton,
+  Menu,
   Pressable,
   ScrollView,
   Spinner,
   Text,
+  useDisclose,
   VStack,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import { jsonrpcRequest } from "../../api/apiClient";
+import { getObject, jsonrpcRequest } from "../../api/apiClient";
 import config from "../../api/config";
 import { BackgroundWrapper, CircularProgress } from "../../components";
+import { useAppContext } from "../../hooks/AppProvider";
 
-const GroupScreen = ({ navigation }) => {
+const GroupScreen = () => {
   const route = useRoute();
+  const navigation = useNavigation();
+  const { isOpen, onOpen, onClose } = useDisclose();
   const [groups, setGroups] = useState([]);
-  const [sessionId, setSessionId] = useState(null);
-  const [partnerid, setPartnerid] = useState(null);
-  const [password, setPassword] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [connectedUser, setConnectedUser] = useState({
+    sessionId: "",
+    email: "",
+    password: "",
+    partnerid: "",
+    role: "",
+  });
+  const [childrenList, setChildrenList] = useState([]);
+  // const [selectedChild, setSelectedChild] = useState({});
+  const { selectedChild, setSelectedChild } = useAppContext();
 
   useEffect(() => {
-    const { sessionId, email, password, partnerid } = route?.params;
-    setSessionId(sessionId);
-    setPartnerid(partnerid[0]);
-    setPassword(password);
-  }, [route]);
+    const getConnectedUser = async () => {
+      if (!connectedUser) return;
+      try {
+        const connectedUser = await getObject("connectedUser");
+        setConnectedUser(connectedUser);
+        if (connectedUser) {
+          if (!selectedChild) return;
+
+          const selectedChild = await getObject("selectedChild");
+          setSelectedChild(selectedChild);
+        }
+      } catch (error) {
+        console.error("Error while getting connectedUser:", error);
+      }
+    };
+    getConnectedUser();
+  }, [route, setSelectedChild]);
 
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const groupsData = await await jsonrpcRequest(
-          sessionId,
-          password,
+        if (
+          !connectedUser ||
+          !connectedUser.sessionId ||
+          !connectedUser.password ||
+          !connectedUser.partnerid
+        ) {
+          return;
+        }
+
+        let domain = [];
+        switch (connectedUser.role) {
+          case "parent":
+            if (!selectedChild?.partner_id) return;
+            domain = [["partner_ids", "=", selectedChild.partner_id[0]]];
+            break;
+          case "student":
+            domain = [["partner_ids", "=", connectedUser.partnerid[0]]];
+            break;
+          default:
+            console.error("Unsupported role:", connectedUser.role);
+            return;
+        }
+
+        const groupsData = await jsonrpcRequest(
+          connectedUser.sessionId,
+          connectedUser.password,
           config.model.groups
+          // domain
         );
         setGroups(groupsData);
       } catch (error) {
@@ -45,24 +97,59 @@ const GroupScreen = ({ navigation }) => {
       }
     };
 
-    if (sessionId && password && partnerid) {
-      fetchGroups();
-    }
-  }, [sessionId, partnerid, password]);
+    if (connectedUser && selectedChild) fetchGroups();
+  }, [connectedUser, selectedChild]);
 
   return (
-    <Box flex={1} bg={"white"}>
+    <Box flex={1} bg="white">
       <BackgroundWrapper navigation={navigation}>
-        <Box pt={4} w={"100%"}>
+        <HStack
+          justifyContent="space-between"
+          alignItems="center"
+          mt={4}
+          mb={4}
+          mx={"auto"}
+          w={"80%"}
+        >
           <Text
-            color={"black"}
             textAlign={"center"}
-            fontWeight="bold"
+            color={"black"}
             fontSize="lg"
+            fontWeight="bold"
           >
             Master 1 DevOps
           </Text>
-        </Box>
+          {/* <Menu
+            trigger={(triggerProps) => {
+              return (
+                <Pressable {...triggerProps}>
+                  <IconButton
+                    icon={<Icon as={MaterialIcons} name="swap-horiz" />}
+                    borderRadius="lg"
+                    bg={"white"}
+                    _icon={{
+                      color: "black",
+                      size: "lg",
+                    }}
+                    _pressed={{
+                      bg: "coolGray.800:alpha.20",
+                      _icon: {
+                        name: "swap-horiz",
+                      },
+                      _ios: {
+                        _icon: {
+                          size: "2xl",
+                        },
+                      },
+                    }}
+                  />
+                </Pressable>
+              );
+            }}
+          >
+             Add menu items for role switching here 
+          </Menu>*/}
+        </HStack>
         {loading ? (
           <Center h={"70%"} w={"90%"} mx={"auto"}>
             <Spinner size="xl" />
@@ -75,16 +162,16 @@ const GroupScreen = ({ navigation }) => {
             contentContainerStyle={{ paddingBottom: 80 }}
           >
             <VStack w={"100%"} mb={"20%"}>
-              {groups.length > 0 ? (
+              {groups?.length > 0 ? (
                 groups.map((group, index) => (
                   <Pressable
                     shadow={"9"}
                     key={index}
-                    // onPress={() => {
-                    //   navigation.navigate("Sessions", {
-                    //     groupName: group.name,
-                    //   });
-                    // }}
+                    onPress={() => {
+                      navigation.navigate("Sessions", {
+                        groupName: group.name,
+                      });
+                    }}
                   >
                     <Box
                       bg="white"
