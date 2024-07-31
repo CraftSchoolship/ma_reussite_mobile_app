@@ -35,8 +35,4 @@ yarn-error.*
 *.tsbuildinfo
 
 # environnement variables
-env.js
-
-# testValues
-p.json
-test-*
+# env.js

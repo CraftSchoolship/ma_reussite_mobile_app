@@ -16,7 +16,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.adiouma.mareussite"
     },
     "android": {
       "adaptiveIcon": {
@@ -28,7 +29,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "owner": "adiouma",
     "extra": {
       "eas": {
         "projectId": "05cc3560-a72d-4980-b099-1fa1428ccee7"

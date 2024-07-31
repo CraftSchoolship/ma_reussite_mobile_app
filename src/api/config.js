@@ -1,9 +1,8 @@
-import { env } from "../../env";
 const config = {
   baseUrl: "https://test.erp.craftschoolship.com/jsonrpc",
   database: "bitnami_odoo",
-  username: env.MA_REUSSITE_APP_USERNAME,
-  password: env.MA_REUSSITE_APP_PASSWORD,
+  username: process.env.EXPO_PUBLIC_USERNAME,
+  password: process.env.EXPO_PUBLIC_PASSWORD,
   model: {
     accountMove: "account.move",
     accountMoveLine: "account.move.line",
