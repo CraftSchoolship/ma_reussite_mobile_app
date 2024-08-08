@@ -1,0 +1,186 @@
+[
+    {
+        "badge_ids": [],
+        "bank_account_id": false,
+        "barcode": "041153767342",
+        "birthday": "1991-01-26",
+        "calendar_mismatch": false,
+        "category_ids": [],
+        "certificate": "other",
+        "child_all_count": 0,
+        "child_ids": [],
+        "children": 0,
+        "coach_id": false,
+        "color": 0,
+        "company_country_code": "SN",
+        "company_country_id": [
+            204,
+            "Senegal"
+        ],
+        "company_id": [
+            1,
+            "My Company"
+        ],
+        "contract_id": false,
+        "contract_ids": [],
+        "contract_warning": true,
+        "contracts_count": 0,
+        "country_id": false,
+        "country_of_birth": false,
+        "create_date": "2024-07-05 19:06:08",
+        "create_uid": [
+            51,
+            "Test Mobile App"
+        ],
+        "currency_id": [
+            1,
+            "EUR"
+        ],
+        "current_leave_id": false,
+        "current_leave_state": false,
+        "department_id": [
+            1,
+            "Administration"
+        ],
+        "departure_date": false,
+        "departure_description": false,
+        "departure_reason_id": false,
+        "direct_badge_ids": [],
+        "display_name": "Frank Costello",
+        "driving_license": false,
+        "emergency_contact": false,
+        "emergency_contact_id": false,
+        "emergency_phone": false,
+        "employee_id": [
+            40,
+            "Frank Costello"
+        ],
+        "employee_type": "employee",
+        "expense_manager_id": false,
+        "first_contract_date": false,
+        "first_name": "Frank",
+        "gender": "male",
+        "goal_ids": [],
+        "has_badges": false,
+        "has_message": true,
+        "has_work_permit": false,
+        "hours_last_month": 0,
+        "hours_last_month_display": "0",
+        "hours_today": 0,
+        "hr_icon_display": "presence_absent",
+        "hr_presence_state": "absent",
+        "id": 39,
+        "id_card": false,
+        "identification_id": false,
+        "is_absent": false,
+        "is_address_home_a_company": false,
+        "job_id": false,
+        "job_title": false,
+        "km_home_work": 0,
+        "lang": false,
+        "last_activity": false,
+        "last_activity_time": false,
+        "last_attendance_id": false,
+        "last_check_in": false,
+        "last_check_out": false,
+        "last_name": "Costello",
+        "leave_date_from": false,
+        "leave_date_to": false,
+        "leave_manager_id": false,
+        "leaves_count": 0,
+        "marital": "single",
+        "member_of_department": false,
+        "message_attachment_count": 0,
+        "message_follower_ids": [
+            368
+        ],
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_has_sms_error": false,
+        "message_ids": [
+            2285
+        ],
+        "message_is_follower": true,
+        "message_main_attachment_id": false,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_partner_ids": [
+            54
+        ],
+        "middle_name": false,
+        "mobile_phone": "00 000 000",
+        "my_activity_date_deadline": false,
+        "name": "Frank Costello",
+        "notes": false,
+        "overtime_ids": [],
+        "parent_id": false,
+        "passport_id": false,
+        "payslip_count": 0,
+        "permit_no": false,
+        "phone": false,
+        "pin": false,
+        "place_of_birth": false,
+        "private_email": false,
+        "related_contact_ids": [
+            135
+        ],
+        "related_contacts_count": 1,
+        "remaining_leaves": 0,
+        "resource_calendar_id": [
+            1,
+            "Standard 40 hours/week"
+        ],
+        "resource_id": [
+            40,
+            "Frank Costello"
+        ],
+        "salary": 70,
+        "salary_unit": "per_hour",
+        "show_hr_icon_display": true,
+        "show_leaves": true,
+        "sinid": false,
+        "slip_ids": [],
+        "spouse_birthdate": false,
+        "spouse_complete_name": false,
+        "ssnid": false,
+        "study_field": false,
+        "study_school": false,
+        "subject_ids": [
+            39
+        ],
+        "subordinate_ids": [],
+        "title": [
+            4,
+            "Doctor"
+        ],
+        "total_overtime": 0,
+        "tz": "Africa/Tunis",
+        "user_id": [
+            123,
+            "Frank Costello"
+        ],
+        "user_partner_id": [
+            135,
+            "Frank Costello"
+        ],
+        "vehicle": false,
+        "visa_expire": false,
+        "visa_no": false,
+        "website_message_ids": [],
+        "work_contact_id": [
+            135,
+            "Frank Costello"
+        ],
+        "work_email": "frank.costello@email.com",
+        "work_location_id": false,
+        "work_permit_expiration_date": false,
+        "work_permit_name": "Frank_Costello_work_permit",
+        "work_permit_scheduled_activity": false,
+        "work_phone": "00 000 000",
+        "write_date": "2024-08-07 23:46:16",
+        "write_uid": [
+            51,
+            "Test Mobile App"
+        ]
+    }
+]

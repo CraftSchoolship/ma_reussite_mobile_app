@@ -1,0 +1,118 @@
+[
+    {
+        "id": 1,
+        "name": "TVA 20%"
+    },
+    {
+        "id": 6,
+        "name": "TVA 20% CARBURANT"
+    },
+    {
+        "id": 7,
+        "name": "TVA 20% CARBURANT TTC"
+    },
+    {
+        "id": 2,
+        "name": "TVA 8,5%"
+    },
+    {
+        "id": 3,
+        "name": "TVA 10%"
+    },
+    {
+        "id": 4,
+        "name": "TVA 5,5%"
+    },
+    {
+        "id": 5,
+        "name": "TVA 2,1%"
+    },
+    {
+        "id": 8,
+        "name": "TVA 20% TTC"
+    },
+    {
+        "id": 9,
+        "name": "TVA 8,5% TTC"
+    },
+    {
+        "id": 10,
+        "name": "TVA 10% TTC"
+    },
+    {
+        "id": 11,
+        "name": "TVA 5,5% TTC"
+    },
+    {
+        "id": 12,
+        "name": "TVA 2,1% TTC"
+    },
+    {
+        "id": 13,
+        "name": "TVA 20% IMMO"
+    },
+    {
+        "id": 23,
+        "name": "TVA 20% EU M"
+    },
+    {
+        "id": 24,
+        "name": "TVA 20% EU S"
+    },
+    {
+        "id": 25,
+        "name": "TVA 20% IMPORT"
+    },
+    {
+        "id": 26,
+        "name": "TVA 0% EXO"
+    },
+    {
+        "id": 27,
+        "name": "TVA 20%"
+    },
+    {
+        "id": 31,
+        "name": "TVA 20% TTC"
+    },
+    {
+        "id": 35,
+        "name": "TVA 20% IMMO"
+    },
+    {
+        "id": 36,
+        "name": "TVA 20%"
+    },
+    {
+        "id": 46,
+        "name": "TVA 0% EXO"
+    },
+    {
+        "id": 47,
+        "name": "TVA 0% EXPORT"
+    },
+    {
+        "id": 48,
+        "name": "TVA 0% EU M"
+    },
+    {
+        "id": 49,
+        "name": "TVA 20%"
+    },
+    {
+        "id": 57,
+        "name": "TVA 0% EXO"
+    },
+    {
+        "id": 58,
+        "name": "TVA 0% EXPORT"
+    },
+    {
+        "id": 59,
+        "name": "TVA 0% EU S"
+    },
+    {
+        "id": 18,
+        "name": "TVA 20% IMPORT"
+    }
+]

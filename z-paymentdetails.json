@@ -1,0 +1,319 @@
+[
+    {
+        "currency_id": [
+            1,
+            "EUR"
+        ],
+        "date": "2024-11-10",
+        "display_name": "INV/2024/00022 Mois de Novembre",
+        "id": 276,
+        "move_name": "INV/2024/00022",
+        "name": "Mois de Novembre",
+        "partner_id": [
+            135,
+            "Frank Costello"
+        ],
+        "price_total": 216,
+        "product_id": [
+            45,
+            "Novembre"
+        ],
+        "tax_ids": [
+            36
+        ]
+    },
+    {
+        "currency_id": [
+            1,
+            "EUR"
+        ],
+        "date": "2024-11-10",
+        "display_name": "INV/2024/00022 TVA 20%",
+        "id": 277,
+        "move_name": "INV/2024/00022",
+        "name": "TVA 20%",
+        "partner_id": [
+            135,
+            "Frank Costello"
+        ],
+        "price_total": 0,
+        "product_id": false,
+        "tax_ids": []
+    },
+    {
+        "currency_id": [
+            1,
+            "EUR"
+        ],
+        "date": "2024-11-10",
+        "display_name": "INV/2024/00022 INV/2024/00022",
+        "id": 278,
+        "move_name": "INV/2024/00022",
+        "name": "INV/2024/00022",
+        "partner_id": [
+            135,
+            "Frank Costello"
+        ],
+        "price_total": 0,
+        "product_id": false,
+        "tax_ids": []
+    },
+    {
+        "currency_id": [
+            1,
+            "EUR"
+        ],
+        "date": "2024-10-10",
+        "display_name": "INV/2024/00021 Mois d'Octobre",
+        "id": 271,
+        "move_name": "INV/2024/00021",
+        "name": "Mois d'Octobre",
+        "partner_id": [
+            135,
+            "Frank Costello"
+        ],
+        "price_total": 192,
+        "product_id": [
+            44,
+            "Octobre"
+        ],
+        "tax_ids": [
+            36
+        ]
+    },
+    {
+        "currency_id": [
+            1,
+            "EUR"
+        ],
+        "date": "2024-10-10",
+        "display_name": "INV/2024/00021 TVA 20%",
+        "id": 272,
+        "move_name": "INV/2024/00021",
+        "name": "TVA 20%",
+        "partner_id": [
+            135,
+            "Frank Costello"
+        ],
+        "price_total": 0,
+        "product_id": false,
+        "tax_ids": []
+    },
+    {
+        "currency_id": [
+            1,
+            "EUR"
+        ],
+        "date": "2024-10-10",
+        "display_name": "INV/2024/00021 INV/2024/00021",
+        "id": 273,
+        "move_name": "INV/2024/00021",
+        "name": "INV/2024/00021",
+        "partner_id": [
+            135,
+            "Frank Costello"
+        ],
+        "price_total": 0,
+        "product_id": false,
+        "tax_ids": []
+    },
+    {
+        "currency_id": [
+            1,
+            "EUR"
+        ],
+        "date": "2024-08-07",
+        "display_name": "PBNK1/2024/00017 (INV/2024/00022) Customer Payment 216.00 € - Frank Costello - 08/07/2024",
+        "id": 279,
+        "move_name": "PBNK1/2024/00017",
+        "name": "Customer Payment 216.00 € - Frank Costello - 08/07/2024",
+        "partner_id": [
+            135,
+            "Frank Costello"
+        ],
+        "price_total": 0,
+        "product_id": false,
+        "tax_ids": []
+    },
+    {
+        "currency_id": [
+            1,
+            "EUR"
+        ],
+        "date": "2024-08-07",
+        "display_name": "PBNK1/2024/00017 (INV/2024/00022) Customer Payment 216.00 € - Frank Costello - 08/07/2024",
+        "id": 280,
+        "move_name": "PBNK1/2024/00017",
+        "name": "Customer Payment 216.00 € - Frank Costello - 08/07/2024",
+        "partner_id": [
+            135,
+            "Frank Costello"
+        ],
+        "price_total": 0,
+        "product_id": false,
+        "tax_ids": []
+    },
+    {
+        "currency_id": [
+            1,
+            "EUR"
+        ],
+        "date": "2024-08-07",
+        "display_name": "PBNK1/2024/00016 (INV/2024/00021) Customer Payment 192.00 € - Frank Costello - 08/07/2024",
+        "id": 274,
+        "move_name": "PBNK1/2024/00016",
+        "name": "Customer Payment 192.00 € - Frank Costello - 08/07/2024",
+        "partner_id": [
+            135,
+            "Frank Costello"
+        ],
+        "price_total": 0,
+        "product_id": false,
+        "tax_ids": []
+    },
+    {
+        "currency_id": [
+            1,
+            "EUR"
+        ],
+        "date": "2024-08-07",
+        "display_name": "PBNK1/2024/00016 (INV/2024/00021) Customer Payment 192.00 € - Frank Costello - 08/07/2024",
+        "id": 275,
+        "move_name": "PBNK1/2024/00016",
+        "name": "Customer Payment 192.00 € - Frank Costello - 08/07/2024",
+        "partner_id": [
+            135,
+            "Frank Costello"
+        ],
+        "price_total": 0,
+        "product_id": false,
+        "tax_ids": []
+    },
+    {
+        "__last_update": "2024-08-07 19:42:16",
+        "account_id": [
+            661,
+            "707100 Ventes de marchandises (ou groupe) A"
+        ],
+        "account_internal_group": "income",
+        "account_root_id": [
+            55048,
+            "70"
+        ],
+        "account_type": "income",
+        "amount_currency": -180,
+        "amount_residual": 0,
+        "amount_residual_currency": 0,
+        "analytic_distribution": false,
+        "analytic_distribution_search": false,
+        "analytic_line_ids": [],
+        "analytic_precision": 2,
+        "balance": -180,
+        "blocked": false,
+        "company_currency_id": [
+            1,
+            "EUR"
+        ],
+        "company_id": [
+            1,
+            "My Company"
+        ],
+        "compute_all_tax_dirty": true,
+        "create_date": "2024-08-07 19:42:11",
+        "create_uid": [
+            51,
+            "Test Mobile App"
+        ],
+        "credit": 180,
+        "cumulated_balance": 0,
+        "currency_id": [
+            1,
+            "EUR"
+        ],
+        "currency_rate": 1,
+        "date": "2024-11-10",
+        "date_maturity": false,
+        "debit": 0,
+        "discount": 0,
+        "discount_amount_currency": 0,
+        "discount_balance": 0,
+        "discount_date": false,
+        "discount_percentage": 0,
+        "display_name": "INV/2024/00022 Mois de Novembre",
+        "display_type": "product",
+        "epd_dirty": true,
+        "expense_id": false,
+        "full_reconcile_id": false,
+        "group_tax_id": false,
+        "id": 276,
+        "is_account_reconcile": false,
+        "is_downpayment": false,
+        "is_refund": false,
+        "is_same_currency": true,
+        "is_storno": false,
+        "journal_id": [
+            2,
+            "Customer Invoices"
+        ],
+        "matched_credit_ids": [],
+        "matched_debit_ids": [],
+        "matching_number": false,
+        "move_id": [
+            180,
+            "INV/2024/00022"
+        ],
+        "move_name": "INV/2024/00022",
+        "move_type": "out_invoice",
+        "name": "Mois de Novembre",
+        "parent_state": "posted",
+        "partner_id": [
+            135,
+            "Frank Costello"
+        ],
+        "payment_id": false,
+        "price_subtotal": 180,
+        "price_total": 216,
+        "price_unit": 180,
+        "product_id": [
+            45,
+            "Novembre"
+        ],
+        "product_uom_category_id": [
+            1,
+            "Unit"
+        ],
+        "product_uom_id": [
+            1,
+            "Units"
+        ],
+        "purchase_line_id": false,
+        "purchase_order_id": false,
+        "quantity": 1,
+        "reconcile_model_id": false,
+        "reconciled": false,
+        "ref": false,
+        "sale_line_ids": [],
+        "sequence": 100,
+        "statement_id": false,
+        "statement_line_id": false,
+        "stock_valuation_layer_ids": [],
+        "tax_audit": "A1: 180.00 €        08_base: 180.00 €",
+        "tax_base_amount": 0,
+        "tax_group_id": false,
+        "tax_ids": [
+            36
+        ],
+        "tax_line_id": false,
+        "tax_repartition_line_id": false,
+        "tax_tag_ids": [
+            37,
+            87
+        ],
+        "tax_tag_invert": true,
+        "write_date": "2024-08-07 19:42:16",
+        "write_uid": [
+            51,
+            "Test Mobile App"
+        ]
+    }
+]

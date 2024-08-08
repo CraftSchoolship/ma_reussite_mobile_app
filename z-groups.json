@@ -1,0 +1,156 @@
+[
+    {
+        "__last_update": "2024-08-06 13:23:51",
+        "category_id": [
+            93,
+            "CraftSchoolship"
+        ],
+        "color": 0,
+        "comment": false,
+        "create_date": "2024-05-15 20:14:35",
+        "create_uid": [
+            1,
+            "OdooBot"
+        ],
+        "display_name": "CraftSchoolship / Administrator",
+        "full_name": "CraftSchoolship / Administrator",
+        "id": 24,
+        "implied_ids": [
+            23
+        ],
+        "menu_access": [
+            182,
+            285,
+            290,
+            607,
+            610,
+            612,
+            162
+        ],
+        "model_access": [
+            1470,
+            1443,
+            1485,
+            1446,
+            1488,
+            1494,
+            1455,
+            1473,
+            1476,
+            1458,
+            1351,
+            1352,
+            1461,
+            1464,
+            1467,
+            2525,
+            1479,
+            2574,
+            1491,
+            1449,
+            1452,
+            1353,
+            1480,
+            2553,
+            2554,
+            2556,
+            2557,
+            2558,
+            2551
+        ],
+        "name": "Administrator",
+        "rule_groups": [],
+        "share": false,
+        "trans_implied_ids": [
+            23,
+            1,
+            32,
+            13,
+            105,
+            33,
+            7
+        ],
+        "users": [
+            2,
+            51
+        ],
+        "view_access": [],
+        "write_date": "2024-08-06 13:23:51",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ]
+    },
+    {
+        "__last_update": "2024-08-06 13:23:51",
+        "category_id": [
+            93,
+            "CraftSchoolship"
+        ],
+        "color": 0,
+        "comment": false,
+        "create_date": "2024-05-15 20:14:35",
+        "create_uid": [
+            1,
+            "OdooBot"
+        ],
+        "display_name": "CraftSchoolship / Teacher",
+        "full_name": "CraftSchoolship / Teacher",
+        "id": 23,
+        "implied_ids": [
+            1
+        ],
+        "menu_access": [
+            113
+        ],
+        "model_access": [
+            1469,
+            1442,
+            1484,
+            1445,
+            1487,
+            1493,
+            1454,
+            1472,
+            1475,
+            1457,
+            1460,
+            1463,
+            1466,
+            2524,
+            1478,
+            1490,
+            1448,
+            1451,
+            2550
+        ],
+        "name": "Teacher",
+        "rule_groups": [],
+        "share": false,
+        "trans_implied_ids": [
+            1,
+            32,
+            13,
+            105,
+            33,
+            7
+        ],
+        "users": [
+            2,
+            122,
+            123,
+            120,
+            125,
+            124,
+            121,
+            51,
+            152
+        ],
+        "view_access": [],
+        "write_date": "2024-08-06 13:23:51",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ]
+    }
+]
