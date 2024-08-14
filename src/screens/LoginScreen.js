@@ -32,19 +32,22 @@ const LoginScreen = () => {
 
   const handleLogin = async (values) => {
     setLoading(false);
+    const username = values.email;
+    const password = values.password;
     try {
-      const sidAdmin = await authenticate();
+      const sessionId = await authenticate(username, password);
+
       const user = await jsonrpcRequest(
-        sidAdmin,
-        config.password,
+        sessionId,
+        password,
         config.model.users,
-        [[["email", "=", values.email]]],
-        ["self", "is_student", "is_parent", "groups_id"]
+        [[["email", "=", username]]],
+        ["self", "is_student", "is_parent", "groups_id", "craft_role"]
         // ["self",  "res_role"]
         // []
       );
 
-      // console.log("user...", user);
+      console.log("user...", user, sessionId);
 
       if (user.length > 0) {
         const userid = user[0].self;
@@ -66,18 +69,18 @@ const LoginScreen = () => {
         // console.log("role...", role);
 
         await storeObject("connectedUser", {
-          sessionId: sidAdmin,
-          email: config.username,
-          password: config.password,
+          sessionId: sessionId,
+          email: username,
+          password: password,
           userid: userid,
           groups_id: user[0].groups_id,
           role: role,
         });
 
         setConnectedUser({
-          sessionId: sidAdmin,
-          email: config.username,
-          password: config.password,
+          sessionId: sessionId,
+          email: username,
+          password: password,
           userid: userid,
           groups_id: user[0].groups_id,
           role: role,

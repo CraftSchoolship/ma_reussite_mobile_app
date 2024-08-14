@@ -35,6 +35,7 @@ yarn-error.*
 *.tsbuildinfo
 
 # environnement variables
-# env.js
+.env
 
+# data
 z-*.json
