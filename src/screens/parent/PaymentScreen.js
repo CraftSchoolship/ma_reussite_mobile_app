@@ -75,7 +75,7 @@ const PaymentScreen = () => {
           !connectedUser ||
           !connectedUser.sessionId ||
           !connectedUser.password ||
-          !connectedUser.partnerid
+          !connectedUser.userid
         ) {
           return;
         }
@@ -86,7 +86,7 @@ const PaymentScreen = () => {
             domain = [["partner_id", "=", selectedChild?.partner_id[0]]];
             break;
           case "student":
-            domain = [["partner_id", "=", connectedUser?.partnerid[0]]];
+            domain = [["partner_id", "=", connectedUser?.userid[0]]];
             break;
           default:
             console.error("Unsupported role:", connectedUser?.role);
@@ -118,6 +118,15 @@ const PaymentScreen = () => {
             "currency_id",
           ]
         );
+
+        const currencies = await getObject("currencies");
+
+        currencies.forEach((currency) => {
+          if (currency.id === paymentDetails[0].currency_id[0]) {
+            console.log("currencies...", currency);
+            setCurrencySybol(currency.symbol);
+          }
+        });
 
         const paymentTab = [];
         paymentDetails.map((payment) => {
@@ -225,11 +234,10 @@ const PaymentScreen = () => {
                     display_name={payment.display_name}
                     amount={payment.price_total}
                     state={payment.payment_state}
-                    partner_id={payment.partner_id}
+                    user_id={payment.partner_id}
                     currency_sybol={currencySybol}
                     tax_ids={payment.tax_ids}
                     handlePress={handlePress}
-                    occupation="teacher"
                     onOpen={onOpen}
                   />
                 ))
@@ -268,10 +276,7 @@ const PaymentScreen = () => {
               </Text>
             </Box>
             {paymentDetails.name !== undefined && (
-              <PaymentCardPlus
-                paymentDetails={paymentDetails}
-                occupation="teacher"
-              />
+              <PaymentCardPlus paymentDetails={paymentDetails} />
             )}
           </Actionsheet.Content>
         </Actionsheet>

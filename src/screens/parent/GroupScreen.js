@@ -31,7 +31,7 @@ const GroupScreen = () => {
     sessionId: "",
     email: "",
     password: "",
-    partnerid: "",
+    userid: "",
     role: "",
   });
   const [childrenList, setChildrenList] = useState([]);
@@ -64,7 +64,7 @@ const GroupScreen = () => {
           !connectedUser ||
           !connectedUser.sessionId ||
           !connectedUser.password ||
-          !connectedUser.partnerid
+          !connectedUser.userid
         ) {
           return;
         }

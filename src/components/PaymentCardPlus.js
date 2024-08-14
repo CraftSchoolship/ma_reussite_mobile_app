@@ -45,7 +45,7 @@ const PaymentCardPlus = ({ paymentDetails, occupation = "student" }) => {
             </Text>
             <Text color={"black"} mb={2}>
               {occupation === "student" ? "Etudiant(e) : " : "Professeur(e) : "}
-              {paymentDetails.partner_id[1]}
+              {paymentDetails.user_id[1]}
             </Text>
             {/* {taxName && (
               <>

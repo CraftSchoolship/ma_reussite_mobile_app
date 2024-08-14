@@ -26,7 +26,7 @@ const PaymentScreen = () => {
   const [sortOrder, setSortOrder] = useState("recent");
   const [sessionId, setSessionId] = useState(null);
   const [password, setPassword] = useState(null);
-  const [partnerid, setPartnerid] = useState(null);
+  const [userid, setUserid] = useState(null);
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [paymentDetails, setPaymentDetails] = useState({});
@@ -34,10 +34,10 @@ const PaymentScreen = () => {
 
   useEffect(() => {
     const connectedUser = route?.params;
-    const { sessionId, email, password, partnerid } = connectedUser;
+    const { sessionId, email, password, userid } = connectedUser;
     setSessionId(sessionId);
     setPassword(password);
-    setPartnerid(partnerid[0]);
+    setUserid(userid[0]);
   }, [route]);
 
   const handlePress = (paymentDetails) => {
@@ -52,7 +52,7 @@ const PaymentScreen = () => {
           sessionId,
           password,
           config.model.accountMove,
-          [[["partner_id", "=", partnerid]]],
+          [[["partner_id", "=", userid]]],
           ["name", "payment_state"]
         );
 
@@ -60,7 +60,7 @@ const PaymentScreen = () => {
           sessionId,
           password,
           config.model.accountMoveLine,
-          [[["partner_id", "=", partnerid]]],
+          [[["partner_id", "=", userid]]],
           [
             "date",
             "display_name",
@@ -107,13 +107,13 @@ const PaymentScreen = () => {
       }
     };
 
-    if (sessionId && password && partnerid) {
+    if (sessionId && password && userid) {
       fetchPayment();
     }
-  }, [sessionId, password, partnerid]);
+  }, [sessionId, password, userid]);
 
   useEffect(() => {
-    // payments && console.log("Partner...", new Date().getMinutes(), payments);
+    // payments && console.log("User...", new Date().getMinutes(), payments);
   }, [payments]);
 
   return (
@@ -196,11 +196,10 @@ const PaymentScreen = () => {
                     display_name={payment.display_name}
                     amount={payment.price_total}
                     state={payment.payment_state}
-                    partner_id={payment.partner_id}
+                    user_id={payment.partner_id}
                     currency_sybol={currencySybol}
                     tax_ids={payment.tax_ids}
                     handlePress={handlePress}
-                    occupation="teacher"
                     onOpen={onOpen}
                   />
                 ))
@@ -239,10 +238,7 @@ const PaymentScreen = () => {
               </Text>
             </Box>
             {paymentDetails.name !== undefined && (
-              <PaymentCardPlus
-                paymentDetails={paymentDetails}
-                occupation="teacher"
-              />
+              <PaymentCardPlus paymentDetails={paymentDetails} />
             )}
           </Actionsheet.Content>
         </Actionsheet>

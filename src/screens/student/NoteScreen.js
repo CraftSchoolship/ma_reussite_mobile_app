@@ -10,7 +10,7 @@ const NoteScreen = () => {
   const navigation = useNavigation();
   const [sessionId, setSessionId] = useState(null);
   const [password, setPassword] = useState(null);
-  const [partnerid, setPartnerid] = useState(null);
+  const [userid, setUserid] = useState(null);
   const [note, setNote] = useState();
   const [course, setCourse] = useState();
   const [institute, setInstitute] = useState();
@@ -18,10 +18,10 @@ const NoteScreen = () => {
 
   useEffect(() => {
     const connectedUser = route?.params;
-    const { sessionId, email, password, partnerid } = connectedUser;
+    const { sessionId, email, password, userid } = connectedUser;
     setSessionId(sessionId);
     setPassword(password);
-    setPartnerid(partnerid[0]);
+    setUserid(userid[0]);
   }, [route]);
 
   useEffect(() => {
@@ -30,24 +30,26 @@ const NoteScreen = () => {
         const noteData = await jsonrpcRequest(
           sessionId,
           config.password,
-          config.model.opStudent,
-          [[["partner_id", "=", partnerid]]],
-          ["prev_result", "prev_course_id", "prev_institute_id"]
+          config.model.craftStudent,
+          // [[["partner_id", "=", userid]]],
+          [],
+          // ["prev_result", "prev_course_id", "prev_institute_id"]
+          []
         );
-        // console.log("noteData...", noteData[0].prev_result);
+        console.log("noteData...", noteData[0]);
         setNote(noteData[0].prev_result);
         setCourse(noteData[0].prev_course_id);
         setInstitute(noteData[0].prev_institute_id);
       } catch (error) {
-        console.error("Error fetching payments:", error);
+        console.error("Error fetching notes:", error);
       } finally {
         setLoading(false);
       }
     };
-    if (sessionId && password && partnerid) {
+    if (sessionId && password && userid) {
       fetchNote();
     }
-  }, [sessionId, password, partnerid]);
+  }, [sessionId, password, userid]);
 
   return (
     <Box flex={1} bg={"white"}>

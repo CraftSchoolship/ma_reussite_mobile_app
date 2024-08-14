@@ -33,10 +33,10 @@ const ActivityScreen = () => {
     sessionId: "",
     email: "",
     password: "",
-    partnerid: "",
+    userid: "",
     role: "",
   });
-  
+
   const { selectedChild, setSelectedChild } = useAppContext();
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const ActivityScreen = () => {
           !connectedUser ||
           !connectedUser.sessionId ||
           !connectedUser.password ||
-          !connectedUser.partnerid
+          !connectedUser.userid
         ) {
           return;
         }
@@ -77,7 +77,7 @@ const ActivityScreen = () => {
             domain = [["student_id", "=", selectedChild.partner_id[1]]];
             break;
           case "student":
-            domain = [["student_id", "=", connectedUser.partnerid[1]]];
+            domain = [["student_id", "=", connectedUser.userid[1]]];
             break;
           default:
             console.error("Unsupported role:", connectedUser.role);

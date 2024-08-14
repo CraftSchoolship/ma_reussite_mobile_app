@@ -66,7 +66,7 @@ const HomeScreen = () => {
           !connectedUser ||
           !connectedUser.sessionId ||
           !connectedUser.password ||
-          !connectedUser.partnerid
+          !connectedUser.userid
         ) {
           return;
         }

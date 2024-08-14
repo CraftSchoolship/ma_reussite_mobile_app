@@ -22,7 +22,7 @@ function HomeScreenBanner() {
     sessionId: "",
     email: "",
     password: "",
-    partnerid: "",
+    userid: "",
     role: "",
   });
   const [childrenList, setChildrenList] = useState([]);
@@ -59,7 +59,7 @@ function HomeScreenBanner() {
 
   useEffect(() => {
     const fetchProfileImage = async () => {
-      const { sessionId, password, partnerid, role } = connectedUser;
+      const { sessionId, password, userid, role } = connectedUser;
       try {
         // const userData = await jsonrpcRequest(
         //   sessionId,
@@ -77,7 +77,7 @@ function HomeScreenBanner() {
               sessionId,
               password,
               config.model.parents,
-              [[["contact_id", "=", partnerid[0]]]],
+              [[["contact_id", "=", userid[0]]]],
               ["image_1024"]
             );
             break;
@@ -87,7 +87,7 @@ function HomeScreenBanner() {
               sessionId,
               password,
               config.model.teachers,
-              [[["work_contact_id", "=", partnerid[0]]]],
+              [[["work_contact_id", "=", userid[0]]]],
               ["image_1024"]
             );
             break;
@@ -97,7 +97,7 @@ function HomeScreenBanner() {
               sessionId,
               password,
               config.model.opStudent,
-              [[["partner_id", "=", partnerid[0]]]],
+              [[["partner_id", "=", userid[0]]]],
               ["image_1024"]
             );
             break;
@@ -123,7 +123,7 @@ function HomeScreenBanner() {
       }
     };
 
-    if (connectedUser.partnerid) {
+    if (connectedUser.userid) {
       fetchProfileImage();
     }
   }, [connectedUser, imageUri]);

@@ -23,7 +23,7 @@ const LoginScreen = () => {
     sessionId: "",
     email: "",
     password: "",
-    partnerid: "",
+    userid: "",
     groups_id: [],
     role: "",
   });
@@ -34,30 +34,32 @@ const LoginScreen = () => {
     setLoading(false);
     try {
       const sidAdmin = await authenticate();
-      const partner = await jsonrpcRequest(
+      const user = await jsonrpcRequest(
         sidAdmin,
         config.password,
         config.model.users,
         [[["email", "=", values.email]]],
         ["self", "is_student", "is_parent", "groups_id"]
+        // ["self",  "res_role"]
+        // []
       );
 
-      // console.log("partner...", partner);
+      // console.log("user...", user);
 
-      if (partner.length > 0) {
-        const partnerid = partner[0].self;
+      if (user.length > 0) {
+        const userid = user[0].self;
         setError("");
-        const role = partner[0].groups_id.includes(
+        const role = user[0].groups_id.includes(
           Number(process.env.EXPO_PUBLIC_ADMIN_ID)
         )
           ? "admin"
-          : partner[0].groups_id.includes(
+          : user[0].groups_id.includes(
               Number(process.env.EXPO_PUBLIC_TEACHER_ID)
             )
           ? "teacher"
-          : partner[0].is_parent
+          : user[0].is_parent
           ? "parent"
-          : partner[0].is_student
+          : user[0].is_student
           ? "student"
           : "other";
 
@@ -67,8 +69,8 @@ const LoginScreen = () => {
           sessionId: sidAdmin,
           email: config.username,
           password: config.password,
-          partnerid: partnerid,
-          groups_id: partner[0].groups_id,
+          userid: userid,
+          groups_id: user[0].groups_id,
           role: role,
         });
 
@@ -76,8 +78,8 @@ const LoginScreen = () => {
           sessionId: sidAdmin,
           email: config.username,
           password: config.password,
-          partnerid: partnerid,
-          groups_id: partner[0].groups_id,
+          userid: userid,
+          groups_id: user[0].groups_id,
           role: role,
         });
       } else {
@@ -102,7 +104,7 @@ const LoginScreen = () => {
           connectedUser.sessionId,
           connectedUser.password,
           config.model.opParents,
-          [[["name", "=", connectedUser.partnerid[0]]]],
+          [[["name", "=", connectedUser.userid[0]]]],
           ["student_ids"]
         );
 

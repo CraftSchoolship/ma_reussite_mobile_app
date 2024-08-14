@@ -21,17 +21,17 @@ const ActivityScreen = () => {
   const navigation = useNavigation();
   const [sessionId, setSessionId] = useState(null);
   const [password, setPassword] = useState(null);
-  const [partnerid, setPartnerid] = useState(null);
+  const [userid, setUserid] = useState(null);
   const [activities, setActivities] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclose();
   const [selectedActivity, setSelectedActivity] = useState();
 
   useEffect(() => {
     const connectedUser = route?.params;
-    const { sessionId, email, password, partnerid } = connectedUser;
+    const { sessionId, email, password, userid } = connectedUser;
     setSessionId(sessionId);
     setPassword(password);
-    setPartnerid(partnerid[1]);
+    setUserid(userid[1]);
   }, [route]);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const ActivityScreen = () => {
           sessionId,
           config.password,
           config.model.opActivity,
-          [[["student_id", "=", partnerid]]],
+          [[["student_id", "=", userid]]],
           ["student_id", "type_id", "date", "description"]
         );
 
@@ -53,10 +53,10 @@ const ActivityScreen = () => {
       }
     };
 
-    if (sessionId && password && partnerid) {
+    if (sessionId && password && userid) {
       fetchActivities();
     }
-  }, [sessionId, password, partnerid]);
+  }, [sessionId, password, userid]);
 
   return (
     <Box flex={1} bg={"white"}>

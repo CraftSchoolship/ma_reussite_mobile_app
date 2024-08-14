@@ -29,7 +29,7 @@ const ProfileScreen = () => {
     sessionId: "",
     email: "",
     password: "",
-    partnerid: "",
+    userid: "",
     role: "",
   });
   const [childrenList, setChildrenList] = useState([]);
@@ -57,7 +57,7 @@ const ProfileScreen = () => {
   }, []);
 
   useEffect(() => {
-    // console.log("connectedUser.partnerid[0]...", connectedUser.partnerid[0]);
+    // console.log("connectedUser.userid[0]...", connectedUser.userid[0]);
 
     const loadProfileImage = async () => {
       try {
@@ -72,7 +72,7 @@ const ProfileScreen = () => {
               connectedUser.sessionId,
               connectedUser.password,
               config.model.parents,
-              [[["contact_id", "=", connectedUser.partnerid[0]]]],
+              [[["contact_id", "=", connectedUser.userid[0]]]],
               ["image_1024", "name", "email", "contact_id"]
             );
             break;
@@ -82,7 +82,7 @@ const ProfileScreen = () => {
               connectedUser.sessionId,
               connectedUser.password,
               config.model.teachers,
-              [[["work_contact_id", "=", connectedUser.partnerid[0]]]],
+              [[["work_contact_id", "=", connectedUser.userid[0]]]],
               ["image_1024", "name", "work_email", "work_contact_id"]
             );
             break;
@@ -92,7 +92,7 @@ const ProfileScreen = () => {
               connectedUser.sessionId,
               connectedUser.password,
               config.model.opStudent,
-              [[["partner_id", "=", connectedUser.partnerid[0]]]],
+              [[["partner_id", "=", connectedUser.userid[0]]]],
               ["image_1024", "name", "email"]
             );
             break;
@@ -224,9 +224,9 @@ const ProfileScreen = () => {
                     onPress={async () => {
                       try {
                         await storeObject("selectedChild", child);
-                        setSelectedChild(child); // update the state
+                        setSelectedChild(child);
                         navigation.navigate("Home", {
-                          selectedChild: child, // pass the updated child
+                          selectedChild: child,
                         });
                       } catch (error) {
                         console.error("Error while selecting child:", error);

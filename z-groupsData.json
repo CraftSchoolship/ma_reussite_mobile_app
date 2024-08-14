@@ -1,0 +1,513 @@
+[
+    {
+        "__last_update": "2024-08-12 09:33:36",
+        "activity_calendar_event_id": false,
+        "activity_date_deadline": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_summary": false,
+        "activity_type_icon": false,
+        "activity_type_id": false,
+        "activity_user_id": false,
+        "code": "9TH2425",
+        "create_date": "2024-05-15 20:42:44",
+        "create_uid": [
+            2,
+            "Administrator"
+        ],
+        "current": true,
+        "display_name": "Ninth Graders 2425",
+        "enable_use_groups": false,
+        "group_ids": [],
+        "has_elective_subjects": false,
+        "has_message": true,
+        "hourly_volume": 0,
+        "hourly_volume_progress": 0,
+        "id": 1,
+        "level_id": [
+            1,
+            "Ninth Grade"
+        ],
+        "link_class_to_term": false,
+        "message_attachment_count": 0,
+        "message_follower_ids": [
+            13
+        ],
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_has_sms_error": false,
+        "message_ids": [
+            28
+        ],
+        "message_is_follower": false,
+        "message_main_attachment_id": false,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_partner_ids": [
+            3
+        ],
+        "my_activity_date_deadline": false,
+        "name": "Ninth Graders 2425",
+        "notes": "<p>Hello world</p>",
+        "student_ids": [
+            41,
+            82,
+            83
+        ],
+        "subject_id": [
+            1,
+            "Maths"
+        ],
+        "subject_ids": [
+            1,
+            2
+        ],
+        "teacher_id": [
+            1,
+            "Thomas William Smith"
+        ],
+        "term_id": false,
+        "website_message_ids": [],
+        "write_date": "2024-08-12 09:33:36",
+        "write_uid": [
+            2,
+            "Administrator"
+        ],
+        "year_id": [
+            1,
+            "2024-2025"
+        ]
+    },
+    {
+        "__last_update": "2024-07-26 20:37:10",
+        "activity_calendar_event_id": false,
+        "activity_date_deadline": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_summary": false,
+        "activity_type_icon": false,
+        "activity_type_id": false,
+        "activity_user_id": false,
+        "code": "CM3",
+        "create_date": "2024-05-16 12:53:10",
+        "create_uid": [
+            2,
+            "Administrator"
+        ],
+        "current": true,
+        "display_name": "Mathematic Class",
+        "enable_use_groups": false,
+        "group_ids": [],
+        "has_elective_subjects": false,
+        "has_message": true,
+        "hourly_volume": 0,
+        "hourly_volume_progress": 0,
+        "id": 2,
+        "level_id": [
+            5,
+            "Third Grade"
+        ],
+        "link_class_to_term": false,
+        "message_attachment_count": 0,
+        "message_follower_ids": [
+            19
+        ],
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_has_sms_error": false,
+        "message_ids": [
+            34
+        ],
+        "message_is_follower": false,
+        "message_main_attachment_id": false,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_partner_ids": [
+            3
+        ],
+        "my_activity_date_deadline": false,
+        "name": "Mathematic Class",
+        "notes": false,
+        "student_ids": [
+            2
+        ],
+        "subject_id": false,
+        "subject_ids": [
+            3
+        ],
+        "teacher_id": false,
+        "term_id": false,
+        "website_message_ids": [],
+        "write_date": "2024-07-26 20:37:10",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "year_id": [
+            1,
+            "2024-2025"
+        ]
+    },
+    {
+        "__last_update": "2024-07-26 20:37:10",
+        "activity_calendar_event_id": false,
+        "activity_date_deadline": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_summary": false,
+        "activity_type_icon": false,
+        "activity_type_id": false,
+        "activity_user_id": false,
+        "code": "1ereA",
+        "create_date": "2024-05-16 12:59:52",
+        "create_uid": [
+            2,
+            "Administrator"
+        ],
+        "current": true,
+        "display_name": "1ere Année",
+        "enable_use_groups": false,
+        "group_ids": [],
+        "has_elective_subjects": false,
+        "has_message": true,
+        "hourly_volume": 0,
+        "hourly_volume_progress": 0,
+        "id": 3,
+        "level_id": [
+            6,
+            "Fourth level"
+        ],
+        "link_class_to_term": false,
+        "message_attachment_count": 0,
+        "message_follower_ids": [
+            27
+        ],
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_has_sms_error": false,
+        "message_ids": [
+            42
+        ],
+        "message_is_follower": false,
+        "message_main_attachment_id": false,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_partner_ids": [
+            3
+        ],
+        "my_activity_date_deadline": false,
+        "name": "1ere Année",
+        "notes": false,
+        "student_ids": [
+            39
+        ],
+        "subject_id": false,
+        "subject_ids": [
+            4
+        ],
+        "teacher_id": false,
+        "term_id": false,
+        "website_message_ids": [],
+        "write_date": "2024-07-26 20:37:10",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "year_id": [
+            1,
+            "2024-2025"
+        ]
+    },
+    {
+        "__last_update": "2024-08-05 15:20:28",
+        "activity_calendar_event_id": false,
+        "activity_date_deadline": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_summary": false,
+        "activity_type_icon": false,
+        "activity_type_id": false,
+        "activity_user_id": false,
+        "code": "master1",
+        "create_date": "2024-05-16 13:09:36",
+        "create_uid": [
+            2,
+            "Administrator"
+        ],
+        "current": true,
+        "display_name": "Master 1",
+        "enable_use_groups": false,
+        "group_ids": [],
+        "has_elective_subjects": false,
+        "has_message": true,
+        "hourly_volume": 0,
+        "hourly_volume_progress": 0,
+        "id": 4,
+        "level_id": [
+            6,
+            "Fourth level"
+        ],
+        "link_class_to_term": false,
+        "message_attachment_count": 0,
+        "message_follower_ids": [
+            40
+        ],
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_has_sms_error": false,
+        "message_ids": [
+            134
+        ],
+        "message_is_follower": false,
+        "message_main_attachment_id": false,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_partner_ids": [
+            3
+        ],
+        "my_activity_date_deadline": false,
+        "name": "Master 1",
+        "notes": false,
+        "student_ids": [
+            4,
+            5,
+            40
+        ],
+        "subject_id": false,
+        "subject_ids": [
+            4
+        ],
+        "teacher_id": false,
+        "term_id": false,
+        "website_message_ids": [],
+        "write_date": "2024-08-05 15:20:28",
+        "write_uid": [
+            2,
+            "Administrator"
+        ],
+        "year_id": [
+            1,
+            "2024-2025"
+        ]
+    },
+    {
+        "__last_update": "2024-08-05 12:02:17",
+        "activity_calendar_event_id": false,
+        "activity_date_deadline": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_summary": false,
+        "activity_type_icon": false,
+        "activity_type_id": false,
+        "activity_user_id": false,
+        "code": "M1BD",
+        "create_date": "2024-07-11 19:32:55",
+        "create_uid": [
+            2,
+            "Administrator"
+        ],
+        "current": true,
+        "display_name": "M1 Big Data",
+        "enable_use_groups": false,
+        "group_ids": [],
+        "has_elective_subjects": false,
+        "has_message": true,
+        "hourly_volume": 0,
+        "hourly_volume_progress": 0,
+        "id": 37,
+        "level_id": [
+            39,
+            "Master 1"
+        ],
+        "link_class_to_term": false,
+        "message_attachment_count": 0,
+        "message_follower_ids": [
+            777
+        ],
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_has_sms_error": false,
+        "message_ids": [
+            2763
+        ],
+        "message_is_follower": false,
+        "message_main_attachment_id": false,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_partner_ids": [
+            3
+        ],
+        "my_activity_date_deadline": false,
+        "name": "M1 Big Data",
+        "notes": false,
+        "student_ids": [],
+        "subject_id": false,
+        "subject_ids": [],
+        "teacher_id": false,
+        "term_id": false,
+        "website_message_ids": [],
+        "write_date": "2024-08-05 12:02:17",
+        "write_uid": [
+            2,
+            "Administrator"
+        ],
+        "year_id": [
+            1,
+            "2024-2025"
+        ]
+    },
+    {
+        "__last_update": "2024-08-13 22:17:42",
+        "activity_calendar_event_id": false,
+        "activity_date_deadline": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_summary": false,
+        "activity_type_icon": false,
+        "activity_type_id": false,
+        "activity_user_id": false,
+        "code": "M1DevOps",
+        "create_date": "2024-07-11 19:33:07",
+        "create_uid": [
+            2,
+            "Administrator"
+        ],
+        "current": true,
+        "display_name": "M1 DevOps & SRE",
+        "enable_use_groups": false,
+        "group_ids": [],
+        "has_elective_subjects": false,
+        "has_message": true,
+        "hourly_volume": 0,
+        "hourly_volume_progress": 0,
+        "id": 38,
+        "level_id": [
+            39,
+            "Master 1"
+        ],
+        "link_class_to_term": false,
+        "message_attachment_count": 0,
+        "message_follower_ids": [
+            778
+        ],
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_has_sms_error": false,
+        "message_ids": [
+            2764
+        ],
+        "message_is_follower": false,
+        "message_main_attachment_id": false,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_partner_ids": [
+            3
+        ],
+        "my_activity_date_deadline": false,
+        "name": "M1 DevOps & SRE",
+        "notes": false,
+        "student_ids": [],
+        "subject_id": false,
+        "subject_ids": [],
+        "teacher_id": false,
+        "term_id": false,
+        "website_message_ids": [],
+        "write_date": "2024-08-13 22:17:42",
+        "write_uid": [
+            51,
+            "Test Mobile App"
+        ],
+        "year_id": [
+            1,
+            "2024-2025"
+        ]
+    },
+    {
+        "__last_update": "2024-08-02 21:05:22",
+        "activity_calendar_event_id": false,
+        "activity_date_deadline": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_summary": false,
+        "activity_type_icon": false,
+        "activity_type_id": false,
+        "activity_user_id": false,
+        "code": "bth",
+        "create_date": "2024-08-02 21:05:22",
+        "create_uid": [
+            51,
+            "Test Mobile App"
+        ],
+        "current": true,
+        "display_name": "Berthonge Test",
+        "enable_use_groups": false,
+        "group_ids": [],
+        "has_elective_subjects": false,
+        "has_message": true,
+        "hourly_volume": 0,
+        "hourly_volume_progress": 0,
+        "id": 70,
+        "level_id": [
+            3,
+            "Eleventh Grade"
+        ],
+        "link_class_to_term": false,
+        "message_attachment_count": 0,
+        "message_follower_ids": [
+            973
+        ],
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_has_sms_error": false,
+        "message_ids": [
+            3145
+        ],
+        "message_is_follower": true,
+        "message_main_attachment_id": false,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_partner_ids": [
+            54
+        ],
+        "my_activity_date_deadline": false,
+        "name": "Berthonge Test",
+        "notes": false,
+        "student_ids": [
+            81
+        ],
+        "subject_id": [
+            2,
+            "Physics"
+        ],
+        "subject_ids": [],
+        "teacher_id": [
+            2,
+            "Berthonge Mibambou"
+        ],
+        "term_id": false,
+        "website_message_ids": [],
+        "write_date": "2024-08-02 21:05:22",
+        "write_uid": [
+            51,
+            "Test Mobile App"
+        ],
+        "year_id": [
+            1,
+            "2024-2025"
+        ]
+    }
+]

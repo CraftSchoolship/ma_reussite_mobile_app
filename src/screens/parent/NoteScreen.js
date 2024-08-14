@@ -31,7 +31,7 @@ const NoteScreen = () => {
     sessionId: "",
     email: "",
     password: "",
-    partnerid: "",
+    userid: "",
     role: "",
   });
   const [childrenList, setChildrenList] = useState([]);
@@ -64,7 +64,7 @@ const NoteScreen = () => {
           !connectedUser ||
           !connectedUser.sessionId ||
           !connectedUser.password ||
-          !connectedUser.partnerid
+          !connectedUser.userid
         ) {
           return;
         }
@@ -76,7 +76,7 @@ const NoteScreen = () => {
             domain = [["partner_id", "=", selectedChild.partner_id[0]]];
             break;
           case "student":
-            domain = [["partner_id", "=", connectedUser.partnerid[0]]];
+            domain = [["partner_id", "=", connectedUser.userid[0]]];
             break;
           default:
             console.error("Unsupported role:", connectedUser.role);

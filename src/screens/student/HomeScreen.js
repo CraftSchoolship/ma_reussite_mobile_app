@@ -25,7 +25,7 @@ const HomeScreen = () => {
   const route = useRoute();
   const [sessionId, setSessionId] = useState(null);
   const [password, setPassword] = useState(null);
-  const [partnerid, setPartnerid] = useState(null);
+  const [userid, setUserid] = useState(null);
   const [events, setEvents] = useState(null);
   const [markedDate, setMarkedDate] = useState({});
   const [todaysEvents, setTodaysEvents] = useState([]);
@@ -35,10 +35,10 @@ const HomeScreen = () => {
 
   useEffect(() => {
     const connectedUser = route?.params;
-    const { sessionId, email, password, partnerid } = connectedUser;
+    const { sessionId, password, userid } = connectedUser;
     setSessionId(sessionId);
     setPassword(password);
-    setPartnerid(partnerid[0]);
+    setUserid(userid[0]);
   }, [route]);
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const HomeScreen = () => {
           sessionId,
           password,
           config.model.craftSession,
-          [[["partner_ids", "=", partnerid]]],
+          [[["partner_ids", "=", userid]]],
           [
             "classroom_id",
             "recurrency",
@@ -60,7 +60,8 @@ const HomeScreen = () => {
             "description",
           ]
         );
-        // console.log("eventsData[0]...", eventsData[0]);
+        // console.log("userid...", userid);
+        // console.log("eventsData...", eventsData);
         setEvents(eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);
@@ -69,7 +70,7 @@ const HomeScreen = () => {
     if (sessionId && password) {
       fetchEvents();
     }
-  }, [sessionId, password, partnerid]);
+  }, [sessionId, password, userid]);
 
   useEffect(() => {
     if (events) {

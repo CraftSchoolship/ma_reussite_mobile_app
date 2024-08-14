@@ -18,15 +18,15 @@ const GroupScreen = ({ navigation }) => {
   const route = useRoute();
   const [groups, setGroups] = useState([]);
   const [sessionId, setSessionId] = useState(null);
-  const [partnerid, setPartnerid] = useState(null);
+  const [userid, setUserid] = useState(null);
   const [password, setPassword] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const connectedUser = route?.params;
-    const { sessionId, email, password, partnerid } = connectedUser;
+    const { sessionId, email, password, userid } = connectedUser;
     setSessionId(sessionId);
-    setPartnerid(partnerid[0]);
+    setUserid(userid[0]);
     setPassword(password);
   }, [route]);
 
@@ -46,10 +46,10 @@ const GroupScreen = ({ navigation }) => {
       }
     };
 
-    if (sessionId && password && partnerid) {
+    if (sessionId && password && userid) {
       fetchGroups();
     }
-  }, [sessionId, partnerid, password]);
+  }, [sessionId, userid, password]);
 
   return (
     <Box flex={1} bg={"white"}>
