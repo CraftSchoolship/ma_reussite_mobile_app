@@ -1,8 +1,6 @@
 const config = {
   baseUrl: "https://test.erp.craftschoolship.com/jsonrpc",
   database: "bitnami_odoo",
-  username: process.env.EXPO_PUBLIC_USERNAME,
-  password: process.env.EXPO_PUBLIC_PASSWORD,
   model: {
     accountMove: "account.move",
     accountMoveLine: "account.move.line",
@@ -15,7 +13,6 @@ const config = {
     craftSession: "craft.session",
     craftStudent: "craft.student",
     craftParentChildLine: "craft.parent.child.line",
-    // groups: "op.batch",
     groups: "craft.class",
     opActivity: "op.activity",
     opCourse: "op.course",

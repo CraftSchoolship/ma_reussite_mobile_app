@@ -57,7 +57,7 @@ const ProfileScreen = () => {
   }, []);
 
   useEffect(() => {
-    // console.log("connectedUser.userid[0]...", connectedUser.userid[0]);
+    console.log("connectedUser.userid[0]...", connectedUser);
 
     const loadProfileImage = async () => {
       try {
@@ -67,12 +67,22 @@ const ProfileScreen = () => {
         }
         let userData = [];
         switch (connectedUser.role) {
+          case "student":
+            userData = await jsonrpcRequest(
+              connectedUser.sessionId,
+              connectedUser.password,
+              config.model.craftStudent,
+              [[["contact_id", "=", connectedUser.userid[0]]]],
+              ["image_1024", "name", "email"]
+            );
+            break;
+
           case "parent":
             userData = await jsonrpcRequest(
               connectedUser.sessionId,
               connectedUser.password,
               config.model.parents,
-              [[["contact_id", "=", connectedUser.userid[0]]]],
+              [[["self", "=", connectedUser.userid[0]]]],
               ["image_1024", "name", "email", "contact_id"]
             );
             break;
@@ -87,14 +97,17 @@ const ProfileScreen = () => {
             );
             break;
 
-          default:
+          case "admin":
             userData = await jsonrpcRequest(
               connectedUser.sessionId,
               connectedUser.password,
-              config.model.opStudent,
-              [[["partner_id", "=", connectedUser.userid[0]]]],
-              ["image_1024", "name", "email"]
+              config.model.teachers,
+              [[["work_contact_id", "=", connectedUser.userid[0]]]],
+              ["image_1024", "name", "work_email", "work_contact_id"]
             );
+            break;
+
+          default:
             break;
         }
         // console.log("userData...", userData);
@@ -136,7 +149,9 @@ const ProfileScreen = () => {
         {loading ? (
           <Avatar
             size="2xl"
-            source={{ uri: "https://placehold.co/400x400.png" }}
+            source={{
+              uri: "https://placehold.co/400x400.png",
+            }}
             onError={(e) => {
               console.error("Error displaying image:", e.nativeEvent.error);
             }}
