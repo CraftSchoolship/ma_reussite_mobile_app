@@ -253,19 +253,12 @@
 /*                                  VERSION_1                                 */
 /* -------------------------------------------------------------------------- */
 import { useNavigation } from "@react-navigation/native";
-import {
-  Box,
-  Center,
-  Image
-} from "native-base";
+import { Box, Center, Image } from "native-base";
 import React from "react";
-import {
-  BackgroundWrapper,
-} from "../../components";
+import { BackgroundWrapper } from "../../components";
 
 const PaymentScreen = () => {
   const navigation = useNavigation();
-
 
   return (
     <Box flex={1} bg="white">
@@ -277,8 +270,9 @@ const PaymentScreen = () => {
           <Image
             // bgColor={"blue.300"}
             size="sm"
-            w={"100%"}
             minH={"70%"}
+            w={"90%"}
+            resizeMode="contain"
             p={2}
             // m={"auto"}
             source={require("../../../assets/images/coming_soon.png")}

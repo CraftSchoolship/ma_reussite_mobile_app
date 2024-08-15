@@ -11,6 +11,7 @@ import {
 import config from "../api/config";
 import { CustomButton, CustomInput, LoginScreenBanner } from "../components";
 import { loginValidationSchema } from "../validation/formValidation";
+import { filterBySelf } from "../utils/filter";
 
 const LoginScreen = () => {
   const input1Ref = useRef(null);
@@ -28,12 +29,6 @@ const LoginScreen = () => {
   });
   const [selectedChild, setSelectedChild] = useState({});
   const [children, setChildren] = useState([]);
-
-  const filterBySelf = (data, selfId, selfName) => {
-    return data.filter(
-      (item) => item.self[0] === selfId && item.self[1] === selfName
-    );
-  };
 
   const handleLogin = async (values) => {
     setLoading(false);
@@ -96,50 +91,51 @@ const LoginScreen = () => {
         if (!connectedUser) throw new Error("Missing connectedUser data");
         console.log("connectedUser...", connectedUser);
 
-        const fetchedChildren = await jsonrpcRequest(
+        const fetchedChildrenIDs = await jsonrpcRequest(
           connectedUser.sessionId,
           connectedUser.password,
           config.model.parents,
-          [[["self", "=", connectedUser.userid[0]]]],
+          [[["contact_id", "=", connectedUser.userid[0]]]],
           // [],
-          ["child_ids", "self"]
+          ["child_ids", "contact_id"]
           // ["id"]
         );
 
-        // console.log("fetchedChildren...", fetchedChildren);
+        console.log("fetchedChildrenIDs...", fetchedChildrenIDs[0].child_ids);
 
-        const filteredData = filterBySelf(
-          fetchedChildren,
-          connectedUser.userid[0],
-          connectedUser.userid[1]
-        );
+        // console.log("filteredData...", filteredData[0].child_ids);
 
-        console.log("filteredData...", filteredData[0].child_ids);
+        // const f_Children = await jsonrpcRequest(
+        //   connectedUser.sessionId,
+        //   connectedUser.password,
+        //   config.model.craftParentChildLine,
+        //   // [[["self", "=", connectedUser.userid[0]]]],
+        //   [],
+        //   // ["child_ids", "self"]
+        //   // ["child_ids"]
+        //   []
+        // );
 
-        const f_Children = await jsonrpcRequest(
-          connectedUser.sessionId,
-          connectedUser.password,
-          config.model.craftParentChildLine,
-          // [[["self", "=", connectedUser.userid[0]]]],
-          [],
-          // ["child_ids", "self"]
-          // ["child_id"]
-          []
-        );
+        // console.log("f_Children...", f_Children[0]);
 
-        console.log("f_Children...", f_Children[0]);
-
-        if (!fetchedChildren.length || !fetchedChildren[0].student_ids.length)
+        if (
+          !fetchedChildrenIDs.length ||
+          // !fetchedChildrenIDs[0].student_ids.length
+          !fetchedChildrenIDs[0].child_ids.length
+        )
           throw new Error("No children found");
 
-        const studentIds = fetchedChildren[0].student_ids;
+        const studentIds = fetchedChildrenIDs[0].child_ids;
         const students = await jsonrpcRequest(
           connectedUser.sessionId,
           connectedUser.password,
-          config.model.opStudent,
+          config.model.craftStudent,
           [],
-          ["id", "partner_id"]
+          ["id", "contact_id"]
+          // []
         );
+
+        console.log("students...", students);
 
         const childrenList = students.filter((student) =>
           studentIds.includes(student.id)

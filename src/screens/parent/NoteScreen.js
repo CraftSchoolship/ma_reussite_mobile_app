@@ -225,7 +225,8 @@ const NoteScreen = () => {
           <Image
             // bgColor={"blue.300"}
             size="sm"
-            w={"100%"}
+            w={"90%"}
+            resizeMode="contain"
             minH={"70%"}
             p={2}
             // m={"auto"}
