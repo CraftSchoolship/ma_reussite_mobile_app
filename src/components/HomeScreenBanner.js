@@ -151,6 +151,8 @@ function HomeScreenBanner() {
           <Image
             size="sm"
             w={"70%"}
+            resizeMode="contain"
+            padding={20}
             ml={2}
             source={require("../../assets/images/ma_reussite_other_screens.png")}
             alt="Alternate Text"
