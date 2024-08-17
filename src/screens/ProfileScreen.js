@@ -81,8 +81,8 @@ const ProfileScreen = () => {
             userData = await jsonrpcRequest(
               connectedUser.sessionId,
               connectedUser.password,
-              config.model.parents,
-              [[["self", "=", connectedUser.userid[0]]]],
+              config.model.craftParent,
+              [[["contact_id", "=", connectedUser.userid[0]]]],
               ["image_1024", "name", "email", "contact_id"]
             );
             break;
@@ -91,7 +91,7 @@ const ProfileScreen = () => {
             userData = await jsonrpcRequest(
               connectedUser.sessionId,
               connectedUser.password,
-              config.model.teachers,
+              config.model.craftTeachers,
               [[["work_contact_id", "=", connectedUser.userid[0]]]],
               ["image_1024", "name", "work_email", "work_contact_id"]
             );
@@ -101,16 +101,17 @@ const ProfileScreen = () => {
             userData = await jsonrpcRequest(
               connectedUser.sessionId,
               connectedUser.password,
-              config.model.teachers,
-              [[["work_contact_id", "=", connectedUser.userid[0]]]],
-              ["image_1024", "name", "work_email", "work_contact_id"]
+              config.model.users,
+              [[["partner_id", "=", connectedUser.userid[0]]]],
+              ["image_1024", "name", "email"]
             );
             break;
 
           default:
             break;
         }
-        // console.log("userData...", userData);
+
+        console.log("(L-113)userData...", userData);
 
         if (userData && Array.isArray(userData) && userData.length > 0) {
           const { image_1024, name, email, work_email } = userData[0];
@@ -280,7 +281,7 @@ const ProfileScreen = () => {
                           fontWeight={"bold"}
                           fontSize={"lg"}
                         >
-                          {child.partner_id[1]}
+                          {child.contact_id[1]}
                         </Text>
                       </HStack>
                       {child.id === selectedChild.id ? (

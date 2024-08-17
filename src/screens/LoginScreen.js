@@ -11,7 +11,6 @@ import {
 import config from "../api/config";
 import { CustomButton, CustomInput, LoginScreenBanner } from "../components";
 import { loginValidationSchema } from "../validation/formValidation";
-import { filterBySelf } from "../utils/filter";
 
 const LoginScreen = () => {
   const input1Ref = useRef(null);
@@ -30,6 +29,10 @@ const LoginScreen = () => {
   const [selectedChild, setSelectedChild] = useState({});
   const [children, setChildren] = useState([]);
 
+  const getStudentIds = (data) => {
+    return data.map((fetchedChild) => fetchedChild.child_id[0]);
+  };
+
   const handleLogin = async (values) => {
     setLoading(false);
     const username = values.email;
@@ -38,8 +41,6 @@ const LoginScreen = () => {
       const sessionId = await authenticate(username, password);
 
       if (sessionId > 0) {
-        // console.log("sessionId...", sessionId);
-
         const user = await jsonrpcRequest(
           sessionId,
           password,
@@ -48,13 +49,10 @@ const LoginScreen = () => {
           ["self", "craft_role"]
         );
 
-        console.log("user...", user[0]);
-
         if (user.length > 0) {
           const userid = user[0].self;
           setError("");
           const role = user[0].craft_role;
-          // console.log("role...", role);
 
           await storeObject("connectedUser", {
             sessionId: sessionId,
@@ -88,60 +86,37 @@ const LoginScreen = () => {
 
     const loadParentData = async () => {
       try {
-        if (!connectedUser) throw new Error("Missing connectedUser data");
-        console.log("connectedUser...", connectedUser);
+        if (!connectedUser) return;
 
-        const fetchedChildrenIDs = await jsonrpcRequest(
+        const parent = await jsonrpcRequest(
           connectedUser.sessionId,
           connectedUser.password,
-          config.model.parents,
-          [[["contact_id", "=", connectedUser.userid[0]]]],
-          // [],
-          ["child_ids", "contact_id"]
-          // ["id"]
+          config.model.craftParent,
+          [[["email", "=", connectedUser.email]]],
+          ["id", "child_ids"]
         );
 
-        console.log("fetchedChildrenIDs...", fetchedChildrenIDs[0].child_ids);
+        if (!parent.length || !parent[0].child_ids.length) return;
 
-        // console.log("filteredData...", filteredData[0].child_ids);
+        const parentChildIds = parent[0].child_ids;
 
-        // const f_Children = await jsonrpcRequest(
-        //   connectedUser.sessionId,
-        //   connectedUser.password,
-        //   config.model.craftParentChildLine,
-        //   // [[["self", "=", connectedUser.userid[0]]]],
-        //   [],
-        //   // ["child_ids", "self"]
-        //   // ["child_ids"]
-        //   []
-        // );
+        const fetchedChildren = await jsonrpcRequest(
+          connectedUser.sessionId,
+          connectedUser.password,
+          config.model.craftParentChildLine,
+          [[["id", "=", parentChildIds]]],
+          ["child_id", "id"]
+        );
 
-        // console.log("f_Children...", f_Children[0]);
+        const studentIds = getStudentIds(fetchedChildren);
 
-        if (
-          !fetchedChildrenIDs.length ||
-          // !fetchedChildrenIDs[0].student_ids.length
-          !fetchedChildrenIDs[0].child_ids.length
-        )
-          throw new Error("No children found");
-
-        const studentIds = fetchedChildrenIDs[0].child_ids;
-        const students = await jsonrpcRequest(
+        const childrenList = await jsonrpcRequest(
           connectedUser.sessionId,
           connectedUser.password,
           config.model.craftStudent,
-          [],
+          [[["id", "=", studentIds]]],
           ["id", "contact_id"]
-          // []
         );
-
-        console.log("students...", students);
-
-        const childrenList = students.filter((student) =>
-          studentIds.includes(student.id)
-        );
-
-        if (!childrenList.length) throw new Error("No matching students found");
 
         setChildren(childrenList);
         const initialSelectedChild = childrenList[0];
@@ -179,7 +154,6 @@ const LoginScreen = () => {
         // );
 
         // storeObject("taxes", taxes);
-        // console.log("TAX...", taxes);
       } catch (error) {
         console.error("Error fetching role:", error);
       }

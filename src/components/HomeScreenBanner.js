@@ -76,7 +76,7 @@ function HomeScreenBanner() {
             userData = await jsonrpcRequest(
               sessionId,
               password,
-              config.model.parents,
+              config.model.craftParent,
               [[["contact_id", "=", userid[0]]]],
               ["image_1024"]
             );
@@ -86,7 +86,7 @@ function HomeScreenBanner() {
             userData = await jsonrpcRequest(
               sessionId,
               password,
-              config.model.teachers,
+              config.model.craftTeachers,
               [[["work_contact_id", "=", userid[0]]]],
               ["image_1024"]
             );
@@ -96,8 +96,8 @@ function HomeScreenBanner() {
             userData = await jsonrpcRequest(
               sessionId,
               password,
-              config.model.opStudent,
-              [[["partner_id", "=", userid[0]]]],
+              config.model.craftStudent,
+              [[["contact_id", "=", userid[0]]]],
               ["image_1024"]
             );
             break;
@@ -135,10 +135,10 @@ function HomeScreenBanner() {
   };
 
   useEffect(() => {
-    if (connectedUser.role === "parent" && selectedChild?.partner_id) {
+    if (connectedUser.role === "parent" && selectedChild?.contact_id) {
       setAccount(
         <Text color={"white"} fontWeight={"medium"}>
-          {selectedChild.partner_id[1]}
+          {selectedChild.contact_id[1]}
         </Text>
       );
     }
@@ -175,7 +175,7 @@ function HomeScreenBanner() {
             )}
           </Pressable>
         </HStack>
-        {connectedUser.role === "parent" && selectedChild?.partner_id && (
+        {connectedUser.role === "parent" && selectedChild?.contact_id && (
           <Box
             alignSelf={"baseline"}
             ml={8}
