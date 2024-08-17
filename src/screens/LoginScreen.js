@@ -24,11 +24,14 @@ const LoginScreen = () => {
     email: "",
     password: "",
     userid: "",
-    groups_id: [],
     role: "",
   });
   const [selectedChild, setSelectedChild] = useState({});
   const [children, setChildren] = useState([]);
+
+  const getStudentIds = (data) => {
+    return data.map((fetchedChild) => fetchedChild.child_id[0]);
+  };
 
   const handleLogin = async (values) => {
     setLoading(false);
@@ -37,54 +40,36 @@ const LoginScreen = () => {
     try {
       const sessionId = await authenticate(username, password);
 
-      const user = await jsonrpcRequest(
-        sessionId,
-        password,
-        config.model.users,
-        [[["email", "=", username]]],
-        ["self", "is_student", "is_parent", "groups_id", "craft_role"]
-        // ["self",  "res_role"]
-        // []
-      );
+      if (sessionId > 0) {
+        const user = await jsonrpcRequest(
+          sessionId,
+          password,
+          config.model.users,
+          [[["email", "=", username]]],
+          ["self", "craft_role"]
+        );
 
-      console.log("user...", user, sessionId);
+        if (user.length > 0) {
+          const userid = user[0].self;
+          setError("");
+          const role = user[0].craft_role;
 
-      if (user.length > 0) {
-        const userid = user[0].self;
-        setError("");
-        const role = user[0].groups_id.includes(
-          Number(process.env.EXPO_PUBLIC_ADMIN_ID)
-        )
-          ? "admin"
-          : user[0].groups_id.includes(
-              Number(process.env.EXPO_PUBLIC_TEACHER_ID)
-            )
-          ? "teacher"
-          : user[0].is_parent
-          ? "parent"
-          : user[0].is_student
-          ? "student"
-          : "other";
+          await storeObject("connectedUser", {
+            sessionId: sessionId,
+            email: username,
+            password: password,
+            userid: userid,
+            role: role,
+          });
 
-        // console.log("role...", role);
-
-        await storeObject("connectedUser", {
-          sessionId: sessionId,
-          email: username,
-          password: password,
-          userid: userid,
-          groups_id: user[0].groups_id,
-          role: role,
-        });
-
-        setConnectedUser({
-          sessionId: sessionId,
-          email: username,
-          password: password,
-          userid: userid,
-          groups_id: user[0].groups_id,
-          role: role,
-        });
+          setConnectedUser({
+            sessionId: sessionId,
+            email: username,
+            password: password,
+            userid: userid,
+            role: role,
+          });
+        }
       } else {
         setError("Nom d'utilisateur ou mot de passe incorrect !");
       }
@@ -101,33 +86,37 @@ const LoginScreen = () => {
 
     const loadParentData = async () => {
       try {
-        if (!connectedUser) throw new Error("Missing connectedUser data");
+        if (!connectedUser) return;
+
+        const parent = await jsonrpcRequest(
+          connectedUser.sessionId,
+          connectedUser.password,
+          config.model.craftParent,
+          [[["email", "=", connectedUser.email]]],
+          ["id", "child_ids"]
+        );
+
+        if (!parent.length || !parent[0].child_ids.length) return;
+
+        const parentChildIds = parent[0].child_ids;
 
         const fetchedChildren = await jsonrpcRequest(
           connectedUser.sessionId,
           connectedUser.password,
-          config.model.opParents,
-          [[["name", "=", connectedUser.userid[0]]]],
-          ["student_ids"]
+          config.model.craftParentChildLine,
+          [[["id", "=", parentChildIds]]],
+          ["child_id", "id"]
         );
 
-        if (!fetchedChildren.length || !fetchedChildren[0].student_ids.length)
-          throw new Error("No children found");
+        const studentIds = getStudentIds(fetchedChildren);
 
-        const studentIds = fetchedChildren[0].student_ids;
-        const students = await jsonrpcRequest(
+        const childrenList = await jsonrpcRequest(
           connectedUser.sessionId,
           connectedUser.password,
-          config.model.opStudent,
-          [],
-          ["id", "partner_id"]
+          config.model.craftStudent,
+          [[["id", "=", studentIds]]],
+          ["id", "contact_id"]
         );
-
-        const childrenList = students.filter((student) =>
-          studentIds.includes(student.id)
-        );
-
-        if (!childrenList.length) throw new Error("No matching students found");
 
         setChildren(childrenList);
         const initialSelectedChild = childrenList[0];
@@ -156,16 +145,15 @@ const LoginScreen = () => {
 
         storeObject("currencies", currencies);
 
-        const taxes = await jsonrpcRequest(
-          connectedUser.sessionId,
-          connectedUser.password,
-          config.model.accountTax,
-          [],
-          ["id", "name"]
-        );
+        // const taxes = await jsonrpcRequest(
+        //   connectedUser.sessionId,
+        //   connectedUser.password,
+        //   config.model.accountTax,
+        //   [],
+        //   ["id", "name"]
+        // );
 
-        storeObject("taxes", taxes);
-        // console.log("TAX...", taxes);
+        // storeObject("taxes", taxes);
       } catch (error) {
         console.error("Error fetching role:", error);
       }

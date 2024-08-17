@@ -43,7 +43,7 @@ export const AdminTabNavigator = () => {
           },
           tabBarStyle: {
             backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-            minHeight: "7%",
+            // minHeight: "7%",
           },
           headerShown: false,
         })}
@@ -51,17 +51,17 @@ export const AdminTabNavigator = () => {
         <Tab.Screen
           name="Home"
           component={AdminHomeScreen}
-          options={{ tabBarLabel: "Home" }}
+          options={{ tabBarShowLabel: false }}
         />
         <Tab.Screen
           name="Groups"
           component={AdminGroupScreen}
-          options={{ tabBarLabel: "Groupes" }}
+          options={{ tabBarShowLabel: false }}
         />
         <Tab.Screen
           name="Activities"
           component={AdminActivityScreen}
-          options={{ tabBarLabel: "Activités" }}
+          options={{ tabBarShowLabel: false }}
         />
       </Tab.Navigator>
     </AppProvider>

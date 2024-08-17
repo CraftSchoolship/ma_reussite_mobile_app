@@ -73,8 +73,8 @@ const HomeScreen = () => {
         let domain = [];
         switch (connectedUser?.role) {
           case "parent":
-            if (!selectedChild?.partner_id) return;
-            domain = [["partner_ids", "=", selectedChild?.partner_id[0]]];
+            if (!selectedChild?.contact_id) return;
+            domain = [["partner_ids", "=", selectedChild?.contact_id[0]]];
             break;
           case "student":
             domain = [["partner_ids", "=", connectedUser?.partnerid[0]]];

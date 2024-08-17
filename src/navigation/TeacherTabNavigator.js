@@ -47,7 +47,7 @@ export const TeacherTabNavigator = () => {
           },
           tabBarStyle: {
             backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-            minHeight: "7%",
+            // minHeight: "7%",
           },
           headerShown: false,
         })}
@@ -55,22 +55,22 @@ export const TeacherTabNavigator = () => {
         <Tab.Screen
           name="Home"
           component={TeacherHomeScreen}
-          options={{ tabBarLabel: "Home" }}
+          options={{ tabBarShowLabel: false }}
         />
         <Tab.Screen
           name="Fiches de paie"
           component={TeacherPaymentScreen}
-          options={{ tabBarLabel: "Fiches de paie" }}
+          options={{ tabBarShowLabel: false }}
         />
         <Tab.Screen
           name="Groups"
           component={TeacherGroupScreen}
-          options={{ tabBarLabel: "Groupes" }}
+          options={{ tabBarShowLabel: false }}
         />
         <Tab.Screen
           name="Activities"
           component={TeacherActivityScreen}
-          options={{ tabBarLabel: "Activités" }}
+          options={{ tabBarShowLabel: false }}
         />
       </Tab.Navigator>
     </AppProvider>

@@ -35,7 +35,7 @@ const HomeScreen = () => {
 
   useEffect(() => {
     const connectedUser = route?.params;
-    const { sessionId, password, userid } = connectedUser;
+    const { sessionId, email, password, userid, role } = connectedUser;
     setSessionId(sessionId);
     setPassword(password);
     setUserid(userid[0]);
@@ -49,6 +49,7 @@ const HomeScreen = () => {
           password,
           config.model.craftSession,
           [[["partner_ids", "=", userid]]],
+          // [],
           [
             "classroom_id",
             "recurrency",
@@ -59,9 +60,10 @@ const HomeScreen = () => {
             "teacher_id",
             "description",
           ]
+          // []
         );
         // console.log("userid...", userid);
-        // console.log("eventsData...", eventsData);
+        console.log("eventsData...", eventsData[0]);
         setEvents(eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);
