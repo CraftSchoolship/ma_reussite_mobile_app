@@ -2,11 +2,13 @@ import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
 import {
   Box,
+  Center,
   KeyboardAvoidingView,
   ScrollView,
   StatusBar,
   Text,
   useToast,
+  View,
   VStack,
 } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
@@ -205,71 +207,55 @@ const LoginScreen = () => {
   }, [children, selectedChild, connectedUser]);
 
   return (
-    <>
-      <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
+    <View flex="1">
       <LoginScreenBanner />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <ScrollView keyboardDismissMode="on-drag">
-          <Box height={"100%"}>
-            <VStack
-              width={"full"}
-              minH={"70%"} // Decrease minHeight to move the form up
-              justifyContent={"flex-start"} // Move items to the top
-              alignItems={"center"}
-              paddingTop={24} // Adjust padding as needed to fine-tune the position
-            >
-              <Box mx={"auto"} width="80%" display={"-ms-flexbox"}>
-                <Box alignItems="center" marginBottom={2}>
-                  <Text color={"black"} fontSize="2xl" bold>
-                    S'identifier
-                  </Text>
-                </Box>
-                <Formik
-                  initialValues={{ email: "", password: "" }}
-                  validationSchema={loginValidationSchema}
-                  onSubmit={handleLogin}
-                >
-                  {({ handleSubmit, isValid }) => (
-                    <>
-                      <CustomInput
-                        label="Email"
-                        name="email"
-                        keyboardType="email-address"
-                        inputRef={input1Ref}
-                        onSubmitEditing={() => input2Ref.current.focus()}
-                        clearButtonMode="always"
-                      />
-                      <CustomInput
-                        label="Mot de passe"
-                        name="password"
-                        secureTextEntry
-                        showPassword={showPassword}
-                        setShowPassword={setShowPassword}
-                        inputRef={input2Ref}
-                        onSubmitEditing={handleSubmit}
-                      />
-                      {error ? (
-                        <Text color={"danger.500"} textAlign={"center"} mt={3}>
-                          {error}
-                        </Text>
-                      ) : null}
-                      <CustomButton
-                        onPress={handleSubmit}
-                        title="Se connecter"
-                        isDisabled={!isValid}
-                        loading={loading}
-                      />
-                    </>
-                  )}
-                </Formik>
-              </Box>
+
+      <Box style={{ flex: 1, padding: 58, marginTop: 35 }}>
+        <Center>
+          <Text color={"black"} fontSize="2xl" bold>
+            S'identifier
+          </Text>
+        </Center>
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={loginValidationSchema}
+          onSubmit={handleLogin}
+        >
+          {({ handleSubmit, isValid }) => (
+            <VStack space={10} marginTop={10}>
+              <CustomInput
+                label="Email"
+                name="email"
+                keyboardType="email-address"
+                inputRef={input1Ref}
+                onSubmitEditing={() => input2Ref.current.focus()}
+                clearButtonMode="always"
+              />
+              <CustomInput
+                label="Mot de passe"
+                name="password"
+                secureTextEntry
+                showPassword={showPassword}
+                setShowPassword={setShowPassword}
+                inputRef={input2Ref}
+                onSubmitEditing={handleSubmit}
+              />
+              {error ? (
+                <Text color={"danger.500"} textAlign={"center"} mt={3}>
+                  {error}
+                </Text>
+              ) : null}
+              <CustomButton
+                onPress={handleSubmit}
+                title="Se connecter"
+                isDisabled={!isValid}
+                loading={loading}
+              />
             </VStack>
-          </Box>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </>
+          )}
+        </Formik>
+      </Box>
+    </View>
   );
 };
 
