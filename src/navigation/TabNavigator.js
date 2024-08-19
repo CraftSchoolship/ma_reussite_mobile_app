@@ -51,7 +51,7 @@ const TabNavigator = () => {
           },
           tabBarStyle: {
             backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-            minHeight: "7%",
+            // minHeight: "7%",
           },
           headerShown: false,
         })}
@@ -59,27 +59,27 @@ const TabNavigator = () => {
         <Tab.Screen
           name="Home"
           component={HomeScreen}
-          options={{ tabBarLabel: "Home" }}
+          options={{ tabBarShowLabel: false }}
         />
         <Tab.Screen
           name="Payment"
           component={PaymentScreen}
-          options={{ tabBarLabel: "Payement" }}
+          options={{ tabBarShowLabel: false }}
         />
         <Tab.Screen
           name="Groups"
           component={GroupScreen}
-          options={{ tabBarLabel: "Groupes" }}
+          options={{ tabBarShowLabel: false }}
         />
         <Tab.Screen
           name="Notes"
           component={NoteScreen}
-          options={{ tabBarLabel: "Notes" }}
+          options={{ tabBarShowLabel: false }}
         />
         <Tab.Screen
           name="Activities"
           component={ActivityScreen}
-          options={{ tabBarLabel: "Activités" }}
+          options={{ tabBarShowLabel: false }}
         />
       </Tab.Navigator>
     </AppProvider>

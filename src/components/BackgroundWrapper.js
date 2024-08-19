@@ -1,6 +1,7 @@
 import React from "react";
-import { ImageBackground, StyleSheet } from "react-native";
+import { ImageBackground, SafeAreaView, StyleSheet } from "react-native";
 import HomeScreenBanner from "./HomeScreenBanner";
+import { StatusBar } from "native-base";
 
 const BackgroundWrapper = ({
   children,
@@ -10,7 +11,7 @@ const BackgroundWrapper = ({
   // role,
 }) => {
   return (
-    <>
+    <SafeAreaView>
       <HomeScreenBanner
         // role={role}
         listOfChildren={listOfChildren}
@@ -23,7 +24,7 @@ const BackgroundWrapper = ({
       >
         {children}
       </ImageBackground>
-    </>
+    </SafeAreaView>
   );
 };
 

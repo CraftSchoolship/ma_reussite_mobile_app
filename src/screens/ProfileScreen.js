@@ -57,7 +57,7 @@ const ProfileScreen = () => {
   }, []);
 
   useEffect(() => {
-    // console.log("connectedUser.userid[0]...", connectedUser.userid[0]);
+    console.log("connectedUser.userid[0]...", connectedUser);
 
     const loadProfileImage = async () => {
       try {
@@ -67,11 +67,21 @@ const ProfileScreen = () => {
         }
         let userData = [];
         switch (connectedUser.role) {
+          case "student":
+            userData = await jsonrpcRequest(
+              connectedUser.sessionId,
+              connectedUser.password,
+              config.model.craftStudent,
+              [[["contact_id", "=", connectedUser.userid[0]]]],
+              ["image_1024", "name", "email"]
+            );
+            break;
+
           case "parent":
             userData = await jsonrpcRequest(
               connectedUser.sessionId,
               connectedUser.password,
-              config.model.parents,
+              config.model.craftParent,
               [[["contact_id", "=", connectedUser.userid[0]]]],
               ["image_1024", "name", "email", "contact_id"]
             );
@@ -81,23 +91,27 @@ const ProfileScreen = () => {
             userData = await jsonrpcRequest(
               connectedUser.sessionId,
               connectedUser.password,
-              config.model.teachers,
+              config.model.craftTeachers,
               [[["work_contact_id", "=", connectedUser.userid[0]]]],
               ["image_1024", "name", "work_email", "work_contact_id"]
             );
             break;
 
-          default:
+          case "admin":
             userData = await jsonrpcRequest(
               connectedUser.sessionId,
               connectedUser.password,
-              config.model.opStudent,
+              config.model.users,
               [[["partner_id", "=", connectedUser.userid[0]]]],
               ["image_1024", "name", "email"]
             );
             break;
+
+          default:
+            break;
         }
-        // console.log("userData...", userData);
+
+        console.log("(L-113)userData...", userData);
 
         if (userData && Array.isArray(userData) && userData.length > 0) {
           const { image_1024, name, email, work_email } = userData[0];
@@ -136,7 +150,9 @@ const ProfileScreen = () => {
         {loading ? (
           <Avatar
             size="2xl"
-            source={{ uri: "https://placehold.co/400x400.png" }}
+            source={{
+              uri: "https://placehold.co/400x400.png",
+            }}
             onError={(e) => {
               console.error("Error displaying image:", e.nativeEvent.error);
             }}
@@ -265,7 +281,7 @@ const ProfileScreen = () => {
                           fontWeight={"bold"}
                           fontSize={"lg"}
                         >
-                          {child.partner_id[1]}
+                          {child.contact_id[1]}
                         </Text>
                       </HStack>
                       {child.id === selectedChild.id ? (

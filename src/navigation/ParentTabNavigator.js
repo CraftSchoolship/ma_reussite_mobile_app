@@ -49,7 +49,7 @@ export const ParentTabNavigator = () => {
           },
           tabBarStyle: {
             backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-            minHeight: "7%",
+            // minHeight: "7%",
           },
           headerShown: false,
         })}
@@ -57,27 +57,27 @@ export const ParentTabNavigator = () => {
         <Tab.Screen
           name="Home"
           component={ParentHomeScreen}
-          options={{ tabBarLabel: "Home" }}
+          options={{ tabBarShowLabel: false }}
         />
         <Tab.Screen
           name="Payment"
           component={ParentPaymentScreen}
-          options={{ tabBarLabel: "Payement" }}
+          options={{ tabBarShowLabel: false }}
         />
         <Tab.Screen
           name="Groups"
           component={ParentGroupScreen}
-          options={{ tabBarLabel: "Groupes" }}
+          options={{ tabBarShowLabel: false }}
         />
         <Tab.Screen
           name="Notes"
           component={ParentNoteScreen}
-          options={{ tabBarLabel: "Notes" }}
+          options={{ tabBarShowLabel: false }}
         />
         <Tab.Screen
           name="Activities"
           component={ParentActivityScreen}
-          options={{ tabBarLabel: "Activités" }}
+          options={{ tabBarShowLabel: false }}
         />
       </Tab.Navigator>
     </AppProvider>
