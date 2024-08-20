@@ -41,6 +41,7 @@ const StackNavigator = () => {
         // options={{ headerShown: false }}
         name="Profile"
         component={ProfileScreen}
+        options={{ headerBackTitle: "Back" }}
       />
     </Stack.Navigator>
     // </AppProvider>
