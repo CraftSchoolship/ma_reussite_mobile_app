@@ -147,15 +147,21 @@ function HomeScreenBanner() {
   return (
     <Box bg="white">
       <VStack>
-        <HStack>
+        <HStack
+          style={{
+            justifyContent: "space-between",
+            padding: 18,
+            alignItems: "center",
+          }}
+        >
           <Image
             size="sm"
-            w={"70%"}
-            ml={2}
+            resizeMode="contain"
             source={require("../../assets/images/ma_reussite_other_screens.png")}
             alt="Alternate Text"
+            style={{ width: 200 }}
           />
-          <Pressable m={"auto"} onPress={goToProfile}>
+          <Pressable onPress={goToProfile}>
             {loading ? (
               <Avatar
                 size="md"

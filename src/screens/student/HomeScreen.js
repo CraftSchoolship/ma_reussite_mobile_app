@@ -94,7 +94,7 @@ const HomeScreen = () => {
   }, [markedDate]);
 
   return (
-    <Box flex={1} bg={"white"}>
+    <Box flex={1}>
       <BackgroundWrapper navigation={navigation}>
         <Box
           mt={4}

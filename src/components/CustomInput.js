@@ -18,7 +18,7 @@ const CustomInput = ({
   const { error, touched } = meta;
 
   return (
-    <FormControl mt={"10%"} isInvalid={touched && !!error}>
+    <FormControl isInvalid={touched && !!error}>
       <FormControl.Label>{label}</FormControl.Label>
       <Input
         ref={inputRef}
@@ -29,6 +29,7 @@ const CustomInput = ({
         value={value}
         onChangeText={onChange(name)}
         onBlur={onBlur(name)}
+        _focus={{ backgroundColor: "transparent" }}
         onSubmitEditing={onSubmitEditing}
         type={secureTextEntry && !showPassword ? "password" : "text"}
         InputRightElement={
