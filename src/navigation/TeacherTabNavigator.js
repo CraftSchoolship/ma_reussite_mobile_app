@@ -10,6 +10,7 @@ import {
 } from "../screens";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { AppProvider } from "../hooks/AppProvider";
+import CustomTabBarButton from "../components/CustomTabBarButton";
 
 const Tab = createBottomTabNavigator();
 
@@ -36,41 +37,44 @@ export const TeacherTabNavigator = () => {
 
             return <MaterialIcons name={iconName} size={size} color={color} />;
           },
-          tabBarActiveTintColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
+          tabBarActiveTintColor: "white",
           tabBarInactiveTintColor: "white",
           tabBarActiveBackgroundColor: "white",
-          tabBarItemStyle: {
-            paddingBottom: 5,
-          },
-          tabBarIconStyle: {
-            backgroundColor: "white",
-          },
+
           tabBarStyle: {
             backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-            // minHeight: "7%",
           },
           headerShown: false,
+          tabBarShowLabel: true,
         })}
       >
         <Tab.Screen
           name="Home"
           component={TeacherHomeScreen}
-          options={{ tabBarShowLabel: false }}
+          options={{
+            tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          }}
         />
         <Tab.Screen
           name="Fiches de paie"
           component={TeacherPaymentScreen}
-          options={{ tabBarShowLabel: false }}
+          options={{
+            tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          }}
         />
         <Tab.Screen
           name="Groups"
           component={TeacherGroupScreen}
-          options={{ tabBarShowLabel: false }}
+          options={{
+            tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          }}
         />
         <Tab.Screen
           name="Activities"
           component={TeacherActivityScreen}
-          options={{ tabBarShowLabel: false }}
+          options={{
+            tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          }}
         />
       </Tab.Navigator>
     </AppProvider>

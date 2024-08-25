@@ -9,6 +9,8 @@ import customTheme from "./src/themes/customTheme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import KeyboardDismissWrapper from "./src/hooks/useKeyboard";
+import { Platform } from "react-native";
+
 // import { SelectedChildProvider } from "./src/hooks/SelectedChildContext";
 
 SplashScreen.preventAutoHideAsync();
@@ -74,7 +76,10 @@ const App = () => {
     <NativeBaseProvider isSSR theme={customTheme}>
       {/* <SelectedChildProvider> */}
       <SafeAreaProvider style={{ flex: 1 }}>
-        <StatusBar barStyle="default" />
+        <StatusBar
+          barStyle={Platform.OS ? "dark-content" : "light-content"}
+          backgroundColor="white"
+        />
         <KeyboardDismissWrapper>
           <AppNavigator />
         </KeyboardDismissWrapper>
