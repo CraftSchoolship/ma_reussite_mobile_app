@@ -76,10 +76,6 @@ const App = () => {
     <NativeBaseProvider isSSR theme={customTheme}>
       {/* <SelectedChildProvider> */}
       <SafeAreaProvider style={{ flex: 1 }}>
-        <StatusBar
-          barStyle={Platform.OS ? "dark-content" : "light-content"}
-          backgroundColor="white"
-        />
         <KeyboardDismissWrapper>
           <AppNavigator />
         </KeyboardDismissWrapper>

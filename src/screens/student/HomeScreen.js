@@ -145,6 +145,7 @@ const HomeScreen = () => {
                   classroom={eventMarked.classroom}
                 />
               ))}
+            {console.log(todaysEvents)}
           </VStack>
         </ScrollView>
 

@@ -11,73 +11,98 @@ import {
 } from "../screens";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { AppProvider } from "../hooks/AppProvider";
+import CustomTabBarButton from "../components/CustomTabBarButton";
+import IconHome from "../../assets/images/home.png";
+import IconPayment from "../../assets/images/payment.png";
+import IconNotifications from "../../assets/images/notifications.png";
+import IconGroups from "../../assets/images/group.png";
+import IconNotes from "../../assets/images/notes.png";
+import { Image } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Tab = createBottomTabNavigator();
 
 export const ParentTabNavigator = () => {
+  const insets = useSafeAreaInsets();
+
   const propagedRoute = useRoute();
   return (
     <AppProvider>
       <Tab.Navigator
         screenOptions={({ route }) => ({
-          tabBarIcon: ({ color, size }) => {
-            let iconName;
+          tabBarIcon: () => {
+            let CustomIcon;
             route.params = propagedRoute?.params;
 
             if (route.name === "Home") {
-              iconName = "home";
+              CustomIcon = IconHome;
             } else if (route.name === "Payment") {
-              iconName = "payment";
+              CustomIcon = IconPayment;
             } else if (route.name === "Groups") {
-              iconName = "group";
+              CustomIcon = IconGroups;
             } else if (route.name === "Notes") {
-              iconName = "timeline";
+              CustomIcon = IconNotes;
             } else if (route.name === "Activities") {
-              iconName = "notifications";
+              CustomIcon = IconNotifications;
             }
 
-            return <MaterialIcons name={iconName} size={size} color={color} />;
+            return (
+              <Image
+                source={CustomIcon}
+                resizeMode="contain"
+                style={{
+                  width: 30,
+                  height: 30,
+                }}
+              />
+            );
           },
-          tabBarActiveTintColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
+          tabBarActiveTintColor: "white",
           tabBarInactiveTintColor: "white",
           tabBarActiveBackgroundColor: "white",
-          tabBarItemStyle: {
-            paddingBottom: 5,
-          },
-          tabBarIconStyle: {
-            backgroundColor: "white",
-          },
+
           tabBarStyle: {
             backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-            // minHeight: "7%",
           },
           headerShown: false,
+          tabBarShowLabel: true,
         })}
+        safeAreaInsets={{ bottom: 40 }}
       >
         <Tab.Screen
           name="Home"
           component={ParentHomeScreen}
-          options={{ tabBarShowLabel: false }}
+          options={{
+            tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          }}
         />
         <Tab.Screen
           name="Payment"
           component={ParentPaymentScreen}
-          options={{ tabBarShowLabel: false }}
+          options={{
+            tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          }}
         />
         <Tab.Screen
           name="Groups"
           component={ParentGroupScreen}
-          options={{ tabBarShowLabel: false }}
+          options={{
+            tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          }}
         />
         <Tab.Screen
           name="Notes"
           component={ParentNoteScreen}
-          options={{ tabBarShowLabel: false }}
+          options={{
+            tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          }}
         />
         <Tab.Screen
           name="Activities"
           component={ParentActivityScreen}
-          options={{ tabBarShowLabel: false }}
+          options={{
+            tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          }}
         />
       </Tab.Navigator>
     </AppProvider>

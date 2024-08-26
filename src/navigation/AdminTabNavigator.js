@@ -9,59 +9,77 @@ import {
   AdminHomeScreen,
 } from "../screens";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import CustomTabBarButton from "../components/CustomTabBarButton";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import IconHome from "../../assets/images/home.png";
+import IconNotifications from "../../assets/images/notifications.png";
+import IconGroups from "../../assets/images/group.png";
+import { Image } from "react-native";
 
 const Tab = createBottomTabNavigator();
 
 export const AdminTabNavigator = () => {
+  const insets = useSafeAreaInsets();
   const propagedRoute = useRoute();
   return (
     <AppProvider>
       <Tab.Navigator
         screenOptions={({ route }) => ({
-          tabBarIcon: ({ color, size }) => {
-            let iconName;
+          tabBarIcon: () => {
+            let CustomIcon;
             route.params = propagedRoute?.params;
 
             if (route.name === "Home") {
-              iconName = "home";
+              CustomIcon = IconHome;
             } else if (route.name === "Groups") {
-              iconName = "group";
+              CustomIcon = IconGroups;
             } else if (route.name === "Activities") {
-              iconName = "notifications";
+              CustomIcon = IconNotifications;
             }
 
-            return <MaterialIcons name={iconName} size={size} color={color} />;
+            return (
+              <Image
+                source={CustomIcon}
+                resizeMode="contain"
+                style={{
+                  width: 26,
+                  height: 26,
+                }}
+              />
+            );
           },
-          tabBarActiveTintColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
+          tabBarActiveTintColor: "white",
           tabBarInactiveTintColor: "white",
           tabBarActiveBackgroundColor: "white",
-          tabBarItemStyle: {
-            paddingBottom: 5,
-          },
-          tabBarIconStyle: {
-            backgroundColor: "white",
-          },
+
           tabBarStyle: {
             backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-            // minHeight: "7%",
           },
           headerShown: false,
+          tabBarShowLabel: true,
         })}
+        safeAreaInsets={{ bottom: 40 }}
       >
         <Tab.Screen
           name="Home"
           component={AdminHomeScreen}
-          options={{ tabBarShowLabel: false }}
+          options={{
+            tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          }}
         />
         <Tab.Screen
           name="Groups"
           component={AdminGroupScreen}
-          options={{ tabBarShowLabel: false }}
+          options={{
+            tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          }}
         />
         <Tab.Screen
           name="Activities"
           component={AdminActivityScreen}
-          options={{ tabBarShowLabel: false }}
+          options={{
+            tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          }}
         />
       </Tab.Navigator>
     </AppProvider>

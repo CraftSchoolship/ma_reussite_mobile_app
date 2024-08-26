@@ -6,7 +6,9 @@ import {
   HStack,
   Image,
   Pressable,
+  StatusBar,
   Text,
+  View,
   VStack,
 } from "native-base";
 import React, { useEffect, useMemo, useState } from "react";
@@ -145,57 +147,66 @@ function HomeScreenBanner() {
   }, [connectedUser.role, selectedChild]);
 
   return (
-    <Box bg="white">
-      <VStack>
-        <HStack
-          style={{
-            justifyContent: "space-between",
-            padding: 18,
-            alignItems: "center",
-          }}
-        >
-          <Image
-            size="sm"
-            resizeMode="contain"
-            source={require("../../assets/images/ma_reussite_other_screens.png")}
-            alt="Alternate Text"
-            style={{ width: 200 }}
-          />
-          <Pressable onPress={goToProfile}>
-            {loading ? (
-              <Avatar
-                size="md"
-                source={{ uri: "https://placehold.co/400x400.png" }}
-                onError={(e) => {
-                  console.error("Error displaying image:", e.nativeEvent.error);
-                }}
-              />
-            ) : (
-              <Avatar
-                size="md"
-                source={{ uri: imageUri }}
-                onError={(e) => {
-                  console.error("Error displaying image:", e.nativeEvent.error);
-                }}
-              />
-            )}
-          </Pressable>
-        </HStack>
-        {connectedUser.role === "parent" && selectedChild?.contact_id && (
-          <Box
-            alignSelf={"baseline"}
-            ml={8}
-            px={2}
-            py={0.5}
-            mb={1}
-            borderRadius={"sm"}
-            bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
+    <>
+      <StatusBar barStyle={"dark-content"} />
+      <View backgroundColor="white">
+        <VStack>
+          <HStack
+            style={{
+              justifyContent: "space-between",
+              padding: 18,
+              alignItems: "center",
+            }}
           >
-            {account}
-          </Box>
-        )}
-      </VStack>
-    </Box>
+            <Image
+              size="sm"
+              resizeMode="contain"
+              source={require("../../assets/images/ma_reussite_other_screens.png")}
+              alt="Alternate Text"
+              style={{ width: 200 }}
+            />
+            <Pressable onPress={goToProfile}>
+              {loading ? (
+                <Avatar
+                  size="md"
+                  source={{ uri: "https://placehold.co/400x400.png" }}
+                  onError={(e) => {
+                    console.error(
+                      "Error displaying image:",
+                      e.nativeEvent.error
+                    );
+                  }}
+                />
+              ) : (
+                <Avatar
+                  size="md"
+                  source={{ uri: imageUri }}
+                  onError={(e) => {
+                    console.error(
+                      "Error displaying image:",
+                      e.nativeEvent.error
+                    );
+                  }}
+                />
+              )}
+            </Pressable>
+          </HStack>
+          {connectedUser.role === "parent" && selectedChild?.contact_id && (
+            <Box
+              alignSelf={"baseline"}
+              ml={8}
+              px={2}
+              py={0.5}
+              mb={1}
+              borderRadius={"sm"}
+              bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
+            >
+              {account}
+            </Box>
+          )}
+        </VStack>
+      </View>
+    </>
   );
 }
 

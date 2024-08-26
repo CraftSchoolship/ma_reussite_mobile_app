@@ -6,6 +6,7 @@ import { TeacherTabNavigator } from "./TeacherTabNavigator";
 import { AdminTabNavigator } from "./AdminTabNavigator";
 import TabNavigator from "./TabNavigator";
 import { AppProvider } from "../hooks/AppProvider";
+import { LoginScreenBanner } from "../components";
 
 const Stack = createStackNavigator();
 
@@ -33,7 +34,7 @@ const StackNavigator = () => {
         component={TabNavigator}
       />
       <Stack.Screen
-        options={{ headerShown: false }}
+        options={{ headerShown: true, header: () => <LoginScreenBanner /> }}
         name="Login"
         component={LoginScreen}
       />

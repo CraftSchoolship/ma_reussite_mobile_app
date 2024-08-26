@@ -1,4 +1,3 @@
-import { MaterialIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useRoute } from "@react-navigation/native";
 import React from "react";
@@ -11,31 +10,47 @@ import {
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { AppProvider } from "../hooks/AppProvider";
 import CustomTabBarButton from "../components/CustomTabBarButton";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import IconHome from "../../assets/images/home.png";
+import IconPayment from "../../assets/images/payment.png";
+import IconNotifications from "../../assets/images/notifications.png";
+import IconGroups from "../../assets/images/group.png";
+import { Image } from "react-native";
 
 const Tab = createBottomTabNavigator();
 
 export const TeacherTabNavigator = () => {
+  const insets = useSafeAreaInsets();
+
   const propagedRoute = useRoute();
   return (
     <AppProvider>
       <Tab.Navigator
         screenOptions={({ route }) => ({
-          tabBarIcon: ({ color, size }) => {
-            let iconName;
+          tabBarIcon: () => {
+            let CustomIcon;
             route.params = propagedRoute?.params;
 
             if (route.name === "Home") {
-              iconName = "home";
+              CustomIcon = IconHome;
             } else if (route.name === "Fiches de paie") {
-              // receipt-long
-              iconName = "receipt";
+              CustomIcon = IconPayment;
             } else if (route.name === "Groups") {
-              iconName = "group";
+              CustomIcon = IconGroups;
             } else if (route.name === "Activities") {
-              iconName = "notifications";
+              CustomIcon = IconNotifications;
             }
 
-            return <MaterialIcons name={iconName} size={size} color={color} />;
+            return (
+              <Image
+                source={CustomIcon}
+                resizeMode="contain"
+                style={{
+                  width: 30,
+                  height: 30,
+                }}
+              />
+            );
           },
           tabBarActiveTintColor: "white",
           tabBarInactiveTintColor: "white",
@@ -47,6 +62,7 @@ export const TeacherTabNavigator = () => {
           headerShown: false,
           tabBarShowLabel: true,
         })}
+        safeAreaInsets={{ bottom: 40 }}
       >
         <Tab.Screen
           name="Home"

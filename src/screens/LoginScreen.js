@@ -1,16 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
-import {
-  Box,
-  Center,
-  KeyboardAvoidingView,
-  ScrollView,
-  StatusBar,
-  Text,
-  useToast,
-  View,
-  VStack,
-} from "native-base";
+import { Box, Center, StatusBar, Text, View, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
 import {
   authenticate,
@@ -21,7 +11,6 @@ import {
 import config from "../api/config";
 import { CustomButton, CustomInput, LoginScreenBanner } from "../components";
 import { loginValidationSchema } from "../validation/formValidation";
-import { Platform } from "react-native";
 
 const LoginScreen = () => {
   const input1Ref = useRef(null);
@@ -195,55 +184,55 @@ const LoginScreen = () => {
   }, [children, selectedChild, connectedUser]);
 
   return (
-    <View flex="1">
-      <LoginScreenBanner />
-
-      <Box style={{ flex: 1, padding: 58, marginTop: 35 }}>
-        <Center>
-          <Text color={"black"} fontSize="2xl" bold>
-            S'identifier
-          </Text>
-        </Center>
-        <Formik
-          initialValues={{ email: "", password: "" }}
-          validationSchema={loginValidationSchema}
-          onSubmit={handleLogin}
-        >
-          {({ handleSubmit, isValid }) => (
-            <VStack space={10} marginTop={10}>
-              <CustomInput
-                label="Email"
-                name="email"
-                keyboardType="email-address"
-                inputRef={input1Ref}
-                onSubmitEditing={() => input2Ref.current.focus()}
-                clearButtonMode="always"
-              />
-              <CustomInput
-                label="Mot de passe"
-                name="password"
-                secureTextEntry
-                showPassword={showPassword}
-                setShowPassword={setShowPassword}
-                inputRef={input2Ref}
-                onSubmitEditing={handleSubmit}
-              />
-              {error ? (
-                <Text color={"danger.500"} textAlign={"center"} mt={3}>
-                  {error}
-                </Text>
-              ) : null}
-              <CustomButton
-                onPress={handleSubmit}
-                title="Se connecter"
-                isDisabled={!isValid}
-                loading={loading}
-              />
-            </VStack>
-          )}
-        </Formik>
-      </Box>
-    </View>
+    <>
+      <View style={{ flex: 1, backgroundColor: "white" }}>
+        <Box style={{ flex: 1, padding: 58, marginTop: 35 }}>
+          <Center>
+            <Text color={"black"} fontSize="2xl" bold>
+              S'identifier
+            </Text>
+          </Center>
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            validationSchema={loginValidationSchema}
+            onSubmit={handleLogin}
+          >
+            {({ handleSubmit, isValid }) => (
+              <VStack space={10} marginTop={10}>
+                <CustomInput
+                  label="Email"
+                  name="email"
+                  keyboardType="email-address"
+                  inputRef={input1Ref}
+                  onSubmitEditing={() => input2Ref.current.focus()}
+                  clearButtonMode="always"
+                />
+                <CustomInput
+                  label="Mot de passe"
+                  name="password"
+                  secureTextEntry
+                  showPassword={showPassword}
+                  setShowPassword={setShowPassword}
+                  inputRef={input2Ref}
+                  onSubmitEditing={handleSubmit}
+                />
+                {error ? (
+                  <Text color={"danger.500"} textAlign={"center"} mt={3}>
+                    {error}
+                  </Text>
+                ) : null}
+                <CustomButton
+                  onPress={handleSubmit}
+                  title="Se connecter"
+                  isDisabled={!isValid}
+                  loading={loading}
+                />
+              </VStack>
+            )}
+          </Formik>
+        </Box>
+      </View>
+    </>
   );
 };
 
