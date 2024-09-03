@@ -16,7 +16,7 @@ import { AppProvider } from "../hooks/AppProvider";
 
 const Tab = createBottomTabNavigator();
 
-const TabNavigator = () => {
+export const TabNavigator = () => {
   const propagedRoute = useRoute();
   return (
     <AppProvider>
@@ -86,4 +86,4 @@ const TabNavigator = () => {
   );
 };
 
-export default TabNavigator;
+// export default TabNavigator;

@@ -26,7 +26,7 @@ const LoginScreen = () => {
     userid: "",
     role: "",
   });
-  const [selectedChild, setSelectedChild] = useState({});
+  const [selectedChild, setSelectedChild] = useState(null);
   const [children, setChildren] = useState([]);
 
   const getStudentIds = (data) => {
@@ -35,39 +35,91 @@ const LoginScreen = () => {
 
   const handleLogin = async (values) => {
     setLoading(false);
-    const username = values.email;
+    const email = values.email;
     const password = values.password;
-    try {
-      const sessionId = await authenticate(username, password);
 
-      if (sessionId > 0) {
+    try {
+      const sessionId = await authenticate(email, password);
+
+      if (sessionId) {
         const user = await jsonrpcRequest(
           sessionId,
           password,
           config.model.users,
-          [[["email", "=", username]]],
-          ["self", "craft_role"]
+          [[["email", "=", email]]],
+          ["self", "craft_role", "image_1024"]
         );
 
         if (user.length > 0) {
           const userid = user[0].self;
-          setError("");
           const role = user[0].craft_role;
+          const imageUri = user[0].image_1024;
+
+          let userData;
+          switch (role) {
+            case "student":
+              userData = await jsonrpcRequest(
+                sessionId,
+                password,
+                config.model.craftStudent,
+                [[["contact_id", "in", userid]]],
+                ["image_1024"]
+              );
+              break;
+
+            case "parent":
+              userData = await jsonrpcRequest(
+                sessionId,
+                password,
+                config.model.craftParent,
+                [[["contact_id", "in", userid]]],
+                ["image_1024"]
+              );
+              break;
+
+            case "teacher":
+              userData = await jsonrpcRequest(
+                sessionId,
+                password,
+                config.model.craftTeachers,
+                [[["work_contact_id", "=", userid[0]]]],
+                ["image_1024"]
+              );
+              break;
+
+            default:
+              userData = await jsonrpcRequest(
+                sessionId,
+                password,
+                config.model.users,
+                [[["partner_id", "in", userid]]],
+                ["image_1024"]
+              );
+              break;
+          }
+
+          const profileImage = imageUri
+            ? `data:image/png;base64,${imageUri}`
+            : null;
+
+          setError("");
 
           await storeObject("connectedUser", {
             sessionId: sessionId,
-            email: username,
+            email: email,
             password: password,
             userid: userid,
             role: role,
+            profileImage: profileImage,
           });
 
           setConnectedUser({
             sessionId: sessionId,
-            email: username,
+            email: email,
             password: password,
             userid: userid,
             role: role,
+            profileImage: profileImage,
           });
         }
       } else {
@@ -115,7 +167,7 @@ const LoginScreen = () => {
           connectedUser.password,
           config.model.craftStudent,
           [[["id", "=", studentIds]]],
-          ["id", "contact_id"]
+          ["id", "contact_id", "image_1024"]
         );
 
         setChildren(childrenList);
@@ -144,16 +196,6 @@ const LoginScreen = () => {
         );
 
         storeObject("currencies", currencies);
-
-        // const taxes = await jsonrpcRequest(
-        //   connectedUser.sessionId,
-        //   connectedUser.password,
-        //   config.model.accountTax,
-        //   [],
-        //   ["id", "name"]
-        // );
-
-        // storeObject("taxes", taxes);
       } catch (error) {
         console.error("Error fetching role:", error);
       }
@@ -163,25 +205,12 @@ const LoginScreen = () => {
   }, [connectedUser]);
 
   useEffect(() => {
-    switch (connectedUser?.role) {
-      case "student":
-        navigation.navigate("TabNavigator", connectedUser);
-        break;
-      case "parent":
-        if (children.length > 0 && Object.keys(selectedChild).length > 0) {
-          navigation.navigate("ParentTabNavigator", connectedUser);
-        }
-        break;
-      case "teacher":
-        navigation.navigate("TeacherTabNavigator", connectedUser);
-        break;
-      case "admin":
-        navigation.navigate("AdminTabNavigator", connectedUser);
-        break;
-      default:
-        break;
+    if (connectedUser?.role === "parent" && selectedChild) {
+      navigation.navigate("DrawerNavigator", { connectedUser });
+    } else if (connectedUser?.role) {
+      navigation.navigate("DrawerNavigator", { connectedUser });
     }
-  }, [children, selectedChild, connectedUser]);
+  }, [connectedUser, selectedChild]);
 
   return (
     <>

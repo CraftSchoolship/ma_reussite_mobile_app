@@ -45,8 +45,6 @@
 //           ["student_id", "type_id", "date", "description"]
 //         );
 
-//         console.log("activitiesData...", activitiesData);
-
 //         if (activitiesData.length > 0) {
 //           setActivities(activitiesData);
 //         }

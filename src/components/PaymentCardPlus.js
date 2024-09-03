@@ -16,7 +16,6 @@ const PaymentCardPlus = ({ paymentDetails, occupation = "student" }) => {
         const taxes = await getObject("taxes");
         taxes.forEach((tax) => {
           if (tax.id === paymentDetails.tax_ids[0]) {
-            console.log("tax name = ", tax.name);
             setTaxName(tax.name);
           }
         });
