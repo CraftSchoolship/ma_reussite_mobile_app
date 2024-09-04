@@ -1,16 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
-import {
-  Box,
-  Center,
-  KeyboardAvoidingView,
-  ScrollView,
-  StatusBar,
-  Text,
-  useToast,
-  View,
-  VStack,
-} from "native-base";
+import { Box, StatusBar, Text, useToast, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
 import {
   authenticate,
@@ -21,7 +11,6 @@ import {
 import config from "../api/config";
 import { CustomButton, CustomInput, LoginScreenBanner } from "../components";
 import { loginValidationSchema } from "../validation/formValidation";
-import { Platform } from "react-native";
 
 const LoginScreen = () => {
   const input1Ref = useRef(null);
@@ -195,55 +184,63 @@ const LoginScreen = () => {
   }, [children, selectedChild, connectedUser]);
 
   return (
-    <View flex="1">
+    <>
+      <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
       <LoginScreenBanner />
-
-      <Box style={{ flex: 1, padding: 58, marginTop: 35 }}>
-        <Center>
-          <Text color={"black"} fontSize="2xl" bold>
-            S'identifier
-          </Text>
-        </Center>
-        <Formik
-          initialValues={{ email: "", password: "" }}
-          validationSchema={loginValidationSchema}
-          onSubmit={handleLogin}
+      <Box height={"100%"}>
+        <VStack
+          width={"full"}
+          minH={"80%"}
+          justifyContent={"center"}
+          alignItems={"center"}
         >
-          {({ handleSubmit, isValid }) => (
-            <VStack space={10} marginTop={10}>
-              <CustomInput
-                label="Email"
-                name="email"
-                keyboardType="email-address"
-                inputRef={input1Ref}
-                onSubmitEditing={() => input2Ref.current.focus()}
-                clearButtonMode="always"
-              />
-              <CustomInput
-                label="Mot de passe"
-                name="password"
-                secureTextEntry
-                showPassword={showPassword}
-                setShowPassword={setShowPassword}
-                inputRef={input2Ref}
-                onSubmitEditing={handleSubmit}
-              />
-              {error ? (
-                <Text color={"danger.500"} textAlign={"center"} mt={3}>
-                  {error}
-                </Text>
-              ) : null}
-              <CustomButton
-                onPress={handleSubmit}
-                title="Se connecter"
-                isDisabled={!isValid}
-                loading={loading}
-              />
-            </VStack>
-          )}
-        </Formik>
+          <Box mx={"auto"} width="80%" display={"flex"}>
+            <Box alignItems="center">
+              <Text color={"black"} fontSize="2xl" bold>
+                S'identifier
+              </Text>
+            </Box>
+            <Formik
+              initialValues={{ email: "", password: "" }}
+              validationSchema={loginValidationSchema}
+              onSubmit={handleLogin}
+            >
+              {({ handleSubmit, isValid }) => (
+                <>
+                  <CustomInput
+                    label="Email"
+                    name="email"
+                    keyboardType="email-address"
+                    inputRef={input1Ref}
+                    onSubmitEditing={() => input2Ref.current.focus()}
+                  />
+                  <CustomInput
+                    label="Mot de passe"
+                    name="password"
+                    secureTextEntry
+                    showPassword={showPassword}
+                    setShowPassword={setShowPassword}
+                    inputRef={input2Ref}
+                    onSubmitEditing={handleSubmit}
+                  />
+                  {error ? (
+                    <Text color={"danger.500"} textAlign={"center"} mt={3}>
+                      {error}
+                    </Text>
+                  ) : null}
+                  <CustomButton
+                    onPress={handleSubmit}
+                    title="Se connecter"
+                    isDisabled={!isValid}
+                    loading={loading}
+                  />
+                </>
+              )}
+            </Formik>
+          </Box>
+        </VStack>
       </Box>
-    </View>
+    </>
   );
 };
 
