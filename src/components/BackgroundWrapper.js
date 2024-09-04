@@ -1,8 +1,7 @@
 import React from "react";
 import { ImageBackground, SafeAreaView, StyleSheet } from "react-native";
 import HomeScreenBanner from "./HomeScreenBanner";
-import { StatusBar, View } from "native-base";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { StatusBar } from "native-base";
 
 const BackgroundWrapper = ({
   children,
@@ -11,9 +10,8 @@ const BackgroundWrapper = ({
   listOfChildren,
   // role,
 }) => {
-  const insets = useSafeAreaInsets();
   return (
-    <View style={{ paddingTop: insets.top }}>
+    <SafeAreaView>
       <HomeScreenBanner
         // role={role}
         listOfChildren={listOfChildren}
@@ -26,7 +24,7 @@ const BackgroundWrapper = ({
       >
         {children}
       </ImageBackground>
-    </View>
+    </SafeAreaView>
   );
 };
 
