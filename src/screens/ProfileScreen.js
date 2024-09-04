@@ -43,15 +43,12 @@ const ProfileScreen = () => {
 
   return (
     <Box flex={1} bg="white">
-      <Center mt={2}>
+      <Center py={3}>
         {loading ? (
           <Avatar
             size="2xl"
             source={{
               uri: "https://placehold.co/400x400.png",
-            }}
-            onError={(e) => {
-              console.error("Error displaying image:", e.nativeEvent.error);
             }}
           />
         ) : (
@@ -121,10 +118,10 @@ const ProfileScreen = () => {
       <ScrollView
         mt={2}
         space={2}
-        flexGrow={1}
-        h={"100%"}
-        w={"100%"}
-        mb={"10%"}
+        // flexGrow={1}
+        h={"full"}
+        w={"full"}
+        // mb={10}
         contentContainerStyle={{ paddingBottom: 80 }}
       >
         <Box mt={4}>

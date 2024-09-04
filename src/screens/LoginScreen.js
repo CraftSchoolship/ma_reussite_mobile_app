@@ -1,6 +1,13 @@
 import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
-import { Box, StatusBar, Text, useToast, VStack } from "native-base";
+import {
+  Box,
+  ScrollView,
+  StatusBar,
+  Text,
+  useToast,
+  VStack,
+} from "native-base";
 import React, { useEffect, useRef, useState } from "react";
 import {
   authenticate,
@@ -217,14 +224,15 @@ const LoginScreen = () => {
     <SafeAreaView flex={1}>
       <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
       <LoginScreenBanner />
-      <Box height={"100%"}>
+      <ScrollView height={1} contentContainerStyle={{ paddingBottom: 80 }}>
         <VStack
           width={"full"}
-          minH={"80%"}
-          justifyContent={"center"}
-          alignItems={"center"}
+          minH={"4/5"}
+          // justifyContent={"center"}
+          // alignItems={"center"}
+          mt={"1/4"}
         >
-          <Box mx={"auto"} width="80%" display={"flex"}>
+          <Box mx={"auto"} width="4/5" display={"flex"}>
             <Box alignItems="center">
               <Text color={"black"} fontSize="2xl" bold>
                 S'identifier
@@ -236,7 +244,7 @@ const LoginScreen = () => {
               onSubmit={handleLogin}
             >
               {({ handleSubmit, isValid }) => (
-                <>
+                <Box>
                   <CustomInput
                     label="Email"
                     name="email"
@@ -264,12 +272,12 @@ const LoginScreen = () => {
                     isDisabled={!isValid}
                     loading={loading}
                   />
-                </>
+                </Box>
               )}
             </Formik>
           </Box>
         </VStack>
-      </Box>
+      </ScrollView>
     </SafeAreaView>
   );
 };
