@@ -76,13 +76,10 @@
 //           // []
 //         );
 
-//         console.log("paymentDetails...", paymentDetails[0]);
-
 //         const currencies = await getObject("currencies");
 
 //         currencies.forEach((currency) => {
 //           if (currency.id === paymentDetails[0].currency_id[0]) {
-//             console.log("currencies...", currency);
 //             setCurrencySybol(currency.symbol);
 //           }
 //         });
@@ -98,7 +95,6 @@
 //             });
 //           }
 //         });
-//         // console.log("paymentTab...", paymentTab);
 
 //         setPayments(paymentTab);
 //       } catch (error) {
@@ -112,10 +108,6 @@
 //       fetchPayment();
 //     }
 //   }, [sessionId, password, userid]);
-
-//   useEffect(() => {
-//     // payments && console.log("User...", new Date().getMinutes(), payments);
-//   }, [payments]);
 
 //   return (
 //     <Box flex={1} bg="white">

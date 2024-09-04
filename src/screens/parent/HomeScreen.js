@@ -7,16 +7,16 @@ import {
   VStack,
   useDisclose,
 } from "native-base";
-import { default as React, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
-import { getObject, jsonrpcRequest, storeObject } from "../../api/apiClient";
+import { getObject, jsonrpcRequest } from "../../api/apiClient";
 import config from "../../api/config";
 import { CalendarCard } from "../../components";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
+import { useAppContext } from "../../hooks/AppProvider";
 import MA_REUSSITE_CUSTOM_COLORS from "../../themes/variables";
 import CalendarLocalConfig from "../../utils/CalendarLocalConfig";
 import { formatOdooEvents } from "../../utils/MarkedDatesFormatage";
-import { useAppContext } from "../../hooks/AppProvider";
 
 CalendarLocalConfig;
 
@@ -29,63 +29,61 @@ const HomeScreen = () => {
   const [markedDate, setMarkedDate] = useState({});
   const [todaysEvents, setTodaysEvents] = useState([]);
   const [today, setToday] = useState("");
-  const [selectedDay, setSelectedDay] = useState("");
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
-  const [connectedUser, setConnectedUser] = useState({
-    sessionId: "",
-    email: "",
-    password: "",
-    partnerid: "",
-    role: "",
-  });
+  const [connectedUser, setConnectedUser] = useState(null);
   const [childrenList, setChildrenList] = useState([]);
   const { selectedChild, setSelectedChild } = useAppContext();
 
   useEffect(() => {
+    const fetchUser = async () => {
+      const storedSelectedChild = await getObject("selectedChild");
+      setSelectedChild(storedSelectedChild);
+    };
+    fetchUser();
+  }, [route]);
+
+  useEffect(() => {
     const getConnectedUser = async () => {
       try {
-        const connectedUser = await getObject("connectedUser");
-        if (connectedUser) {
-          setConnectedUser(connectedUser);
-          const childrenList = await getObject("children");
-          setChildrenList(childrenList);
-          const selectedChild = await getObject("selectedChild");
-          setSelectedChild(selectedChild);
+        const storedUser = await getObject("connectedUser");
+        if (storedUser) {
+          setConnectedUser(storedUser);
+          const children = await getObject("children");
+          setChildrenList(children || []);
+          const child = await getObject("selectedChild");
+          setSelectedChild(child || null);
         }
       } catch (error) {
         console.error("Error while getting connectedUser:", error);
       }
     };
-    getConnectedUser();
-  }, [route, setSelectedChild]);
+    if (childrenList.length < 1) {
+      getConnectedUser();
+    }
+  }, [childrenList]);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        if (
-          !connectedUser ||
-          !connectedUser.sessionId ||
-          !connectedUser.password ||
-          !connectedUser.userid
-        ) {
+        if (!connectedUser || !connectedUser.sessionId || !selectedChild)
           return;
-        }
+
         let domain = [];
-        switch (connectedUser?.role) {
+        switch (connectedUser.role) {
           case "parent":
             if (!selectedChild?.contact_id) return;
-            domain = [["partner_ids", "=", selectedChild?.contact_id[0]]];
+            domain = [["partner_ids", "=", selectedChild.contact_id[0]]];
             break;
           case "student":
-            domain = [["partner_ids", "=", connectedUser?.partnerid[0]]];
+            domain = [["partner_ids", "=", connectedUser.partnerid[0]]];
             break;
           default:
-            console.error("Unsupported role:", connectedUser?.role);
+            console.error("Unsupported role:", connectedUser.role);
             return;
         }
         const eventsData = await jsonrpcRequest(
-          connectedUser?.sessionId,
-          connectedUser?.password,
+          connectedUser.sessionId,
+          connectedUser.password,
           config.model.craftSession,
           [domain],
           [
@@ -109,8 +107,8 @@ const HomeScreen = () => {
 
   useEffect(() => {
     if (events) {
-      const formatedOdooEvents = formatOdooEvents(events);
-      setMarkedDate(formatedOdooEvents);
+      const formattedOdooEvents = formatOdooEvents(events);
+      setMarkedDate(formattedOdooEvents);
     }
   }, [events]);
 
@@ -141,10 +139,6 @@ const HomeScreen = () => {
           <Calendar
             markingType={"multi-dot"}
             onDayPress={(day) => {
-              const currentDaySelected = new Date(day.timestamp).getDay();
-              setSelectedDay(
-                `${CalendarLocalConfig.dayNamesShort[currentDaySelected]} ${day.day}`
-              );
               if (markedDate[day.dateString] !== undefined) {
                 setSelectedDayEvents(markedDate[day.dateString].dots);
               }

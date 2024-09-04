@@ -9,7 +9,7 @@ import {
 } from "native-base";
 import { default as React, useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
-import { jsonrpcRequest } from "../../api/apiClient";
+import { getObject, jsonrpcRequest } from "../../api/apiClient";
 import config from "../../api/config";
 import { CalendarCard } from "../../components";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
@@ -34,12 +34,18 @@ const HomeScreen = () => {
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
 
   useEffect(() => {
-    const connectedUser = route?.params;
-    const { sessionId, email, password, userid, role } = connectedUser;
-    setSessionId(sessionId);
-    setPassword(password);
-    setUserid(userid[0]);
-  }, [route]);
+    const fetchConnectedUser = async () => {
+      try {
+        const connectedUser = await getObject("connectedUser");
+        const { sessionId, email, password, userid } = connectedUser;
+        setSessionId(sessionId);
+        setPassword(password);
+        setUserid(userid[0]);
+      } catch (error) {}
+    };
+    // const connectedUser = route?.params;
+    if (!sessionId) fetchConnectedUser();
+  }, [sessionId]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -49,7 +55,6 @@ const HomeScreen = () => {
           password,
           config.model.craftSession,
           [[["partner_ids", "=", userid]]],
-          // [],
           [
             "classroom_id",
             "recurrency",
@@ -60,10 +65,7 @@ const HomeScreen = () => {
             "teacher_id",
             "description",
           ]
-          // []
         );
-        // console.log("userid...", userid);
-        console.log("eventsData...", eventsData[0]);
         setEvents(eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);

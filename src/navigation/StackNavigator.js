@@ -1,36 +1,17 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import { LoginScreen, ProfileScreen } from "../screens";
-import { ParentTabNavigator } from "./ParentTabNavigator";
-import { TeacherTabNavigator } from "./TeacherTabNavigator";
-import { AdminTabNavigator } from "./AdminTabNavigator";
-import TabNavigator from "./TabNavigator";
-import { AppProvider } from "../hooks/AppProvider";
+import DrawerNavigator from "./DrawerNavigator";
 
 const Stack = createStackNavigator();
 
-const StackNavigator = () => {
+export const StackNavigator = () => {
   return (
     <Stack.Navigator initialRouteName="Login">
       <Stack.Screen
         options={{ headerShown: false }}
-        name="ParentTabNavigator"
-        component={ParentTabNavigator}
-      />
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name="TeacherTabNavigator"
-        component={TeacherTabNavigator}
-      />
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name="AdminTabNavigator"
-        component={AdminTabNavigator}
-      />
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name="TabNavigator"
-        component={TabNavigator}
+        name="DrawerNavigator"
+        component={DrawerNavigator}
       />
       <Stack.Screen
         options={{ headerShown: false }}
@@ -38,13 +19,14 @@ const StackNavigator = () => {
         component={LoginScreen}
       />
       <Stack.Screen
-        // options={{ headerShown: false }}
+        options={{
+          headerBackTitleVisible: false,
+        }}
         name="Profile"
         component={ProfileScreen}
       />
     </Stack.Navigator>
-    // </AppProvider>
   );
 };
 
-export default StackNavigator;
+// export default StackNavigator;

@@ -36,7 +36,6 @@
 //           // ["prev_result", "prev_course_id", "prev_institute_id"]
 //           []
 //         );
-//         console.log("noteData...", noteData[0]);
 //         setNote(noteData[0].prev_result);
 //         setCourse(noteData[0].prev_course_id);
 //         setInstitute(noteData[0].prev_institute_id);

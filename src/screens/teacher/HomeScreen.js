@@ -33,17 +33,22 @@ const HomeScreen = () => {
   const [selectedDay, setSelectedDay] = useState("");
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
 
-  useEffect(() => {
-    const connectedUser = route?.params;
-    const { sessionId, email, password, userid } = connectedUser;
-    setSessionId(sessionId);
-    setPassword(password);
-    setUserid(userid[0]);
-  }, [route]);
 
   useEffect(() => {
-    console.log("connectedUser...", userid);
+    const fetchConnectedUser = async () => {
+      try {
+        const connectedUser = await getObject("connectedUser");
+        const { sessionId, email, password, userid } = connectedUser;
+        setSessionId(sessionId);
+        setPassword(password);
+        setUserid(userid[0]);
+      } catch (error) {}
+    };
+    // const connectedUser = route?.params;
+    if (!sessionId) fetchConnectedUser();
+  }, [sessionId]);
 
+  useEffect(() => {
     const fetchEvents = async () => {
       try {
         const eventsData = await jsonrpcRequest(

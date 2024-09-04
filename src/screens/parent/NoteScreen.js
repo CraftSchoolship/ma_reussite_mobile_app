@@ -92,7 +92,6 @@
 //         );
 
 //         if (noteData?.length > 0) {
-//           console.log("Note - ", noteData);
 //           setNote(noteData[0]?.prev_result);
 //           setCourse(noteData[0]?.prev_course_id);
 //           setInstitute(noteData[0]?.prev_institute_id);

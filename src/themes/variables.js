@@ -8,7 +8,7 @@ const MA_REUSSITE_CUSTOM_COLORS = {
   InactiveColor: "#feeff5",
   Black: "#000",
   Warning: "#F4772C",
-  Danger: "#ec2f4e",
+  Danger: "#fb0505",
 };
 
 export default MA_REUSSITE_CUSTOM_COLORS;

@@ -123,7 +123,6 @@
 
 //         currencies.forEach((currency) => {
 //           if (currency.id === paymentDetails[0].currency_id[0]) {
-//             console.log("currencies...", currency);
 //             setCurrencySybol(currency.symbol);
 //           }
 //         });
@@ -150,9 +149,6 @@
 //     if (connectedUser && selectedChild) fetchPayment();
 //   }, [connectedUser, selectedChild]);
 
-//   useEffect(() => {
-//     // payments && console.log("Partner...", new Date().getMinutes(), payments);
-//   }, [payments]);
 
 //   return (
 //     <Box flex={1} bg="white">
