@@ -6,10 +6,7 @@ import * as SplashScreen from "expo-splash-screen";
 import useFonts from "./src/hooks/useFonts";
 import AppNavigator from "./src/navigation/AppNavigator";
 import customTheme from "./src/themes/customTheme";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
 import KeyboardDismissWrapper from "./src/hooks/useKeyboard";
-import { Platform } from "react-native";
 
 // import { SelectedChildProvider } from "./src/hooks/SelectedChildContext";
 
@@ -75,11 +72,9 @@ const App = () => {
   return (
     <NativeBaseProvider isSSR theme={customTheme}>
       {/* <SelectedChildProvider> */}
-      <SafeAreaProvider style={{ flex: 1 }}>
-        <KeyboardDismissWrapper>
-          <AppNavigator />
-        </KeyboardDismissWrapper>
-      </SafeAreaProvider>
+      <KeyboardDismissWrapper>
+        <AppNavigator />
+      </KeyboardDismissWrapper>
       {/* </SelectedChildProvider> */}
     </NativeBaseProvider>
   );

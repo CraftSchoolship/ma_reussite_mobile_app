@@ -44,7 +44,7 @@ function CalendarCard({ date, tag, time, subject, teacher, classroom }) {
               fontSize={"lg"}
               textTransform={"capitalize"}
             >
-              {tag} : {subject}
+              {`Cours : ${subject}`}
             </Text>
           </HStack>
           <Text color="gray.500">{`Prof : ${teacher}`}</Text>
