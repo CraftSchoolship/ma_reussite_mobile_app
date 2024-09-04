@@ -11,6 +11,7 @@ import {
 import config from "../api/config";
 import { CustomButton, CustomInput, LoginScreenBanner } from "../components";
 import { loginValidationSchema } from "../validation/formValidation";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const LoginScreen = () => {
   const input1Ref = useRef(null);
@@ -213,7 +214,7 @@ const LoginScreen = () => {
   }, [connectedUser, selectedChild]);
 
   return (
-    <>
+    <SafeAreaView flex={1}>
       <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
       <LoginScreenBanner />
       <Box height={"100%"}>
@@ -269,7 +270,7 @@ const LoginScreen = () => {
           </Box>
         </VStack>
       </Box>
-    </>
+    </SafeAreaView>
   );
 };
 

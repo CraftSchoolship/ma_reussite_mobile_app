@@ -85,14 +85,12 @@ const DrawerNavigator = () => {
           margin: 0,
           padding: 0,
         },
+        drawerType: "front",
       }}
       drawerContent={(props) => (
         <CustomDrawerContent
           {...props}
           connectedUser={connectedUser}
-          // childrenList={childrenList}
-          // selectedChild={selectedChild}
-          // setSelectedChild={setSelectedChild}
         />
       )}
     >
@@ -106,4 +104,3 @@ const DrawerNavigator = () => {
 };
 
 export default DrawerNavigator;
-

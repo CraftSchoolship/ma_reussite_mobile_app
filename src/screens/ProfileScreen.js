@@ -43,7 +43,7 @@ const ProfileScreen = () => {
 
   return (
     <Box flex={1} bg="white">
-      <Center>
+      <Center mt={2}>
         {loading ? (
           <Avatar
             size="2xl"
