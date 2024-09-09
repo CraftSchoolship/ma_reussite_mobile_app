@@ -1,13 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
-import {
-  Box,
-  ScrollView,
-  StatusBar,
-  Text,
-  useToast,
-  VStack,
-} from "native-base";
+import { Box, StatusBar, Text, useToast, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
 import {
   authenticate,
@@ -55,13 +48,16 @@ const LoginScreen = () => {
           password,
           config.model.users,
           [[["email", "=", email]]],
-          ["self", "craft_role", "image_1024"]
+          ["self", "craft_role", "image_1024", "name", "phone", "street"]
         );
 
         if (user.length > 0) {
           const userid = user[0].self;
           const role = user[0].craft_role;
           const imageUri = user[0].image_1024;
+          const name = user[0].name;
+          const phone = user[0].phone;
+          const street = user[0].street;
 
           let userData;
           switch (role) {
@@ -90,7 +86,7 @@ const LoginScreen = () => {
                 sessionId,
                 password,
                 config.model.craftTeachers,
-                [[["work_contact_id", "=", userid[0]]]],
+                [[["work_contact_id", "in", userid]]],
                 ["image_1024"]
               );
               break;
@@ -119,6 +115,9 @@ const LoginScreen = () => {
             userid: userid,
             role: role,
             profileImage: profileImage,
+            name: name,
+            phone: phone,
+            street: street,
           });
 
           setConnectedUser({
@@ -128,6 +127,9 @@ const LoginScreen = () => {
             userid: userid,
             role: role,
             profileImage: profileImage,
+            name: name,
+            phone: phone,
+            street: street,
           });
         }
       } else {
@@ -224,15 +226,14 @@ const LoginScreen = () => {
     <SafeAreaView flex={1}>
       <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
       <LoginScreenBanner />
-      <ScrollView height={1} contentContainerStyle={{ paddingBottom: 80 }}>
+      <Box height={"100%"}>
         <VStack
           width={"full"}
-          minH={"4/5"}
-          // justifyContent={"center"}
-          // alignItems={"center"}
-          mt={"1/4"}
+          minH={"80%"}
+          justifyContent={"center"}
+          alignItems={"center"}
         >
-          <Box mx={"auto"} width="4/5" display={"flex"}>
+          <Box mx={"auto"} width="80%" display={"flex"}>
             <Box alignItems="center">
               <Text color={"black"} fontSize="2xl" bold>
                 S'identifier
@@ -244,7 +245,7 @@ const LoginScreen = () => {
               onSubmit={handleLogin}
             >
               {({ handleSubmit, isValid }) => (
-                <Box>
+                <>
                   <CustomInput
                     label="Email"
                     name="email"
@@ -272,12 +273,12 @@ const LoginScreen = () => {
                     isDisabled={!isValid}
                     loading={loading}
                   />
-                </Box>
+                </>
               )}
             </Formik>
           </Box>
         </VStack>
-      </ScrollView>
+      </Box>
     </SafeAreaView>
   );
 };

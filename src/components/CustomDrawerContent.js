@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
+import { useNavigation } from "@react-navigation/native";
 import {
   Avatar,
   Box,
@@ -16,10 +17,9 @@ import {
   Text,
   VStack,
 } from "native-base";
-import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import React, { useEffect, useState } from "react";
 import { getObject, storeObject } from "../api/apiClient";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const CustomDrawerContent = ({ connectedUser, ...props }) => {
   const [childrenList, setChildrenList] = useState([]);
@@ -44,6 +44,10 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
 
     if (childrenList?.length < 1) fetchUserData();
   }, [childrenList]);
+
+  /* -------------------------------------------------------------------------- */
+  /*                                 MODE SOMBRE                                */
+  /* -------------------------------------------------------------------------- */
 
   useEffect(() => {
     const fetchDarkModePreference = async () => {
@@ -88,7 +92,11 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
               onPress={() => props.navigation.closeDrawer()}
             >
               <Text color={"black"} bold>
-                X
+                <FontAwesome6
+                  name={"rectangle-xmark"}
+                  size={16}
+                  color={"black"}
+                />
               </Text>
             </Pressable>
           </HStack>
@@ -105,7 +113,11 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
             </Box>
 
             <HStack alignItems="center" mx={4}>
-              <Pressable>
+              <Pressable
+                onPress={() =>
+                  props.navigation.navigate("Profile", { edit: false })
+                }
+              >
                 <Avatar
                   size="sm"
                   bg="blue.500"
@@ -132,7 +144,9 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                     _pressed={{
                       bg: "primary.600:alpha.20",
                     }}
-                    onPress={() => props.navigation.navigate("Profile")}
+                    onPress={() =>
+                      props.navigation.navigate("Profile", { edit: false })
+                    }
                   />
                 </Avatar>
               </Pressable>
@@ -140,7 +154,9 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                 {connectedUser?.userid?.[1] || "Prénom Nom"}
               </Text>
               <Pressable
-                onPress={() => props.navigation.navigate("Profile")}
+                onPress={() =>
+                  props.navigation.navigate("Profile", { edit: true })
+                }
                 ml={"auto"}
               >
                 <Text>

@@ -18,6 +18,8 @@ const DrawerNavigator = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      // console.log("ok...");
+
       try {
         const user = await getObject("connectedUser");
         if (user) {
@@ -29,11 +31,9 @@ const DrawerNavigator = () => {
     };
 
     fetchUserData();
-  }, []);
+  }, [connectedUser]);
 
   useEffect(() => {
-    // console.log("(DrawerNavigator : L-36) route.params...", route.params);
-
     const fetchUserData = async () => {
       try {
         const user = await getObject("connectedUser");
@@ -88,10 +88,7 @@ const DrawerNavigator = () => {
         drawerType: "front",
       }}
       drawerContent={(props) => (
-        <CustomDrawerContent
-          {...props}
-          connectedUser={connectedUser}
-        />
+        <CustomDrawerContent {...props} connectedUser={connectedUser} />
       )}
     >
       <Drawer.Screen
