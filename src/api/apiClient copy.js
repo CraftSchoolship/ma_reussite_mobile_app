@@ -5,7 +5,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const url = config.baseUrl;
 const db = config.database;
 
-// Fonction d'authentification
 const authenticate = async (
   username = config.username,
   password = config.password
@@ -23,7 +22,6 @@ const authenticate = async (
   return authResponse.data.result;
 };
 
-// Fonction générique pour requêtes JSON-RPC (search_read)
 const jsonrpcRequest = async (
   sessionId,
   password,
@@ -54,61 +52,20 @@ const jsonrpcRequest = async (
   return response.data.result;
 };
 
-// Fonction pour créer un nouvel enregistrement
-const createRecord = async (sessionId, password, model, data) => {
+const jsonrpcRequestWrite = async (
+  sessionId,
+  password,
+  model,
+  recordId,
+  fields
+) => {
   const response = await axios.post(url, {
     jsonrpc: "2.0",
     method: "call",
     params: {
       service: "object",
       method: "execute_kw",
-      args: [db, sessionId, password, model, "create", [data]],
-    },
-    id: Math.floor(Math.random() * 1000),
-  });
-  return response.data.result;
-};
-
-// Fonction pour mettre à jour un enregistrement existant
-const updateRecord = async (sessionId, password, model, id, data) => {
-  const response = await axios.post(url, {
-    jsonrpc: "2.0",
-    method: "call",
-    params: {
-      service: "object",
-      method: "execute_kw",
-      args: [db, sessionId, password, model, "write", [[id], data]],
-    },
-    id: Math.floor(Math.random() * 1000),
-  });
-  return response.data.result;
-};
-
-// Fonction pour supprimer un enregistrement
-const deleteRecord = async (sessionId, password, model, id) => {
-  const response = await axios.post(url, {
-    jsonrpc: "2.0",
-    method: "call",
-    params: {
-      service: "object",
-      method: "execute_kw",
-      args: [db, sessionId, password, model, "unlink", [[id]]],
-    },
-    id: Math.floor(Math.random() * 1000),
-  });
-  return response.data.result;
-};
-
-// Fonction pour un appel RPC personnalisé
-const customRpcCall = async (sessionId, password, endpoint, params) => {
-  const response = await axios.post(`${url}/${endpoint}`, {
-    jsonrpc: "2.0",
-    method: "call",
-    params: {
-      db: db,
-      uid: sessionId,
-      password: password,
-      ...params,
+      args: [db, sessionId, password, model, "write", [[recordId], fields]],
     },
     id: Math.floor(Math.random() * 1000),
   });
@@ -173,10 +130,7 @@ const getArray = async (key) => {
 export {
   authenticate,
   jsonrpcRequest,
-  createRecord,
-  updateRecord,
-  deleteRecord,
-  customRpcCall,
+  jsonrpcRequestWrite,
   storeString,
   getString,
   storeObject,

@@ -45,14 +45,14 @@ function HomeScreenBanner() {
   }, [connectedUser]);
 
   useEffect(() => {
-    if (connectedUser.role === "parent" && selectedChild?.contact_id) {
+    if (connectedUser?.role === "parent" && selectedChild?.contact_id) {
       setAccount(
         <Text color={"white"} fontWeight={"medium"}>
           {selectedChild.contact_id[1]}
         </Text>
       );
     }
-  }, [connectedUser.role, selectedChild]);
+  }, [connectedUser?.role, selectedChild]);
 
   // useEffect(() => {
   //   console.log("connectedUser...", connectedUser.profileImage);
@@ -105,7 +105,7 @@ function HomeScreenBanner() {
             )}
           </Pressable>
         </HStack>
-        {connectedUser.role === "parent" && selectedChild?.contact_id && (
+        {connectedUser?.role === "parent" && selectedChild?.contact_id && (
           <Box
             alignSelf={"baseline"}
             ml={8}
