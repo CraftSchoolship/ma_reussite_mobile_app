@@ -45,6 +45,10 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
     if (childrenList?.length < 1) fetchUserData();
   }, [childrenList]);
 
+  /* -------------------------------------------------------------------------- */
+  /*                                 MODE SOMBRE                                */
+  /* -------------------------------------------------------------------------- */
+
   useEffect(() => {
     const fetchDarkModePreference = async () => {
       try {
@@ -105,7 +109,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
             </Box>
 
             <HStack alignItems="center" mx={4}>
-              <Pressable>
+              <Pressable onPress={() => props.navigation.navigate("Profile")}>
                 <Avatar
                   size="sm"
                   bg="blue.500"

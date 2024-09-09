@@ -42,7 +42,7 @@ function HomeScreenBanner() {
       setLoading(false);
     };
     fetchUser();
-  }, []);
+  }, [connectedUser]);
 
   useEffect(() => {
     if (connectedUser.role === "parent" && selectedChild?.contact_id) {
@@ -53,6 +53,10 @@ function HomeScreenBanner() {
       );
     }
   }, [connectedUser.role, selectedChild]);
+
+  // useEffect(() => {
+  //   console.log("connectedUser...", connectedUser.profileImage);
+  // }, [connectedUser]);
 
   return (
     <Box bg="white">
@@ -65,13 +69,16 @@ function HomeScreenBanner() {
             source={require("../../assets/images/ma_reussite_other_screens.png")}
             alt="Alternate Text"
           />
-          <Pressable m={"auto"}>
+          <Pressable m={"auto"} onPress={() => navigation.openDrawer()}>
             {loading ? (
               <Avatar size="md" source={{ uri: null }} />
             ) : (
               <Avatar
                 size="md"
                 mr={2}
+                source={{
+                  uri: connectedUser?.profileImage || null,
+                }}
                 bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
               >
                 <IconButton
