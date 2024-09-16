@@ -9,13 +9,18 @@ import {
 } from "native-base";
 import { default as React, useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
-import { getObject, jsonrpcRequest } from "../../api/apiClient";
-import config from "../../api/config";
 import { CalendarCard } from "../../components";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import MA_REUSSITE_CUSTOM_COLORS from "../../themes/variables";
 import CalendarLocalConfig from "../../utils/CalendarLocalConfig";
 import { formatOdooEvents } from "../../utils/MarkedDatesFormatage";
+import { format } from "date-fns";
+import {
+  getConnectedUserDetails,
+  fetchEventsData,
+  filterEventsByMonth,
+} from "../../utils/SessionEventUtils";
+import { SafeAreaView } from "react-native";
 
 CalendarLocalConfig;
 
@@ -26,74 +31,54 @@ const HomeScreen = () => {
   const [sessionId, setSessionId] = useState(null);
   const [password, setPassword] = useState(null);
   const [userid, setUserid] = useState(null);
-  const [events, setEvents] = useState(null);
+  const [events, setEvents] = useState([]);
   const [markedDate, setMarkedDate] = useState({});
   const [todaysEvents, setTodaysEvents] = useState([]);
-  const [today, setToday] = useState();
-  const [selectedDay, setSelectedDay] = useState("");
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
+  const [selectedDay, setSelectedDay] = useState("");
+  const today = new Date();
 
   useEffect(() => {
-    const connectedUser = route?.params;
-    const { sessionId, email, password, userid } = connectedUser;
+    const { sessionId, password, userid } = getConnectedUserDetails(route);
     setSessionId(sessionId);
     setPassword(password);
-    setUserid(userid[0]);
+    setUserid(userid);
   }, [route]);
 
   useEffect(() => {
-    console.log("connectedUser...", userid);
-
-    const fetchEvents = async () => {
-      try {
-        const eventsData = await jsonrpcRequest(
-          sessionId,
-          password,
-          config.model.craftSession,
-          [[["partner_ids", "=", userid]]],
-          [
-            "classroom_id",
-            "recurrency",
-            "rrule",
-            "start",
-            "stop",
-            "subject_id",
-            "teacher_id",
-            "description",
-          ]
-        );
-
-        setEvents(eventsData);
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    };
-    if (sessionId && password) {
-      fetchEvents();
+    if (sessionId && password && userid) {
+      fetchEventsData(sessionId, password, userid).then(setEvents);
     }
   }, [sessionId, password, userid]);
 
   useEffect(() => {
-    if (events) {
-      const formatedOdooEvents = formatOdooEvents(events);
-      setMarkedDate(formatedOdooEvents);
+    if (events.length > 0) {
+      const formattedOdooEvents = formatOdooEvents(events);
+      setMarkedDate(formattedOdooEvents);
     }
   }, [events]);
 
   useEffect(() => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = (today.getMonth() + 1).toString().padStart(2, "0");
-    const day = today.getDate().toString().padStart(2, "0");
-    const dayOfWeek = CalendarLocalConfig.dayNamesShort[today.getDay()];
+    if (events.length > 0) {
+      const filteredEvents = filterEventsByMonth(events);
+      setTodaysEvents(filteredEvents);
+    }
+  }, [events]);
 
-    const currentDay = `${year}-${month}-${day}`;
-    setToday(`${dayOfWeek} ${day}`);
-    setTodaysEvents(markedDate[currentDay]?.dots);
-  }, [markedDate]);
+  const handleDayPress = (day) => {
+    const selectedDate = new Date(day.timestamp);
+    const formattedDate = format(selectedDate, "yyyy-MM-dd");
+    setSelectedDay(day.dateString);
+
+    if (markedDate[formattedDate]) {
+      setSelectedDayEvents(markedDate[formattedDate].dots);
+    }
+
+    onOpen();
+  };
 
   return (
-    <Box>
+    <Box flex={1}>
       <BackgroundWrapper navigation={navigation}>
         <Box
           mt={4}
@@ -106,16 +91,7 @@ const HomeScreen = () => {
         >
           <Calendar
             markingType={"multi-dot"}
-            onDayPress={(day) => {
-              const currentDaySelected = new Date(day.timestamp).getDay();
-              setSelectedDay(
-                `${CalendarLocalConfig.dayNamesShort[currentDaySelected]} ${day.day}`
-              );
-              if (markedDate[day.dateString] !== undefined) {
-                setSelectedDayEvents(markedDate[day.dateString].dots);
-              }
-              onOpen();
-            }}
+            onDayPress={handleDayPress}
             monthFormat={"MMMM yyyy"}
             hideArrows={false}
             disableMonthChange={false}
@@ -130,23 +106,38 @@ const HomeScreen = () => {
             }}
           />
         </Box>
-        <ScrollView flexGrow={1} h={"100%"} w={"90%"} mx={"auto"} mb={"10%"}>
-          <VStack w={"full"} mb={"20%"} space={4} mt={4}>
-            {todaysEvents &&
-              todaysEvents.map((eventMarked, index) => (
-                <CalendarCard
-                  key={index}
-                  tag={eventMarked.tag}
-                  date={today}
-                  time={eventMarked.time}
-                  subject={eventMarked.subject}
-                  teacher={eventMarked.teacher}
-                  classroom={eventMarked.classroom}
-                />
-              ))}
-          </VStack>
-        </ScrollView>
-
+        <SafeAreaView style={{ flex: 1, width: "100%" }}>
+          <ScrollView
+            flexGrow={1}
+            h={"100%"}
+            w={"90%"}
+            mx={"auto"}
+            mb={"10%"}
+            contentContainerStyle={{ paddingBottom: 100 }}
+            showsVerticalScrollIndicator={false} // Optional: Hide the scroll indicator for cleaner UI
+          >
+            <VStack w={"full"} mb={"20%"} space={4} mt={4}>
+              {events.length > 0 ? (
+                events.map((event, index) => (
+                  <CalendarCard
+                    key={index}
+                    tag={event.subject_id[1]}
+                    date={format(new Date(event.start), "dd MMMM yyyy")}
+                    time={`${format(new Date(event.start), "HH:mm")} - ${format(
+                      new Date(event.stop),
+                      "HH:mm"
+                    )}`}
+                    subject={event.subject_id[1]}
+                    teacher={event.teacher_id[1]}
+                    classroom={event.classroom_id[1]}
+                  />
+                ))
+              ) : (
+                <Text>No events available.</Text>
+              )}
+            </VStack>
+          </ScrollView>
+        </SafeAreaView>
         <Actionsheet
           isOpen={isOpen}
           onClose={() => {
@@ -169,22 +160,24 @@ const HomeScreen = () => {
               w="100%"
               flexGrow={1}
               mx={"auto"}
-              // mb={"5%"}
               contentContainerStyle={{ paddingBottom: 40 }}
             >
               <VStack space={4} px={4}>
-                {selectedDayEvents &&
+                {selectedDayEvents.length > 0 ? (
                   selectedDayEvents.map((eventMarked, index) => (
                     <CalendarCard
                       key={index}
                       tag={eventMarked.tag}
-                      date={today}
+                      date={selectedDay}
                       time={eventMarked.time}
                       subject={eventMarked.subject}
                       teacher={eventMarked.teacher}
                       classroom={eventMarked.classroom}
                     />
-                  ))}
+                  ))
+                ) : (
+                  <Text>No events for this day.</Text>
+                )}
               </VStack>
             </ScrollView>
           </Actionsheet.Content>
