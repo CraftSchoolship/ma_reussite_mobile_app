@@ -15,6 +15,7 @@ import React, { useEffect, useState } from "react";
 import { getObject } from "../api/apiClient";
 import { useAppContext } from "../hooks/AppProvider";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { useThemeContext } from "../hooks/ThemeContext";
 
 function HomeScreenBanner() {
   const route = useRoute();
@@ -30,6 +31,8 @@ function HomeScreenBanner() {
   const [loading, setLoading] = useState(true);
   const [account, setAccount] = useState();
   const { selectedChild, setSelectedChild } = useAppContext();
+  const { isDarkMode } = useThemeContext();
+  const [imgBanner, setImgBanner] = useState("");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -54,21 +57,31 @@ function HomeScreenBanner() {
     }
   }, [connectedUser?.role, selectedChild]);
 
-  // useEffect(() => {
-  //   console.log("connectedUser...", connectedUser.profileImage);
-  // }, [connectedUser]);
+  useEffect(() => {
+    // 
+  }, [isDarkMode]);
 
   return (
-    <Box bg="white">
+    <Box bg={isDarkMode ? "black" : "white"}>
       <VStack>
         <HStack>
-          <Image
-            size="sm"
-            w={"70%"}
-            ml={2}
-            source={require("../../assets/images/ma_reussite_other_screens.png")}
-            alt="Alternate Text"
-          />
+          {isDarkMode ? (
+            <Image
+              size="sm"
+              w={"70%"}
+              ml={2}
+              source={require("../../assets/images/ma_reussite_login_screen.png")}
+              alt="Alternate Text"
+            />
+          ) : (
+            <Image
+              size="sm"
+              w={"70%"}
+              ml={2}
+              source={require("../../assets/images/ma_reussite_other_screens.png")}
+              alt="Alternate Text"
+            />
+          )}
           <Pressable m={"auto"} onPress={() => navigation.openDrawer()}>
             {loading ? (
               <Avatar size="md" source={{ uri: null }} />

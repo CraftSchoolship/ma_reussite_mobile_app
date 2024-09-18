@@ -20,12 +20,14 @@ import {
 import React, { useEffect, useState } from "react";
 import { getObject, storeObject } from "../api/apiClient";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { useThemeContext } from "../hooks/ThemeContext";
 
 const CustomDrawerContent = ({ connectedUser, ...props }) => {
   const [childrenList, setChildrenList] = useState([]);
   const [selectedChild, setSelectedChild] = useState(null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  // const [isDarkMode, setIsDarkMode] = useState(false);
   const navigation = useNavigation();
+  const { isDarkMode, toggleDarkMode } = useThemeContext();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -45,45 +47,21 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
     if (childrenList?.length < 1) fetchUserData();
   }, [childrenList]);
 
-  /* -------------------------------------------------------------------------- */
-  /*                                 MODE SOMBRE                                */
-  /* -------------------------------------------------------------------------- */
-
-  useEffect(() => {
-    const fetchDarkModePreference = async () => {
-      try {
-        const storedDarkMode = await getObject("darkMode");
-        if (storedDarkMode !== null) {
-          setIsDarkMode(storedDarkMode);
-        }
-      } catch (error) {
-        console.error(
-          "Erreur lors de la récupération de la préférence de mode sombre :",
-          error
-        );
-      }
-    };
-
-    fetchDarkModePreference();
-  }, []);
-
-  const toggleDarkMode = async () => {
-    setIsDarkMode((prevState) => !prevState);
-    console.log("isDarkMode...", isDarkMode);
-
-    try {
-      await storeObject("darkMode", !isDarkMode);
-    } catch (error) {
-      console.error("Erreur lors de la sauvegarde du mode sombre :", error);
-    }
-  };
-
   return (
     <>
       <DrawerContentScrollView {...props}>
-        <VStack>
+        <VStack
+        // bg={"black"}
+        >
           <HStack px={4} py={2} justifyContent={"space-between"}>
-            <Text color={"black"} bold>
+            <Text
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+              bold
+            >
               Compte utilisateur
             </Text>
             <Pressable
@@ -91,16 +69,29 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
               alignItems={"flex-end"}
               onPress={() => props.navigation.closeDrawer()}
             >
-              <Text color={"black"} bold>
+              <Text bold>
                 <FontAwesome6
                   name={"rectangle-xmark"}
                   size={16}
-                  color={"black"}
+                  color={
+                    isDarkMode
+                      ? MA_REUSSITE_CUSTOM_COLORS.White
+                      : MA_REUSSITE_CUSTOM_COLORS.Black
+                  }
                 />
               </Text>
             </Pressable>
           </HStack>
-          <Divider bgColor={"gray.100"} h={1} mb={2} />
+          <Divider
+            bgColor={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
+                : MA_REUSSITE_CUSTOM_COLORS.LightDivider
+            }
+            // bgColor={"gray.800"}
+            h={1}
+            mb={2}
+          />
           <VStack>
             <Box alignItems="center" mb={4} bg={"primary.500"} h={60}>
               <Image
@@ -150,7 +141,16 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                   />
                 </Avatar>
               </Pressable>
-              <Text color={"black"} fontSize="lg" bold ml={4}>
+              <Text
+                color={
+                  isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.White
+                    : MA_REUSSITE_CUSTOM_COLORS.Black
+                }
+                fontSize="lg"
+                bold
+                ml={4}
+              >
                 {connectedUser?.userid?.[1] || "Prénom Nom"}
               </Text>
               <Pressable
@@ -163,16 +163,36 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                   <FontAwesome6
                     name={"pen-to-square"}
                     size={16}
-                    color={"black"}
+                    color={
+                      isDarkMode
+                        ? MA_REUSSITE_CUSTOM_COLORS.White
+                        : MA_REUSSITE_CUSTOM_COLORS.Black
+                    }
                   />
                 </Text>
               </Pressable>
             </HStack>
           </VStack>
-          <Divider bgColor={"gray.100"} h={1} my={2} />
+          <Divider
+            bgColor={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
+                : MA_REUSSITE_CUSTOM_COLORS.LightDivider
+            }
+            h={1}
+            my={2}
+          />
 
           <HStack justifyContent={"space-between"} alignItems="center" ml={4}>
-            <Text color={"black"}>Mode sombre</Text>
+            <Text
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+            >
+              Mode sombre
+            </Text>
             <Switch
               size="md"
               colorScheme={"success"}
@@ -180,7 +200,15 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
               onToggle={toggleDarkMode}
             />
           </HStack>
-          <Divider bgColor={"gray.100"} h={1} my={2} />
+          <Divider
+            bgColor={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
+                : MA_REUSSITE_CUSTOM_COLORS.LightDivider
+            }
+            h={1}
+            my={2}
+          />
 
           {/* Affichage des enfants */}
           <ScrollView mt={2}>
@@ -190,7 +218,11 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                   py={2}
                   my={1}
                   key={index}
-                  bgColor={"gray.200"}
+                  bgColor={
+                    isDarkMode
+                      ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
+                      : MA_REUSSITE_CUSTOM_COLORS.LightDivider
+                  }
                   onPress={async () => {
                     try {
                       await storeObject("selectedChild", child);
@@ -236,14 +268,21 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                           }}
                         />
                       </Avatar>
-                      <Text color={"black"} fontSize={"md"}>
+                      <Text
+                        color={
+                          isDarkMode
+                            ? MA_REUSSITE_CUSTOM_COLORS.White
+                            : MA_REUSSITE_CUSTOM_COLORS.Black
+                        }
+                        fontSize={"md"}
+                      >
                         {child.contact_id[1]}
                       </Text>
                     </HStack>
                     {child.id === selectedChild?.id ? (
                       <Checkbox
-                        value="danger"
-                        colorScheme="white"
+                        value="checkboxValue"
+                        colorScheme={MA_REUSSITE_CUSTOM_COLORS.CheckBoxColor}
                         aria-label="label"
                         size={"sm"}
                         isChecked
@@ -255,7 +294,15 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
           </ScrollView>
         </VStack>
       </DrawerContentScrollView>
-      <Divider bgColor={"gray.100"} h={1} bottom={"10%"} />
+      <Divider
+        bgColor={
+          isDarkMode
+            ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
+            : MA_REUSSITE_CUSTOM_COLORS.LightDivider
+        }
+        h={1}
+        bottom={"10%"}
+      />
       <DrawerItem
         label={"Déconnexion"}
         labelStyle={{

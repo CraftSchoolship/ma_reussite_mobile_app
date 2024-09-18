@@ -11,3 +11,4 @@ export { default as ToastAlert } from "./ToastAlert";
 export { ChildItem } from "./ChildItem";
 export { ProfileUserInfo } from "./ProfileUserInfo";
 export { ProfileUserEdit } from "./ProfileUserEdit";
+export { AppWithTheme } from "./AppWithTheme";

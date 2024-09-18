@@ -7,6 +7,7 @@ import { AdminTabNavigator } from "./AdminTabNavigator";
 import CustomDrawerContent from "../components/CustomDrawerContent";
 import { getObject } from "../api/apiClient";
 import { useRoute } from "@react-navigation/native";
+import { useThemeContext } from "../hooks/ThemeContext";
 
 const Drawer = createDrawerNavigator();
 
@@ -15,6 +16,12 @@ const DrawerNavigator = () => {
   const [connectedUser, setConnectedUser] = useState(null);
   const [childrenList, setChildrenList] = useState([]);
   const [selectedChild, setSelectedChild] = useState(null);
+  const { isDarkMode } = useThemeContext();
+  const [darkThemeColor, setDarkThemeColor] = useState("#fff");
+
+  useEffect(() => {
+    isDarkMode && setDarkThemeColor("#000");
+  }, [isDarkMode]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -84,6 +91,7 @@ const DrawerNavigator = () => {
         drawerStyle: {
           margin: 0,
           padding: 0,
+          backgroundColor: darkThemeColor,
         },
         drawerType: "front",
       }}
