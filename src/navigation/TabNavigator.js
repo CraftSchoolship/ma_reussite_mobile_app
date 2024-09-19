@@ -24,7 +24,7 @@ import CustomTabBarButton from "../components/CustomTabBarButton";
 
 const Tab = createBottomTabNavigator();
 
-const TabNavigator = () => {
+export const TabNavigator = () => {
   const insets = useSafeAreaInsets();
 
   const propagedRoute = useRoute();
@@ -110,5 +110,3 @@ const TabNavigator = () => {
     </AppProvider>
   );
 };
-
-export default TabNavigator;

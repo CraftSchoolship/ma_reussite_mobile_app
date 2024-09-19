@@ -18,7 +18,7 @@ const BackgroundWrapper = ({
       <View
         style={{
           paddingTop: insets.top,
-          backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
+          // backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
         }}
       >
         <HomeScreenBanner

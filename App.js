@@ -4,7 +4,7 @@ import { WebView } from "react-native-webview";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";
 import useFonts from "./src/hooks/useFonts";
-import AppNavigator from "./src/navigation/AppNavigator";
+import { AppNavigator } from "./src/navigation/AppNavigator";
 import customTheme from "./src/themes/customTheme";
 import KeyboardDismissWrapper from "./src/hooks/useKeyboard";
 
