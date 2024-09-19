@@ -9,6 +9,7 @@ import {
   HomeScreen,
   HomeScreensWrapper,
   NoteScreen,
+  ParentHomeScreen,
   PaymentScreen,
 } from "../screens";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";

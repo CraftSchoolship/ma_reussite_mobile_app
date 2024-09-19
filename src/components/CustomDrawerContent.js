@@ -210,7 +210,6 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
             my={2}
           />
 
-          {/* Affichage des enfants */}
           <ScrollView mt={2}>
             {childrenList &&
               childrenList.map((child, index) => (

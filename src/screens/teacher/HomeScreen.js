@@ -1,21 +1,16 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
-import {
-  Actionsheet,
-  Box,
-  ScrollView,
-  Text,
-  VStack,
-  useDisclose,
-} from "native-base";
+import { Box, ScrollView, VStack, useDisclose } from "native-base";
 import { default as React, useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
 import { getObject, jsonrpcRequest } from "../../api/apiClient";
 import config from "../../api/config";
 import { CalendarCard } from "../../components";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
-import MA_REUSSITE_CUSTOM_COLORS from "../../themes/variables";
+import { useThemeContext } from "../../hooks/ThemeContext";
 import CalendarLocalConfig from "../../utils/CalendarLocalConfig";
+import CalendarTheme from "../../utils/CalendarTheme";
 import { formatOdooEvents } from "../../utils/MarkedDatesFormatage";
+import { EventsActionSheet } from "../../components/EventsActionSheet";
 
 CalendarLocalConfig;
 
@@ -32,7 +27,7 @@ const HomeScreen = () => {
   const [today, setToday] = useState();
   const [selectedDay, setSelectedDay] = useState("");
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
-
+  const { isDarkMode } = useThemeContext();
 
   useEffect(() => {
     const fetchConnectedUser = async () => {
@@ -126,13 +121,7 @@ const HomeScreen = () => {
             disableMonthChange={false}
             firstDay={1}
             markedDates={markedDate}
-            theme={{
-              selectedDayBackgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-              todayTextColor: "white",
-              todayBackgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-              arrowColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-              monthTextColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-            }}
+            theme={CalendarTheme(isDarkMode)}
           />
         </Box>
         <ScrollView flexGrow={1} h={"100%"} w={"90%"} mx={"auto"} mb={"10%"}>
@@ -152,48 +141,17 @@ const HomeScreen = () => {
           </VStack>
         </ScrollView>
 
-        <Actionsheet
+        <EventsActionSheet
+          isDarkMode={isDarkMode}
+          selectedDayEvents={selectedDayEvents}
+          setSelectedDayEvents={setSelectedDayEvents}
+          today={today}
           isOpen={isOpen}
           onClose={() => {
             setSelectedDayEvents([]);
             onClose();
           }}
-        >
-          <Actionsheet.Content bg={"white"}>
-            <Box w="100%" h={60} px={4} justifyContent="center">
-              <Text
-                textAlign={"center"}
-                color={"black"}
-                fontSize="lg"
-                fontWeight="bold"
-              >
-                Événements
-              </Text>
-            </Box>
-            <ScrollView
-              w="100%"
-              flexGrow={1}
-              mx={"auto"}
-              // mb={"5%"}
-              contentContainerStyle={{ paddingBottom: 40 }}
-            >
-              <VStack space={4} px={4}>
-                {selectedDayEvents &&
-                  selectedDayEvents.map((eventMarked, index) => (
-                    <CalendarCard
-                      key={index}
-                      tag={eventMarked.tag}
-                      date={today}
-                      time={eventMarked.time}
-                      subject={eventMarked.subject}
-                      teacher={eventMarked.teacher}
-                      classroom={eventMarked.classroom}
-                    />
-                  ))}
-              </VStack>
-            </ScrollView>
-          </Actionsheet.Content>
-        </Actionsheet>
+        />
       </BackgroundWrapper>
     </Box>
   );

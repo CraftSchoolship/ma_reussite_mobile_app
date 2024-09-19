@@ -6,6 +6,8 @@ const MA_REUSSITE_CUSTOM_COLORS = {
   Primary: "#2b1b94",
   Secondary: "#F17E33",
   InactiveColor: "#feeff5",
+  InactiveColorDark: "#555555",
+  InactiveColorLight: "#d9e1e8",
   Warning: "#F4772C",
   Danger: "#fb0505",
   White: "#fff",
