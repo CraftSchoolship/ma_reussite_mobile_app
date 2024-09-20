@@ -57,31 +57,22 @@ function HomeScreenBanner() {
     }
   }, [connectedUser?.role, selectedChild]);
 
-  useEffect(() => {
-    // 
-  }, [isDarkMode]);
-
   return (
     <Box bg={isDarkMode ? "black" : "white"}>
       <VStack>
         <HStack>
-          {isDarkMode ? (
-            <Image
-              size="sm"
-              w={"70%"}
-              ml={2}
-              source={require("../../assets/images/ma_reussite_login_screen.png")}
-              alt="Alternate Text"
-            />
-          ) : (
-            <Image
-              size="sm"
-              w={"70%"}
-              ml={2}
-              source={require("../../assets/images/ma_reussite_other_screens.png")}
-              alt="Alternate Text"
-            />
-          )}
+          <Image
+            key={isDarkMode ? "dark" : "light"}
+            size="sm"
+            w={"70%"}
+            ml={2}
+            source={
+              isDarkMode
+                ? require("../../assets/images/ma_reussite_login_screen.png")
+                : require("../../assets/images/ma_reussite_other_screens.png")
+            }
+            alt="Alternate Text"
+          />
           <Pressable m={"auto"} onPress={() => navigation.openDrawer()}>
             {loading ? (
               <Avatar size="md" source={{ uri: null }} />

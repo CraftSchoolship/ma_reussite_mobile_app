@@ -51,7 +51,8 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
     <>
       <DrawerContentScrollView {...props}>
         <VStack
-        // bg={"black"}
+          key={isDarkMode ? "dark" : "light"}
+          // bg={"black"}
         >
           <HStack px={4} py={2} justifyContent={"space-between"}>
             <Text
@@ -261,9 +262,6 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                           _icon={{
                             color: "white",
                             size: "xs",
-                          }}
-                          _pressed={{
-                            bg: "primary.600:alpha.20",
                           }}
                         />
                       </Avatar>

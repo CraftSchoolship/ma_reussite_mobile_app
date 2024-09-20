@@ -1,7 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
-import { Box, StatusBar, Text, useToast, VStack } from "native-base";
+import { Box, StatusBar, Text, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   authenticate,
   jsonrpcRequest,
@@ -10,9 +11,8 @@ import {
 } from "../api/apiClient";
 import config from "../api/config";
 import { CustomButton, CustomInput, LoginScreenBanner } from "../components";
-import { loginValidationSchema } from "../validation/formValidation";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useThemeContext } from "../hooks/ThemeContext";
+import { loginValidationSchema } from "../validation/formValidation";
 
 const LoginScreen = () => {
   const input1Ref = useRef(null);
@@ -54,6 +54,8 @@ const LoginScreen = () => {
         );
 
         if (user.length > 0) {
+          // console.log("user...", user);
+
           const userid = user[0].self;
           const role = user[0].craft_role;
           const imageUri = user[0].image_1024;

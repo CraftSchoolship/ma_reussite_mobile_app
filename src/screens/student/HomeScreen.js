@@ -11,6 +11,8 @@ import { useThemeContext } from "../../hooks/ThemeContext";
 import CalendarLocalConfig from "../../utils/CalendarLocalConfig";
 import CalendarTheme from "../../utils/CalendarTheme";
 import { formatOdooEvents } from "../../utils/MarkedDatesFormatage";
+import { useAppContext } from "../../hooks/AppProvider";
+import MA_REUSSITE_CUSTOM_COLORS from "../../themes/variables";
 
 CalendarLocalConfig;
 
@@ -28,29 +30,47 @@ const HomeScreen = () => {
   const [selectedDay, setSelectedDay] = useState("");
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
   const { isDarkMode } = useThemeContext();
-
+  const [connectedUser, setConnectedUser] = useState(null);
+  const { selectedChild, setSelectedChild } = useAppContext();
+  const [calendarDisplay, setCalendarDisplay] = useState(null);
   useEffect(() => {
     const fetchConnectedUser = async () => {
       try {
-        const connectedUser = await getObject("connectedUser");
-        const { sessionId, email, password, userid } = connectedUser;
-        setSessionId(sessionId);
-        setPassword(password);
-        setUserid(userid[0]);
+        const storedUser = await getObject("connectedUser");
+        // const { sessionId, email, password, userid } = storedUser;
+        setConnectedUser(storedUser);
+        // setSessionId(sessionId);
+        // setPassword(password);
+        // setUserid(userid[0]);
       } catch (error) {}
     };
-    if (!sessionId) fetchConnectedUser();
-  }, [sessionId]);
+    if (!connectedUser) fetchConnectedUser();
+  }, [connectedUser]);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
+        if (!connectedUser || !connectedUser.sessionId || !selectedChild)
+          return;
+
+        let domain = [];
+        switch (connectedUser.role) {
+          case "parent":
+            if (!selectedChild?.contact_id) return;
+            domain = [["partner_ids", "=", selectedChild.contact_id[0]]];
+            break;
+          case "student":
+            domain = [["partner_ids", "=", connectedUser.partnerid[0]]];
+            break;
+          default:
+            console.error("Unsupported role:", connectedUser.role);
+            return;
+        }
         const eventsData = await jsonrpcRequest(
-          sessionId,
-          password,
+          connectedUser.sessionId,
+          connectedUser.password,
           config.model.craftSession,
-          [[["partner_ids", "=", userid]]],
-          // [],
+          [domain],
           [
             "classroom_id",
             "recurrency",
@@ -61,19 +81,14 @@ const HomeScreen = () => {
             "teacher_id",
             "description",
           ]
-          // []
         );
-        // console.log("eventsData...", eventsData);
-
         setEvents(eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
     };
-    if (sessionId && password) {
-      fetchEvents();
-    }
-  }, [sessionId, password, userid]);
+    if (connectedUser) fetchEvents();
+  }, [connectedUser]);
 
   useEffect(() => {
     if (events) {
@@ -94,6 +109,35 @@ const HomeScreen = () => {
     setTodaysEvents(markedDate[currentDay]?.dots);
   }, [markedDate]);
 
+  // useEffect(() => {
+  //   const calendar = () => {
+  //     return (
+  //       <Calendar
+  //         key={isDarkMode ? "dark" : "light"}
+  //         markingType={"multi-dot"}
+  //         onDayPress={(day) => {
+  //           const currentDaySelected = new Date(day.timestamp).getDay();
+  //           setSelectedDay(
+  //             `${CalendarLocalConfig.dayNamesShort[currentDaySelected]} ${day.day}`
+  //           );
+  //           if (markedDate[day.dateString] !== undefined) {
+  //             setSelectedDayEvents(markedDate[day.dateString].dots);
+  //           }
+  //           onOpen();
+  //         }}
+  //         monthFormat={"MMMM yyyy"}
+  //         hideArrows={false}
+  //         disableMonthChange={false}
+  //         firstDay={1}
+  //         markedDates={markedDate}
+  //         theme={CalendarTheme(isDarkMode)}
+  //       />
+  //     );
+  //   };
+
+  //   setCalendarDisplay(calendar);
+  // }, [isDarkMode]);
+
   return (
     <Box flex={1} bg={isDarkMode ? "black" : "white"}>
       <BackgroundWrapper navigation={navigation}>
@@ -107,6 +151,7 @@ const HomeScreen = () => {
           overflow={"hidden"}
         >
           <Calendar
+            key={isDarkMode ? "dark" : "light"}
             markingType={"multi-dot"}
             onDayPress={(day) => {
               const currentDaySelected = new Date(day.timestamp).getDay();

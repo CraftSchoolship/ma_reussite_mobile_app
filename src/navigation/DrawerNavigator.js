@@ -17,28 +17,6 @@ const DrawerNavigator = () => {
   const [childrenList, setChildrenList] = useState([]);
   const [selectedChild, setSelectedChild] = useState(null);
   const { isDarkMode } = useThemeContext();
-  const [darkThemeColor, setDarkThemeColor] = useState("#fff");
-
-  useEffect(() => {
-    isDarkMode && setDarkThemeColor("#000");
-  }, [isDarkMode]);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      // console.log("ok...");
-
-      try {
-        const user = await getObject("connectedUser");
-        if (user) {
-          setConnectedUser(user);
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUserData();
-  }, [connectedUser]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -48,7 +26,6 @@ const DrawerNavigator = () => {
           setConnectedUser(user);
 
           if (user.role === "parent") {
-            // console.log("connectedUser role:", user.role);
             const children = await getObject("children");
             setChildrenList(children || []);
 
@@ -91,7 +68,7 @@ const DrawerNavigator = () => {
         drawerStyle: {
           margin: 0,
           padding: 0,
-          backgroundColor: darkThemeColor,
+          backgroundColor: isDarkMode ? "#000" : "#fff",
         },
         drawerType: "front",
       }}
