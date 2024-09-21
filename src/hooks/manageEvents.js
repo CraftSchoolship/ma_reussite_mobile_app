@@ -1,6 +1,4 @@
-import { useEffect } from "react";
-import { jsonrpcRequest } from "../api/apiClient";
-import config from "../api/config";
+import { browse } from "../../http/http";
 import { formatOdooEvents } from "../utils/MarkedDatesFormatage";
 import CalendarLocalConfig from "../utils/CalendarLocalConfig";
 
@@ -18,11 +16,8 @@ const manageEvents = (
   //   const fetchEvents =
   async () => {
     try {
-      const eventsData = await jsonrpcRequest(
-        sessionId,
-        password,
-        config.model.craftSession,
-        [[["partner_ids", "=", partnerid[0]]]],
+      const eventsData = await browse(
+        "craft.session",
         [
           "classroom_id",
           "recurrency",
@@ -32,7 +27,8 @@ const manageEvents = (
           "subject_id",
           "teacher_id",
           "description",
-        ]
+        ],
+        [["partner_ids", "=", partnerid[0]]],
       );
       // console.log("eventsData[0]...", eventsData[0]);
       setEvents(eventsData);

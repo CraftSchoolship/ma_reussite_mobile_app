@@ -19,7 +19,8 @@ import {
 } from "native-base";
 import React, { useEffect, useState } from "react";
 import { Alert } from "react-native"; // Ajoute cette ligne pour utiliser Alert de React Native
-import { getObject, storeObject, updateRecord } from "../api/apiClient"; // Import updateRecord
+import { getObject, storeObject } from "../api/apiClient";
+import { update } from "../../http/http";
 import config from "../api/config";
 import { ProfileUserEdit, ProfileUserInfo, ToastAlert } from "../components";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
@@ -66,17 +67,11 @@ const ProfileScreen = () => {
       });
 
       // Mettre à jour l'utilisateur dans Odoo
-      const response = await updateRecord(
+      const response = await update(
+        "res.users", 
         connectedUser.sessionId,
-        connectedUser.password,
-        config.model.partner, // Modèle Odoo
-        connectedUser.userid[0], // ID de l'utilisateur
         {
-          image_1920: imageBase64, // Champ pour l'image de profil dans Odoo (taille 1920px)
-          // image_1024: imageBase64,
-          // image_512: imageBase64,
-          // image_256: imageBase64,
-          // image_128: imageBase64,
+          image_1920: imageBase64
         }
       );
 

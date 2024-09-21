@@ -5,7 +5,8 @@ import CustomButton from "./CustomButton";
 import CustomInput from "./CustomInput";
 import { EditProfileValidationSchema } from "../validation/formValidation";
 import ToastAlert from "./ToastAlert";
-import { updateRecord, storeObject } from "../api/apiClient";
+import { storeObject } from "../api/apiClient";
+import { update } from "../../http/http";
 
 export const ProfileUserEdit = ({ connectedUser }) => {
   const toast = useToast();
@@ -29,9 +30,7 @@ export const ProfileUserEdit = ({ connectedUser }) => {
   const handleSubmit = async (values) => {
     setIsLoading(false);
     try {
-      const response = await updateRecord(
-        connectedUser.sessionId,
-        connectedUser.password,
+      const response = await update(
         "res.users",
         connectedUser.sessionId,
         {

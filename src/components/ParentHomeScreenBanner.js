@@ -2,8 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"; // Import 
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Avatar, Box, HStack, Image, Pressable } from "native-base";
 import React, { useEffect, useMemo, useState } from "react";
-import { jsonrpcRequest } from "../api/apiClient";
-import config from "../api/config";
+import { read } from "../../http/http";
 
 function ParentHomeScreenBanner() {
   const route = useRoute();
@@ -33,11 +32,9 @@ function ParentHomeScreenBanner() {
   useEffect(() => {
     const fetchProfileImage = async () => {
       try {
-        const userData = await jsonrpcRequest(
-          sessionId,
-          config.password,
-          config.model.opStudent,
-          [[["partner_id", "=", partnerid]]],
+        const userData = await read(
+          "res.partner",
+          [partnerid],
           ["avatar_1024"]
         );
 

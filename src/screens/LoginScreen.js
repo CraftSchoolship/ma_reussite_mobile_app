@@ -3,12 +3,11 @@ import { Formik } from "formik";
 import { Box, Center, StatusBar, Text, View, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  authenticate,
-  jsonrpcRequest,
   storeArray,
   storeObject,
 } from "../api/apiClient";
 import config from "../api/config";
+import { authenticate, browse, read } from "../../http/http";
 import { CustomButton, CustomInput, LoginScreenBanner } from "../components";
 import { loginValidationSchema } from "../validation/formValidation";
 
@@ -39,101 +38,37 @@ const LoginScreen = () => {
     const password = values.password;
 
     try {
-      const sessionId = await authenticate(email, password);
+      const user_id = await authenticate(email, password);
 
-      if (sessionId) {
-        const user = await jsonrpcRequest(
-          sessionId,
-          password,
-          config.model.users,
-          [[["email", "=", email]]],
-          ["self", "craft_role", "image_1024", "name", "phone", "street"]
-        );
-
-        if (user.length > 0) {
-          const userid = user[0].self;
-          const role = user[0].craft_role;
-          const imageUri = user[0].image_1024;
-          const name = user[0].name;
-          const phone = user[0].phone;
-          const street = user[0].street;
-
-          let userData;
-          switch (role) {
-            case "student":
-              userData = await jsonrpcRequest(
-                sessionId,
-                password,
-                config.model.craftStudent,
-                [[["contact_id", "in", userid]]],
-                ["image_1024"]
-              );
-              break;
-
-            case "parent":
-              userData = await jsonrpcRequest(
-                sessionId,
-                password,
-                config.model.craftParent,
-                [[["contact_id", "in", userid]]],
-                ["image_1024"]
-              );
-              break;
-
-            case "teacher":
-              userData = await jsonrpcRequest(
-                sessionId,
-                password,
-                config.model.craftTeachers,
-                [[["work_contact_id", "in", userid]]],
-                ["image_1024"]
-              );
-              break;
-
-            default:
-              userData = await jsonrpcRequest(
-                sessionId,
-                password,
-                config.model.users,
-                [[["partner_id", "in", userid]]],
-                ["image_1024"]
-              );
-              break;
-          }
-
-          const profileImage = imageUri
-            ? `data:image/png;base64,${imageUri}`
-            : null;
-
-          setError("");
-
-          await storeObject("connectedUser", {
-            sessionId: sessionId,
-            email: email,
-            password: password,
-            userid: userid,
-            role: role,
-            profileImage: profileImage,
-            name: name,
-            phone: phone,
-            street: street,
-          });
-
-          setConnectedUser({
-            sessionId: sessionId,
-            email: email,
-            password: password,
-            userid: userid,
-            role: role,
-            profileImage: profileImage,
-            name: name,
-            phone: phone,
-            street: street,
-          });
-        }
-      } else {
+      // if connection failed return
+      if (!user_id) {
         setError("Nom d'utilisateur ou mot de passe incorrect !");
+        return;
       }
+
+      const user = await read(
+        "res.users",
+        [user_id],
+        ["self", "name", "phone", "login", "street", "craft_role", "craft_parent_id", "craft_student_id"]
+      );
+
+      console.log(user);
+
+      if (!user) {
+        setError("Oops! Quelque chose s'est mal passée");
+        return;
+      }
+
+      let connectedUser = {
+        ...user,
+        email: email,
+        password: password,
+        profileImage: config.baseUrl + `/web/image?model=res.users&id=${sessionId}&field=image_1920'`,
+      }
+
+      await storeObject("connectedUser", connectedUser);
+      setConnectedUser(connectedUser);
+
     } catch (error) {
       console.error("Odoo JSON-RPC Error:", error);
       setError("Nom d'utilisateur ou mot de passe incorrect !");
@@ -145,15 +80,15 @@ const LoginScreen = () => {
   useEffect(() => {
     if (connectedUser?.role !== "parent") return;
 
+    // TODO refactor this later, MAKE SURE IT WORKS!!!
+
     const loadParentData = async () => {
       try {
         if (!connectedUser) return;
 
-        const parent = await jsonrpcRequest(
-          connectedUser.sessionId,
-          connectedUser.password,
-          config.model.craftParent,
-          [[["email", "=", connectedUser.email]]],
+        const parent = await read(
+          "craft.parent",
+          [connectedUser.craft_parent_id],
           ["id", "child_ids"]
         );
 
@@ -161,20 +96,16 @@ const LoginScreen = () => {
 
         const parentChildIds = parent[0].child_ids;
 
-        const fetchedChildren = await jsonrpcRequest(
-          connectedUser.sessionId,
-          connectedUser.password,
-          config.model.craftParentChildLine,
-          [[["id", "=", parentChildIds]]],
-          ["child_id", "id"]
+        const fetchedChildren = await browse(
+          "craft.parent.child.line",
+          ["child_id", "id"],
+          [[["parent_id", "=", connectedUser.craft_parent_id]]],
         );
 
         const studentIds = getStudentIds(fetchedChildren);
 
-        const childrenList = await jsonrpcRequest(
-          connectedUser.sessionId,
-          connectedUser.password,
-          config.model.craftStudent,
+        const childrenList = await browse(
+          "craft.student",
           [[["id", "=", studentIds]]],
           ["id", "contact_id", "image_1024"]
         );
@@ -196,11 +127,8 @@ const LoginScreen = () => {
   useEffect(() => {
     const getCurrencies = async () => {
       try {
-        const currencies = await jsonrpcRequest(
-          connectedUser.sessionId,
-          connectedUser.password,
+        const currencies = await browse(
           config.model.resCurrency,
-          [],
           ["id", "symbol"]
         );
 
