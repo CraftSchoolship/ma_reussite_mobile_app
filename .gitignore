@@ -40,3 +40,5 @@ yarn-error.*
 # data
 z-*.json
 z-*.js
+
+http/config.js
