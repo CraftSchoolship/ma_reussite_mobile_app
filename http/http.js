@@ -4,7 +4,7 @@ import config from "./config";
 
 // Create an axios instance
 const odooApi = axios.create({
-  baseURL: config.baseUrl,
+  baseURL: config.baseUrl + "/jsonrpc",
   headers: {
     "Content-Type": "application/json",
   },
@@ -12,6 +12,9 @@ const odooApi = axios.create({
 
 const jsonRpcRequest = async (service, method, args) => {
   try {
+    console.log("calling rpc with args:");
+    console.log(args);
+
     const response = await odooApi.post("/", {
       jsonrpc: "2.0",
       method: "call",
@@ -83,7 +86,7 @@ export const browse = async (
   order = undefined
 ) =>
   execute(model, "search_read", [
-    [domain_filters, offset, limit, order],
+    [domain_filters /*,offset, limit, order*/],
     fields,
   ]);
 export const create = async (model, record) =>

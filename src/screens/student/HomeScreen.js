@@ -9,13 +9,13 @@ import {
 } from "native-base";
 import React, { useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
-import { getObject, jsonrpcRequest } from "../../api/apiClient";
-import config from "../../api/config";
+import { getObject } from "../../api/apiClient";
 import { CalendarCard } from "../../components";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import MA_REUSSITE_CUSTOM_COLORS from "../../themes/variables";
 import CalendarLocalConfig from "../../utils/CalendarLocalConfig";
 import { formatOdooEvents } from "../../utils/MarkedDatesFormatage";
+import { browse } from "../../../http/http";
 
 CalendarLocalConfig;
 
@@ -23,9 +23,9 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const { isOpen, onOpen, onClose } = useDisclose();
   const route = useRoute();
-  const [sessionId, setSessionId] = useState(null);
+  const [user_id, setUserId] = useState(null);
   const [password, setPassword] = useState(null);
-  const [userid, setUserid] = useState(null);
+  const [partner_id, setPartnerId] = useState(null);
   const [events, setEvents] = useState(null);
   const [markedDate, setMarkedDate] = useState({});
   const [todaysEvents, setTodaysEvents] = useState([]);
@@ -38,26 +38,22 @@ const HomeScreen = () => {
     const fetchConnectedUser = async () => {
       try {
         const connectedUser = await getObject("connectedUser");
-        const { sessionId, email, password, userid } = connectedUser;
-        setSessionId(sessionId);
-        setPassword(password);
-        setUserid(userid[0]);
+        setUserId(connectedUser.id);
+        setPassword(connectedUser.password);
+        setPartnerId(connectedUser.self[0]);
       } catch (error) {
         console.error("Error fetching connected user:", error);
       }
     };
 
-    if (!sessionId) fetchConnectedUser();
-  }, [sessionId]);
+    if (!user_id) fetchConnectedUser();
+  }, [user_id]);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const eventsData = await jsonrpcRequest(
-          sessionId,
-          password,
-          config.model.craftSession,
-          [[["partner_ids", "=", userid]]],
+        const eventsData = await browse(
+          "craft.session",
           [
             "classroom_id",
             "start",
@@ -65,18 +61,22 @@ const HomeScreen = () => {
             "subject_id",
             "teacher_id",
             "description",
-          ]
+          ],
+          [["partner_ids", "in", partner_id]]
         );
+        console.log(eventsData);
         setEvents(eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
     };
 
-    if (sessionId && password) {
+    if (user_id) {
+      console.log("CHECKPOINT:1");
       fetchEvents();
+      console.log("CHECKPOINT:2");
     }
-  }, [sessionId, password, userid]);
+  }, [user_id, partner_id]);
 
   useEffect(() => {
     if (events) {

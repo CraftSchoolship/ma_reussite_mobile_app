@@ -2,11 +2,8 @@ import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
 import { Box, Center, StatusBar, Text, View, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  storeArray,
-  storeObject,
-} from "../api/apiClient";
-import config from "../api/config";
+import { storeArray, storeObject } from "../api/apiClient";
+import config from "../../http/config";
 import { authenticate, browse, read } from "../../http/http";
 import { CustomButton, CustomInput, LoginScreenBanner } from "../components";
 import { loginValidationSchema } from "../validation/formValidation";
@@ -49,10 +46,17 @@ const LoginScreen = () => {
       const user = await read(
         "res.users",
         [user_id],
-        ["self", "name", "phone", "login", "street", "craft_role", "craft_parent_id", "craft_student_id"]
+        [
+          "self",
+          "name",
+          "phone",
+          "login",
+          "street",
+          "craft_role",
+          "craft_parent_id",
+          "craft_student_id",
+        ]
       );
-
-      console.log(user);
 
       if (!user) {
         setError("Oops! Quelque chose s'est mal passée");
@@ -60,15 +64,16 @@ const LoginScreen = () => {
       }
 
       let connectedUser = {
-        ...user,
+        ...user[0],
         email: email,
         password: password,
-        profileImage: config.baseUrl + `/web/image?model=res.users&id=${sessionId}&field=image_1920'`,
-      }
-
+        profileImage:
+          config.baseUrl +
+          `/web/image?model=res.users&id=${user_id}&field=image_1920'`,
+        role: user[0].craft_role,
+      };
       await storeObject("connectedUser", connectedUser);
       setConnectedUser(connectedUser);
-
     } catch (error) {
       console.error("Odoo JSON-RPC Error:", error);
       setError("Nom d'utilisateur ou mot de passe incorrect !");
@@ -94,12 +99,10 @@ const LoginScreen = () => {
 
         if (!parent.length || !parent[0].child_ids.length) return;
 
-        const parentChildIds = parent[0].child_ids;
-
         const fetchedChildren = await browse(
           "craft.parent.child.line",
           ["child_id", "id"],
-          [[["parent_id", "=", connectedUser.craft_parent_id]]],
+          [[["parent_id", "=", connectedUser.craft_parent_id]]]
         );
 
         const studentIds = getStudentIds(fetchedChildren);
@@ -127,14 +130,11 @@ const LoginScreen = () => {
   useEffect(() => {
     const getCurrencies = async () => {
       try {
-        const currencies = await browse(
-          config.model.resCurrency,
-          ["id", "symbol"]
-        );
+        const currencies = await browse("res.currency", ["id", "symbol"]);
 
         storeObject("currencies", currencies);
       } catch (error) {
-        console.error("Error fetching role:", error);
+        console.error("Error fetching currency:", error);
       }
     };
 

@@ -1,5 +1,5 @@
 const config = {
-  baseUrl: "https://test.erp.craftschoolship.com/jsonrpc",
+  baseUrl: "https://test.erp.craftschoolship.com",
   database: "bitnami_odoo",
   model: {
     accountMove: "account.move",
