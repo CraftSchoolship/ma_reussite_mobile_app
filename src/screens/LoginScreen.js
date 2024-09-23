@@ -85,7 +85,7 @@ const LoginScreen = () => {
   useEffect(() => {
     if (connectedUser?.role !== "parent") return;
 
-    // TODO refactor this later, MAKE SURE IT WORKS!!!
+    //TODO: FIX: This code is not working as expected
 
     const loadParentData = async () => {
       try {
