@@ -3,7 +3,11 @@ import { Button, HStack, Spinner, Text } from "native-base";
 
 const CustomButton = ({ onPress, title, isDisabled, loading = true }) => {
   return (
-    <Button borderRadius={12} onPress={onPress} isDisabled={isDisabled}>
+    <Button
+      onPress={onPress}
+      isDisabled={isDisabled}
+      style={{ height: 50, borderRadius: 12 }}
+    >
       {loading ? (
         <Text>{title}</Text>
       ) : (

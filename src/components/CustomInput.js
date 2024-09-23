@@ -21,6 +21,7 @@ const CustomInput = ({
     <FormControl isInvalid={touched && !!error}>
       <FormControl.Label>{label}</FormControl.Label>
       <Input
+        height={52}
         ref={inputRef}
         keyboardType={keyboardType}
         autoCapitalize="none"
@@ -34,7 +35,15 @@ const CustomInput = ({
         type={secureTextEntry && !showPassword ? "password" : "text"}
         InputRightElement={
           secureTextEntry ? (
-            <Pressable onPress={() => setShowPassword(!showPassword)}>
+            <Pressable
+              onPress={() => setShowPassword(!showPassword)}
+              style={{
+                width: 50,
+                height: 50,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <Icon
                 as={
                   <MaterialIcons
