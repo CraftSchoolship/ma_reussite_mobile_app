@@ -25,16 +25,18 @@ const App = () => {
     return (
       <NativeBaseProvider isSSR theme={customTheme}>
         <WebView
-          source={{ uri: "https://ma-reussite-privacy.netlify.app/" }}
+          source={{
+            uri: "https://ma-reussite2.erp.craftschoolship.com/policy/agreement",
+          }}
           style={{ flex: 1, marginTop: "10%", marginBottom: "5%" }}
           onMessage={handleWebViewMessage}
         />
         <Button
-          // w={"50%"}
+          w={"50%"}
           mx={"auto"}
           mb={"2%"}
           onPress={onAccept}
-          style={{ height: 50, width: 50 }}
+          style={{ height: 50 }}
         >
           J'accepte
         </Button>
