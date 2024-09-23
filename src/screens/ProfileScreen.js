@@ -21,7 +21,6 @@ import React, { useEffect, useState } from "react";
 import { Alert } from "react-native"; // Ajoute cette ligne pour utiliser Alert de React Native
 import { getObject, storeObject } from "../api/apiClient";
 import { update } from "../../http/http";
-import config from "../api/config";
 import { ProfileUserEdit, ProfileUserInfo, ToastAlert } from "../components";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
@@ -31,7 +30,7 @@ const ProfileScreen = () => {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclose();
   const [connectedUser, setConnectedUser] = useState({
-    sessionId: "",
+    id: "",
     email: "",
     password: "",
     userid: "",
@@ -67,13 +66,9 @@ const ProfileScreen = () => {
       });
 
       // Mettre à jour l'utilisateur dans Odoo
-      const response = await update(
-        "res.users", 
-        connectedUser.sessionId,
-        {
-          image_1920: imageBase64
-        }
-      );
+      const response = await update("res.users", connectedUser.id, {
+        image_1920: imageBase64,
+      });
 
       if (response) {
         toast.show({
@@ -224,7 +219,7 @@ const ProfileScreen = () => {
           </Avatar>
         )}
         <Heading color={"black"} mt={2}>
-          {connectedUser && connectedUser.userid[1]}
+          {connectedUser && connectedUser.name}
         </Heading>
       </Center>
       <Divider bgColor={"gray.100"} h={"0.5"} mt={2} />

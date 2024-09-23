@@ -75,7 +75,7 @@ export const execute = async (model, method, args) =>
   ]);
 
 export const read = async (model, ids, fields) =>
-  execute(model, "read", [ids, {fields: fields}]);
+  execute(model, "read", [ids, fields]);
 
 export const browse = async (
   model,
@@ -85,10 +85,7 @@ export const browse = async (
   limit = undefined,
   order = undefined
 ) =>
-  execute(model, "search_read", [
-    domain_filters,
-    {fields, offset, limit, order}
-  ]);
+  execute(model, "search_read", [domain_filters, fields, offset, limit, order]);
 export const create = async (model, record) =>
   execute(model, "create", [record]);
 export const update = async (model, id, record) =>

@@ -30,15 +30,11 @@ export const ProfileUserEdit = ({ connectedUser }) => {
   const handleSubmit = async (values) => {
     setIsLoading(false);
     try {
-      const response = await update(
-        "res.users",
-        connectedUser.sessionId,
-        {
-          name: values.name,
-          phone: values.phone,
-          street: values.address,
-        }
-      );
+      const response = await update("res.users", connectedUser.id, {
+        name: values.name,
+        phone: values.phone,
+        street: values.address,
+      });
 
       console.log("API Response:", response);
 
