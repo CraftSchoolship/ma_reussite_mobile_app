@@ -1,19 +1,22 @@
-import React, { useState, useRef } from "react";
-import {
-  Box,
-  Text,
-  FlatList,
-  Pressable,
-  VStack,
-  HStack,
-  ScrollView,
-  Icon,
-} from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
-import { TabMenuItem } from "../components/TabMenuItem";
-import { BackgroundWrapper } from "../components";
+import React, { useRef, useState } from "react";
+import {
+  Avatar,
+  Box,
+  FlatList,
+  HStack,
+  Icon,
+  IconButton,
+  Pressable,
+  ScrollView,
+  Text,
+  VStack,
+} from "native-base";
 import { SafeAreaView } from "react-native";
+import { BackgroundWrapper } from "../components";
+import { TabMenuItem } from "../components/TabMenuItem";
+import { useThemeContext } from "../hooks/ThemeContext";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const participants = [
   { id: "1", name: "Samir Tata (Enseignant)" },
@@ -44,28 +47,161 @@ const SessionsScreen = ({ navigation }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [scrollViewContentWidth, setScrollViewContentWidth] = useState(0);
   const [scrollViewWidth, setScrollViewWidth] = useState(0);
+  const { isDarkMode } = useThemeContext();
 
   const renderParticipant = ({ item }) => (
     <Pressable onPress={() => navigation.navigate("Sessions")}>
       <Box
-        bg="white"
+        bg={
+          isDarkMode
+            ? MA_REUSSITE_CUSTOM_COLORS.Black
+            : MA_REUSSITE_CUSTOM_COLORS.White
+        }
         p={4}
-        borderTopColor={MA_REUSSITE_CUSTOM_COLORS.LightDivider}
-        borderBottomColor={MA_REUSSITE_CUSTOM_COLORS.LightDivider}
+        borderTopColor={
+          isDarkMode
+            ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
+            : MA_REUSSITE_CUSTOM_COLORS.LightDivider
+        }
+        borderBottomColor={
+          isDarkMode
+            ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
+            : MA_REUSSITE_CUSTOM_COLORS.LightDivider
+        }
         shadow={1}
         borderBottomWidth={1}
         borderTopWidth={1}
       >
-        <Text>{item.name}</Text>
+        <HStack alignItems={"center"}>
+          <Avatar
+            size="sm"
+            mr={2}
+            source={{
+              uri: null,
+            }}
+            bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
+          >
+            <IconButton
+              icon={
+                <Icon
+                  as={MaterialIcons}
+                  name="person"
+                  size="lg"
+                  color="white"
+                  mx={"auto"}
+                />
+              }
+              borderRadius="full"
+              _icon={{
+                color: "white",
+                size: "xs",
+              }}
+              _pressed={{
+                bg: "primary.600:alpha.20",
+              }}
+            />
+          </Avatar>
+          <Text
+            color={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.White
+                : MA_REUSSITE_CUSTOM_COLORS.Black
+            }
+          >
+            {item.name}
+          </Text>
+        </HStack>
       </Box>
     </Pressable>
   );
 
   const renderSession = ({ item }) => (
-    <Box bg="white" p={4} borderRadius={8} shadow={1} mb={4}>
-      <Text>{item.date}</Text>
-      <Text>{item.time}</Text>
-      <Text>{item.attended ? "Présent" : "Absent"}</Text>
+    <Box
+      bg={
+        isDarkMode
+          ? MA_REUSSITE_CUSTOM_COLORS.Black
+          : MA_REUSSITE_CUSTOM_COLORS.LightBgCalendarCard
+      }
+      p={4}
+      borderRadius={8}
+      shadow={1}
+      mb={4}
+      borderColor={
+        isDarkMode
+          ? MA_REUSSITE_CUSTOM_COLORS.Black
+          : MA_REUSSITE_CUSTOM_COLORS.LightBorderCalendarCard
+      }
+    >
+      <HStack>
+        <Box w={"4/6"}>
+          <VStack>
+            <HStack>
+              <Text
+                w={"1/4"}
+                color={
+                  isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.White
+                    : MA_REUSSITE_CUSTOM_COLORS.Black
+                }
+              >
+                Date:
+              </Text>
+
+              <Text
+                color={
+                  isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.White
+                    : MA_REUSSITE_CUSTOM_COLORS.Black
+                }
+              >
+                {item.date}
+              </Text>
+            </HStack>
+            <HStack>
+              <Text
+                w={"1/4"}
+                color={
+                  isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.White
+                    : MA_REUSSITE_CUSTOM_COLORS.Black
+                }
+              >
+                Heure:
+              </Text>
+              <Text
+                color={
+                  isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.White
+                    : MA_REUSSITE_CUSTOM_COLORS.Black
+                }
+              >
+                {item.time}
+              </Text>
+            </HStack>
+          </VStack>
+        </Box>
+        <Box
+          w={"2/6"}
+          // bg={"amber.400"}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
+          <Text
+            color={MA_REUSSITE_CUSTOM_COLORS.White}
+            bg={
+              item.attended
+                ? // ? MA_REUSSITE_CUSTOM_COLORS.Black
+                  "green.700"
+                : MA_REUSSITE_CUSTOM_COLORS.Danger
+            }
+            px={4}
+            py={1}
+            borderRadius={"2xl"}
+          >
+            {item.attended ? "Présent" : "Absent"}
+          </Text>
+        </Box>
+      </HStack>
     </Box>
   );
 
@@ -86,7 +222,7 @@ const SessionsScreen = ({ navigation }) => {
   return (
     <SafeAreaView>
       <BackgroundWrapper navigation={navigation}>
-        <VStack flex={1} p={4} bg="gray.100">
+        <VStack flex={1} p={4}>
           <HStack alignItems="center" mb={4}>
             {scrollPosition > 0 && (
               <Pressable onPress={handleScrollLeft}>
@@ -94,7 +230,11 @@ const SessionsScreen = ({ navigation }) => {
                   as={MaterialIcons}
                   name="chevron-left"
                   size="lg"
-                  color={MA_REUSSITE_CUSTOM_COLORS.Black}
+                  color={
+                    isDarkMode
+                      ? MA_REUSSITE_CUSTOM_COLORS.White
+                      : MA_REUSSITE_CUSTOM_COLORS.Black
+                  }
                   mr={2}
                 />
               </Pressable>
@@ -116,18 +256,21 @@ const SessionsScreen = ({ navigation }) => {
                   tabKey={"participants"}
                   activeTab={activeTab}
                   setActiveTab={setActiveTab}
+                  isDarkMode={isDarkMode}
                 />
                 <TabMenuItem
                   title={"Sessions Passées"}
                   tabKey={"past"}
                   activeTab={activeTab}
                   setActiveTab={setActiveTab}
+                  isDarkMode={isDarkMode}
                 />
                 <TabMenuItem
                   title={"Sessions Futures"}
                   tabKey={"future"}
                   activeTab={activeTab}
                   setActiveTab={setActiveTab}
+                  isDarkMode={isDarkMode}
                 />
               </HStack>
             </ScrollView>
@@ -137,7 +280,11 @@ const SessionsScreen = ({ navigation }) => {
                   as={MaterialIcons}
                   name="chevron-right"
                   size="lg"
-                  color={MA_REUSSITE_CUSTOM_COLORS.Black}
+                  color={
+                    isDarkMode
+                      ? MA_REUSSITE_CUSTOM_COLORS.White
+                      : MA_REUSSITE_CUSTOM_COLORS.Black
+                  }
                   ml={2}
                 />
               </Pressable>

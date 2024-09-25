@@ -1,14 +1,28 @@
 import { Pressable, Text } from "native-base";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
-export const TabMenuItem = ({ title, tabKey, activeTab, setActiveTab }) => {
+export const TabMenuItem = ({
+  isDarkMode,
+  title,
+  tabKey,
+  activeTab,
+  setActiveTab,
+}) => {
   return (
     <Pressable onPress={() => setActiveTab(tabKey)}>
       <Text
         borderBottomWidth={activeTab === tabKey ? 3 : 0}
-        borderBottomColor={MA_REUSSITE_CUSTOM_COLORS.Primary}
+        borderBottomColor={
+          isDarkMode
+            ? MA_REUSSITE_CUSTOM_COLORS.Secondary
+            : MA_REUSSITE_CUSTOM_COLORS.Primary
+        }
         color={
-          activeTab === tabKey ? MA_REUSSITE_CUSTOM_COLORS.Black : "gray.500"
+          activeTab !== tabKey
+            ? MA_REUSSITE_CUSTOM_COLORS.InactiveColorDark
+            : isDarkMode
+            ? MA_REUSSITE_CUSTOM_COLORS.White
+            : MA_REUSSITE_CUSTOM_COLORS.Black
         }
         pb={1}
       >

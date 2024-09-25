@@ -108,7 +108,7 @@ const HomeScreenBanner = () => {
                   }}
                   onPress={() =>
                     navigation.openDrawer && navigation.openDrawer()
-                  } // @ici pourquoi j'ai l'erreur suivant : TypeError: navigation.openDrawer is not a function (it is undefined), js engine: hermes quand la banniere se trouve sur une navigation type stackNavigation ?
+                  }
                 />
               </Avatar>
             )}

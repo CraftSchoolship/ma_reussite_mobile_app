@@ -58,7 +58,6 @@ const ProfileScreen = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const user = await getObject("connectedUser");
-      console.log("User...", user.name);
       setConnectedUser(user);
       setLoading(false);
     };
@@ -173,15 +172,8 @@ const ProfileScreen = () => {
   return (
     <SafeAreaView>
       <BackgroundWrapper>
-        <Box
-          flex={1}
-          bg={
-            isDarkMode
-              ? MA_REUSSITE_CUSTOM_COLORS.Black
-              : MA_REUSSITE_CUSTOM_COLORS.White
-          }
-        >
-          <Center mt={2}>
+        <Box flex={1} my={4}>
+          <Center my={2}>
             {loading ? (
               <Avatar
                 size="2xl"

@@ -20,7 +20,7 @@ function CalendarCard({ date, tag, time, subject, teacher, classroom }) {
       borderColor={
         isDarkMode
           ? MA_REUSSITE_CUSTOM_COLORS.Black
-          : MA_REUSSITE_CUSTOM_COLORS.LIghtBorderCalendarCard
+          : MA_REUSSITE_CUSTOM_COLORS.LightBorderCalendarCard
       }
       overflow={"hidden"}
     >
