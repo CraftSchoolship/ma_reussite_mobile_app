@@ -17,7 +17,7 @@ import { useAppContext } from "../hooks/AppProvider";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useThemeContext } from "../hooks/ThemeContext";
 
-function HomeScreenBanner() {
+const HomeScreenBanner = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const [connectedUser, setConnectedUser] = useState({
@@ -32,7 +32,7 @@ function HomeScreenBanner() {
   const [account, setAccount] = useState();
   const { selectedChild, setSelectedChild } = useAppContext();
   const { isDarkMode } = useThemeContext();
-  const [imgBanner, setImgBanner] = useState("");
+  // const [imgBanner, setImgBanner] = useState("");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -51,7 +51,7 @@ function HomeScreenBanner() {
     if (connectedUser?.role === "parent" && selectedChild?.contact_id) {
       setAccount(
         <Text color={"white"} fontWeight={"medium"}>
-          {selectedChild.contact_id[1]}
+          {selectedChild?.contact_id[1]}
         </Text>
       );
     }
@@ -73,7 +73,10 @@ function HomeScreenBanner() {
             }
             alt="Alternate Text"
           />
-          <Pressable m={"auto"} onPress={() => navigation.openDrawer()}>
+          <Pressable
+            m={"auto"}
+            onPress={() => navigation.openDrawer && navigation.openDrawer()}
+          >
             {loading ? (
               <Avatar size="md" source={{ uri: null }} />
             ) : (
@@ -103,7 +106,9 @@ function HomeScreenBanner() {
                   _pressed={{
                     bg: "primary.600:alpha.20",
                   }}
-                  onPress={() => navigation.openDrawer()}
+                  onPress={() =>
+                    navigation.openDrawer && navigation.openDrawer()
+                  } // @ici pourquoi j'ai l'erreur suivant : TypeError: navigation.openDrawer is not a function (it is undefined), js engine: hermes quand la banniere se trouve sur une navigation type stackNavigation ?
                 />
               </Avatar>
             )}
@@ -125,6 +130,6 @@ function HomeScreenBanner() {
       </VStack>
     </Box>
   );
-}
+};
 
 export default HomeScreenBanner;

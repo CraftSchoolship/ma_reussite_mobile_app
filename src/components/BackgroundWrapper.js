@@ -25,14 +25,20 @@ const BackgroundWrapper = ({
       />
       {isDarkMode ? (
         <ImageBackground
-          style={styles.background}
+          style={{
+            minHeight: "100%",
+          }}
+          resizeMode="cover"
           source={require("../../assets/images/ma_reussite_background_dark.png")}
         >
           {children}
         </ImageBackground>
       ) : (
         <ImageBackground
-          style={styles.background}
+          style={{
+            minHeight: "100%",
+          }}
+          resizeMode="contain"
           source={require("../../assets/images/ma_reussite_background_1.png")}
         >
           {children}
@@ -41,12 +47,5 @@ const BackgroundWrapper = ({
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  background: {
-    resizeMode: "contain",
-    minHeight: "100%",
-  },
-});
 
 export default BackgroundWrapper;

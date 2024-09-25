@@ -8,6 +8,7 @@ import {
 } from "native-base";
 import React from "react";
 import { CalendarCard } from "../components";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 export const EventsActionSheet = ({
   isDarkMode,
@@ -20,7 +21,13 @@ export const EventsActionSheet = ({
   //   const { isOpen, onOpen, onClose } = useDisclose();
   return (
     <Actionsheet isOpen={isOpen} onClose={onClose}>
-      <Actionsheet.Content bg={isDarkMode ? "gray.800" : "white"}>
+      <Actionsheet.Content
+        bg={
+          isDarkMode
+            ? MA_REUSSITE_CUSTOM_COLORS.DarkActionSheet
+            : MA_REUSSITE_CUSTOM_COLORS.White
+        }
+      >
         <Box w="100%" h={60} px={4} justifyContent="center">
           <Text
             textAlign={"center"}

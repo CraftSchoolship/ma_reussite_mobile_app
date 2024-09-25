@@ -10,8 +10,8 @@ export const AppWithTheme = () => {
     colors: {
       // primary: { 500: "#1abc9c" },
       primary: { 500: "#2b1b94" },
-      background: "#000000",
-      text: "#ffffff",
+      background: "#000",
+      text: "#fff",
     },
   });
 

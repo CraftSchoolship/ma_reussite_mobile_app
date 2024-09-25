@@ -20,9 +20,9 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const { isOpen, onOpen, onClose } = useDisclose();
   const route = useRoute();
-  const [sessionId, setSessionId] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [userid, setUserid] = useState(null);
+  // const [sessionId, setSessionId] = useState(null);
+  // const [password, setPassword] = useState(null);
+  // const [userid, setUserid] = useState(null);
   const [events, setEvents] = useState(null);
   const [markedDate, setMarkedDate] = useState({});
   const [todaysEvents, setTodaysEvents] = useState([]);
@@ -32,7 +32,6 @@ const HomeScreen = () => {
   const { isDarkMode } = useThemeContext();
   const [connectedUser, setConnectedUser] = useState(null);
   const { selectedChild, setSelectedChild } = useAppContext();
-  const [calendarDisplay, setCalendarDisplay] = useState(null);
   useEffect(() => {
     const fetchConnectedUser = async () => {
       try {
@@ -109,38 +108,9 @@ const HomeScreen = () => {
     setTodaysEvents(markedDate[currentDay]?.dots);
   }, [markedDate]);
 
-  // useEffect(() => {
-  //   const calendar = () => {
-  //     return (
-  //       <Calendar
-  //         key={isDarkMode ? "dark" : "light"}
-  //         markingType={"multi-dot"}
-  //         onDayPress={(day) => {
-  //           const currentDaySelected = new Date(day.timestamp).getDay();
-  //           setSelectedDay(
-  //             `${CalendarLocalConfig.dayNamesShort[currentDaySelected]} ${day.day}`
-  //           );
-  //           if (markedDate[day.dateString] !== undefined) {
-  //             setSelectedDayEvents(markedDate[day.dateString].dots);
-  //           }
-  //           onOpen();
-  //         }}
-  //         monthFormat={"MMMM yyyy"}
-  //         hideArrows={false}
-  //         disableMonthChange={false}
-  //         firstDay={1}
-  //         markedDates={markedDate}
-  //         theme={CalendarTheme(isDarkMode)}
-  //       />
-  //     );
-  //   };
-
-  //   setCalendarDisplay(calendar);
-  // }, [isDarkMode]);
-
   return (
-    <Box flex={1} bg={isDarkMode ? "black" : "white"}>
-      <BackgroundWrapper navigation={navigation}>
+    <BackgroundWrapper navigation={navigation}>
+      <Box flex={1} bg={"transparent"}>
         <Box
           mt={4}
           mb={6}
@@ -199,8 +169,8 @@ const HomeScreen = () => {
             onClose();
           }}
         />
-      </BackgroundWrapper>
-    </Box>
+      </Box>
+    </BackgroundWrapper>
   );
 };
 

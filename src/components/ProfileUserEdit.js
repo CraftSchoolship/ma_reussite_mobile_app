@@ -8,7 +8,7 @@ import config from "../api/config";
 import ToastAlert from "./ToastAlert";
 import { updateRecord, storeObject } from "../api/apiClient"; // storeObject ajouté pour sauvegarder les données localement
 
-export const ProfileUserEdit = ({ connectedUser }) => {
+export const ProfileUserEdit = ({ isDarkMode, connectedUser }) => {
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [initialValues, setInitialValues] = useState({

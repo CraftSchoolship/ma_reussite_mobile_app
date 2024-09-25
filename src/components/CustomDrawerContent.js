@@ -107,7 +107,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
             <HStack alignItems="center" mx={4}>
               <Pressable
                 onPress={() =>
-                  props.navigation.navigate("Profile", { edit: false })
+                  props.navigation.navigate("Profil", { edit: false })
                 }
               >
                 <Avatar
@@ -137,7 +137,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                       bg: "primary.600:alpha.20",
                     }}
                     onPress={() =>
-                      props.navigation.navigate("Profile", { edit: false })
+                      props.navigation.navigate("Profil", { edit: false })
                     }
                   />
                 </Avatar>
@@ -156,7 +156,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
               </Text>
               <Pressable
                 onPress={() =>
-                  props.navigation.navigate("Profile", { edit: true })
+                  props.navigation.navigate("Profil", { edit: true })
                 }
                 ml={"auto"}
               >
@@ -321,6 +321,22 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
             routes: [{ name: "Login" }],
           });
         }}
+      />
+      <DrawerItem
+        label={"Sessions"}
+        labelStyle={{
+          textAlign: "center",
+          color: "#fff",
+          width: "115%",
+        }}
+        style={{
+          backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
+          alignContent: "center",
+        }}
+        px={4}
+        w={"100%"}
+        bottom={"10%"}
+        onPress={() => props.navigation.navigate("Session")}
       />
     </>
   );

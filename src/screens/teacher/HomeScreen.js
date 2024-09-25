@@ -93,18 +93,19 @@ const HomeScreen = () => {
   }, [markedDate]);
 
   return (
-    <Box flex={1} bg={"white"}>
-      <BackgroundWrapper navigation={navigation}>
+    <BackgroundWrapper navigation={navigation}>
+      <Box flex={1} bg={"transparent"}>
         <Box
           mt={4}
           mb={6}
           mx={"auto"}
           width={"90%"}
           borderRadius={10}
-          shadow={"9"}
+          shadow={isDarkMode ? "1" : "9"}
           overflow={"hidden"}
         >
           <Calendar
+            key={isDarkMode ? "dark" : "light"}
             markingType={"multi-dot"}
             onDayPress={(day) => {
               const currentDaySelected = new Date(day.timestamp).getDay();
@@ -152,8 +153,8 @@ const HomeScreen = () => {
             onClose();
           }}
         />
-      </BackgroundWrapper>
-    </Box>
+      </Box>
+    </BackgroundWrapper>
   );
 };
 

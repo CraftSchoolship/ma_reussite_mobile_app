@@ -129,25 +129,19 @@ const HomeScreen = () => {
   }, [markedDate]);
 
   return (
-    <Box
-      flex={1}
-      bg={
-        isDarkMode
-          ? MA_REUSSITE_CUSTOM_COLORS.Black
-          : MA_REUSSITE_CUSTOM_COLORS.White
-      }
-    >
-      <BackgroundWrapper navigation={navigation}>
+    <BackgroundWrapper navigation={navigation}>
+      <Box flex={1} bg={"transparent"}>
         <Box
           mt={4}
           mb={6}
           mx={"auto"}
           width={"90%"}
           borderRadius={10}
-          shadow={"9"}
+          shadow={isDarkMode ? "1" : "9"}
           overflow={"hidden"}
         >
           <Calendar
+            key={isDarkMode ? "dark" : "light"}
             markingType={"multi-dot"}
             onDayPress={(day) => {
               if (markedDate[day.dateString] !== undefined) {
@@ -191,8 +185,8 @@ const HomeScreen = () => {
             onClose();
           }}
         />
-      </BackgroundWrapper>
-    </Box>
+      </Box>
+    </BackgroundWrapper>
   );
 };
 

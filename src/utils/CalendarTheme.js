@@ -22,7 +22,6 @@ const CalendarTheme = (isDarkMode) => ({
   textDayFontColor: isDarkMode
     ? MA_REUSSITE_CUSTOM_COLORS.White
     : MA_REUSSITE_CUSTOM_COLORS.Black,
-  textSectionTitleColor: isDarkMode ? MA_REUSSITE_CUSTOM_COLORS.White : "black",
 });
 
 export default CalendarTheme;
