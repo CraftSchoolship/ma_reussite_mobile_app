@@ -24,7 +24,6 @@ const HomeScreen = () => {
   const { isOpen, onOpen, onClose } = useDisclose();
   const route = useRoute();
   const [user_id, setUserId] = useState(null);
-  const [password, setPassword] = useState(null);
   const [partner_id, setPartnerId] = useState(null);
   const [events, setEvents] = useState(null);
   const [markedDate, setMarkedDate] = useState({});
@@ -39,7 +38,6 @@ const HomeScreen = () => {
       try {
         const connectedUser = await getObject("connectedUser");
         setUserId(connectedUser.id);
-        setPassword(connectedUser.password);
         setPartnerId(connectedUser.self[0]);
       } catch (error) {
         console.error("Error fetching connected user:", error);
@@ -64,7 +62,6 @@ const HomeScreen = () => {
           ],
           [["partner_ids", "in", partner_id]]
         );
-        console.log(eventsData);
         setEvents(eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);
@@ -72,11 +69,9 @@ const HomeScreen = () => {
     };
 
     if (user_id) {
-      console.log("CHECKPOINT:1");
       fetchEvents();
-      console.log("CHECKPOINT:2");
     }
-  }, [user_id, partner_id]);
+  }, [partner_id]);
 
   useEffect(() => {
     if (events) {

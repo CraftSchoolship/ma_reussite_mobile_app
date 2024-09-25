@@ -33,7 +33,7 @@ const ProfileScreen = () => {
     id: "",
     email: "",
     password: "",
-    userid: "",
+    self: "",
     role: "",
     profileImage: null,
     name: "",

@@ -122,7 +122,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                   size="sm"
                   bg="blue.500"
                   source={{
-                    uri: connectedUser?.profileImage || null,
+                    uri: connectedUser?.profileImage,
                   }}
                   bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
                 >
@@ -151,7 +151,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                 </Avatar>
               </Pressable>
               <Text color={"black"} fontSize="lg" bold ml={4}>
-                {connectedUser?.userid?.[1] || "Prénom Nom"}
+                {connectedUser?.name || "Prénom Nom"}
               </Text>
               <Pressable
                 onPress={() =>

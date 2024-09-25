@@ -11,7 +11,6 @@ const Drawer = createDrawerNavigator();
 
 const DrawerNavigator = () => {
   const [connectedUser, setConnectedUser] = useState(null);
-  const [childrenList, setChildrenList] = useState([]);
 
   useEffect(() => {
     const fetchUserData = async () => {

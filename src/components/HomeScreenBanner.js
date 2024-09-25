@@ -21,10 +21,11 @@ function HomeScreenBanner() {
   const route = useRoute();
   const navigation = useNavigation();
   const [connectedUser, setConnectedUser] = useState({
-    sessionId: "",
+    id: "",
+    name: "",
     email: "",
     password: "",
-    userid: "",
+    self: "",
     role: "",
     profileImage: null,
   });
@@ -37,10 +38,11 @@ function HomeScreenBanner() {
       const user = await getObject("connectedUser");
       setConnectedUser(
         user || {
-          sessionId: "",
+          id: "",
+          name: "",
           email: "",
           password: "",
-          userid: "",
+          self: "",
           role: "",
           profileImage: null,
         }
@@ -62,7 +64,7 @@ function HomeScreenBanner() {
         </Text>
       );
     }
-  }, [connectedUser?.role, selectedChild]);
+  }, [connectedUser, selectedChild]);
 
   return (
     <>
@@ -90,7 +92,7 @@ function HomeScreenBanner() {
                   size="md"
                   ml={24}
                   source={{
-                    uri: connectedUser?.profileImage || null,
+                    uri: connectedUser?.profileImage,
                   }}
                   bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
                 >

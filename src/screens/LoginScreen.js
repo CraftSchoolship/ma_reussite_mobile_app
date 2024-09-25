@@ -69,7 +69,7 @@ const LoginScreen = () => {
         password: password,
         profileImage:
           config.baseUrl +
-          `/web/image?model=res.users&id=${user_id}&field=image_1920'`,
+          `/web/image?model=res.users&id=${user_id}&field=image_1920`,
         role: user[0].craft_role,
       };
       await storeObject("connectedUser", connectedUser);
