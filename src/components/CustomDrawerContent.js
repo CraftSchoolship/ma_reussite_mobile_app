@@ -322,7 +322,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
           });
         }}
       />
-      <DrawerItem
+      {/* <DrawerItem
         label={"Sessions"}
         labelStyle={{
           textAlign: "center",
@@ -337,7 +337,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
         w={"100%"}
         bottom={"10%"}
         onPress={() => props.navigation.navigate("Session")}
-      />
+      /> */}
     </>
   );
 };
