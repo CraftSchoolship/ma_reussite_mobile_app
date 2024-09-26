@@ -9,6 +9,7 @@ const BackgroundWrapper = ({
   selectedChild,
   navigation,
   listOfChildren,
+  isLoginScreen = false,
 }) => {
   const { isDarkMode } = useThemeContext();
   return (
@@ -18,32 +19,26 @@ const BackgroundWrapper = ({
       ) : (
         <StatusBar barStyle={"dark-content"} />
       )}
-      <HomeScreenBanner
-        listOfChildren={listOfChildren}
-        selectedChild={selectedChild}
-        navigation={navigation}
-      />
-      {isDarkMode ? (
-        <ImageBackground
-          style={{
-            minHeight: "100%",
-          }}
-          resizeMode="cover"
-          source={require("../../assets/images/ma_reussite_background_dark.png")}
-        >
-          {children}
-        </ImageBackground>
-      ) : (
-        <ImageBackground
-          style={{
-            minHeight: "100%",
-          }}
-          resizeMode="contain"
-          source={require("../../assets/images/ma_reussite_background_1.png")}
-        >
-          {children}
-        </ImageBackground>
+      {isLoginScreen ? null : (
+        <HomeScreenBanner
+          listOfChildren={listOfChildren}
+          selectedChild={selectedChild}
+          navigation={navigation}
+        />
       )}
+      <ImageBackground
+        style={{
+          minHeight: "100%",
+        }}
+        resizeMode="cover"
+        source={
+          isDarkMode
+            ? require("../../assets/images/ma_reussite_background_dark.png")
+            : require("../../assets/images/ma_reussite_background_1.png")
+        }
+      >
+        {children}
+      </ImageBackground>
     </SafeAreaView>
   );
 };

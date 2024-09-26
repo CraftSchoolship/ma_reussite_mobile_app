@@ -23,6 +23,9 @@ const App = () => {
       <NativeBaseProvider>
         <WebView
           source={{ uri: "https://ma-reussite-privacy.netlify.app/" }}
+          // source={{
+          //   uri: "https://ma-reussite2.erp.craftschoolship.com/policy/agreement",
+          // }}
           style={{ flex: 1, marginTop: "10%", marginBottom: "5%" }}
           onMessage={handleWebViewMessage}
         />
