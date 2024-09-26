@@ -45,18 +45,42 @@ const attendanceData = [
   },
 ];
 
-const renderItem = ({ item, index }) => (
+const renderItem = ({ item, index, isDarkMode }) => (
   <HStack
     borderBottomWidth={1}
-    borderBottomColor="gray.300"
+    borderBottomColor={isDarkMode ? "gray.700" : "gray.300"} // Adjust for dark mode
     padding={2}
-    backgroundColor={index % 2 === 0 ? "gray.100" : "white"}
+    backgroundColor={
+      index % 2 === 0
+        ? isDarkMode
+          ? "gray.800"
+          : "gray.100"
+        : isDarkMode
+        ? "gray.900"
+        : "white"
+    }
   >
     <VStack flex={1} alignItems="center">
-      <Text>{item.date}</Text>
+      <Text
+        color={
+          isDarkMode
+            ? MA_REUSSITE_CUSTOM_COLORS.White
+            : MA_REUSSITE_CUSTOM_COLORS.Black
+        }
+      >
+        {item.date}
+      </Text>
     </VStack>
     <VStack flex={1} alignItems="center">
-      <Text>{item.duration}</Text>
+      <Text
+        color={
+          isDarkMode
+            ? MA_REUSSITE_CUSTOM_COLORS.White
+            : MA_REUSSITE_CUSTOM_COLORS.Black
+        }
+      >
+        {item.duration}
+      </Text>
     </VStack>
     <VStack flex={1} alignItems="center">
       <Text color={item.status === "Présent(e)" ? "green.500" : "red.500"}>
@@ -122,13 +146,12 @@ const AttendanceTable = ({ isDarkMode }) => {
 
       <FlatList
         data={attendanceData}
-        renderItem={renderItem}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         scrollEnabled={true}
-        // borderWidth={1}
-        // borderTopWidth={0}
-        // borderBottomColor="gray.400"
+        renderItem={({ item, index }) =>
+          renderItem({ item, index, isDarkMode })
+        }
       />
     </Box>
   );
