@@ -1,5 +1,5 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Avatar,
   Box,
@@ -17,6 +17,8 @@ import { BackgroundWrapper } from "../components";
 import { TabMenuItem } from "../components/TabMenuItem";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import AttendanceTable from "../components/AttendanceTable";
+import { useRoute } from "@react-navigation/native";
 
 const participants = [
   { id: "1", name: "Samir Tata (Enseignant)" },
@@ -48,9 +50,18 @@ const SessionsScreen = ({ navigation }) => {
   const [scrollViewContentWidth, setScrollViewContentWidth] = useState(0);
   const [scrollViewWidth, setScrollViewWidth] = useState(0);
   const { isDarkMode } = useThemeContext();
+  const [groupName, setGroupName] = useState("");
+  const route = useRoute();
+
+  useEffect(() => {
+    if (route) {
+      const groupName = route?.params?.groupName;
+      setGroupName(groupName);
+    }
+  }, [route]);
 
   const renderParticipant = ({ item }) => (
-    <Pressable onPress={() => navigation.navigate("Sessions")}>
+    <Pressable /* onPress={() => navigation.navigate("Sessions")} */>
       <Box
         bg={
           isDarkMode
@@ -222,20 +233,6 @@ const SessionsScreen = ({ navigation }) => {
   return (
     <SafeAreaView>
       <BackgroundWrapper navigation={navigation}>
-        <Box pt={4} w={"100%"}>
-          <Text
-            color={
-              isDarkMode
-                ? MA_REUSSITE_CUSTOM_COLORS.White
-                : MA_REUSSITE_CUSTOM_COLORS.Black
-            }
-            textAlign={"center"}
-            fontWeight="bold"
-            fontSize="lg"
-          >
-            Master 1 DevOps
-          </Text>
-        </Box>
         <VStack flex={1} p={4}>
           <HStack alignItems="center" mb={4}>
             {scrollPosition > 0 && (
@@ -304,25 +301,37 @@ const SessionsScreen = ({ navigation }) => {
               </Pressable>
             )}
           </HStack>
-          {/* {activeTab === "participants" ? ( */}
-          <FlatList
-            data={
-              activeTab === "participants" ? participants : sessions[activeTab]
-            }
-            renderItem={
-              activeTab === "participants" ? renderParticipant : renderSession
-            }
-            keyExtractor={(item) => item.id}
-            scrollEnabled={true}
-          />
-          {/* ) : (
+          <Box pt={4} w={"100%"}>
+            <Text
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+              textAlign={"center"}
+              fontWeight="bold"
+              fontSize="lg"
+            >
+              {groupName}
+            </Text>
+          </Box>
+          {activeTab === "participants" ? (
             <FlatList
-              data={sessions[activeTab]}
-              renderItem={renderSession}
+              mt={6}
+              data={participants}
+              renderItem={renderParticipant}
               keyExtractor={(item) => item.id}
               scrollEnabled={true}
             />
-          )} */}
+          ) : (
+            // <FlatList
+            //   data={sessions[activeTab]}
+            //   renderItem={renderSession}
+            //   keyExtractor={(item) => item.id}
+            //   scrollEnabled={true}
+            // />
+            <AttendanceTable isDarkMode={isDarkMode} />
+          )}
         </VStack>
       </BackgroundWrapper>
     </SafeAreaView>

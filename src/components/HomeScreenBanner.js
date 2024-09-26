@@ -75,7 +75,11 @@ const HomeScreenBanner = () => {
           />
           <Pressable
             m={"auto"}
-            onPress={() => navigation.openDrawer && navigation.openDrawer()}
+            onPress={() =>
+              navigation.openDrawer
+                ? navigation.openDrawer()
+                : navigation.navigate("Profil")
+            }
           >
             {loading ? (
               <Avatar size="md" source={{ uri: null }} />
@@ -84,7 +88,7 @@ const HomeScreenBanner = () => {
                 size="md"
                 mr={2}
                 source={{
-                  uri: connectedUser?.profileImage,
+                  uri: connectedUser?.profileImage || null,
                 }}
                 bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
               >
@@ -107,7 +111,9 @@ const HomeScreenBanner = () => {
                     bg: "primary.600:alpha.20",
                   }}
                   onPress={() =>
-                    navigation.openDrawer && navigation.openDrawer()
+                    navigation.openDrawer
+                      ? navigation.openDrawer()
+                      : navigation.navigate("Profil")
                   }
                 />
               </Avatar>

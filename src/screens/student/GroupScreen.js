@@ -96,7 +96,9 @@ const GroupScreen = ({ navigation }) => {
                     shadow={"9"}
                     key={index}
                     onPress={() => {
-                      navigation.navigate("Session");
+                      navigation.navigate("Session", {
+                        groupName: group.name,
+                      });
                     }}
                   >
                     <Box
