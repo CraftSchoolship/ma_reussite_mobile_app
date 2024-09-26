@@ -18,6 +18,7 @@ import {
 } from "../components";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { loginValidationSchema } from "../validation/formValidation";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const LoginScreen = () => {
   const input1Ref = useRef(null);
@@ -213,7 +214,6 @@ const LoginScreen = () => {
           [],
           ["id", "symbol"]
         );
-
         storeObject("currencies", currencies);
       } catch (error) {
         console.error("Error fetching role:", error);
@@ -238,65 +238,62 @@ const LoginScreen = () => {
         barStyle={isDarkMode ? "light-content" : "dark-content"}
       />
       <LoginScreenBanner />
-      <BackgroundWrapper isLoginScreen={true}>
-        <Box height={"100%"}>
-          <VStack
-            width={"full"}
-            minH={"80%"}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            <Box mx={"auto"} width="80%" display={"flex"}>
-              <Box alignItems="center">
-                <Text
-                  color={isDarkMode ? "white" : "black"}
-                  fontSize="2xl"
-                  bold
-                >
-                  S'identifier
-                </Text>
-              </Box>
-              <Formik
-                initialValues={{ email: "", password: "" }}
-                validationSchema={loginValidationSchema}
-                onSubmit={handleLogin}
-              >
-                {({ handleSubmit, isValid }) => (
-                  <>
-                    <CustomInput
-                      label="Email"
-                      name="email"
-                      keyboardType="email-address"
-                      inputRef={input1Ref}
-                      onSubmitEditing={() => input2Ref.current.focus()}
-                    />
-                    <CustomInput
-                      label="Mot de passe"
-                      name="password"
-                      secureTextEntry
-                      showPassword={showPassword}
-                      setShowPassword={setShowPassword}
-                      inputRef={input2Ref}
-                      onSubmitEditing={handleSubmit}
-                    />
-                    {error ? (
-                      <Text color={"danger.500"} textAlign={"center"} mt={3}>
-                        {error}
-                      </Text>
-                    ) : null}
-                    <CustomButton
-                      onPress={handleSubmit}
-                      title="Se connecter"
-                      isDisabled={!isValid}
-                      loading={loading}
-                    />
-                  </>
-                )}
-              </Formik>
+      <Box
+        height={"100%"}
+        bg={isDarkMode ? "dark.50" : MA_REUSSITE_CUSTOM_COLORS.White}
+      >
+        <VStack
+          width={"full"}
+          minH={"80%"}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
+          <Box mx={"auto"} width="80%" display={"flex"}>
+            <Box alignItems="center">
+              <Text color={isDarkMode ? "white" : "black"} fontSize="2xl" bold>
+                S'identifier
+              </Text>
             </Box>
-          </VStack>
-        </Box>
-      </BackgroundWrapper>
+            <Formik
+              initialValues={{ email: "", password: "" }}
+              validationSchema={loginValidationSchema}
+              onSubmit={handleLogin}
+            >
+              {({ handleSubmit, isValid }) => (
+                <>
+                  <CustomInput
+                    label="Email"
+                    name="email"
+                    keyboardType="email-address"
+                    inputRef={input1Ref}
+                    onSubmitEditing={() => input2Ref.current.focus()}
+                  />
+                  <CustomInput
+                    label="Mot de passe"
+                    name="password"
+                    secureTextEntry
+                    showPassword={showPassword}
+                    setShowPassword={setShowPassword}
+                    inputRef={input2Ref}
+                    onSubmitEditing={handleSubmit}
+                  />
+                  {error ? (
+                    <Text color={"danger.500"} textAlign={"center"} mt={3}>
+                      {error}
+                    </Text>
+                  ) : null}
+                  <CustomButton
+                    onPress={handleSubmit}
+                    title="Se connecter"
+                    isDisabled={!isValid}
+                    loading={loading}
+                  />
+                </>
+              )}
+            </Formik>
+          </Box>
+        </VStack>
+      </Box>
     </SafeAreaView>
   );
 };

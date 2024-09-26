@@ -222,6 +222,20 @@ const SessionsScreen = ({ navigation }) => {
   return (
     <SafeAreaView>
       <BackgroundWrapper navigation={navigation}>
+        <Box pt={4} w={"100%"}>
+          <Text
+            color={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.White
+                : MA_REUSSITE_CUSTOM_COLORS.Black
+            }
+            textAlign={"center"}
+            fontWeight="bold"
+            fontSize="lg"
+          >
+            Master 1 DevOps
+          </Text>
+        </Box>
         <VStack flex={1} p={4}>
           <HStack alignItems="center" mb={4}>
             {scrollPosition > 0 && (
@@ -250,7 +264,7 @@ const SessionsScreen = ({ navigation }) => {
               onLayout={(e) => setScrollViewWidth(e.nativeEvent.layout.width)}
               scrollEventThrottle={16}
             >
-              <HStack space={4}>
+              <HStack space={4} justifyContent={"space-between"}>
                 <TabMenuItem
                   title={"Participants"}
                   tabKey={"participants"}
@@ -290,21 +304,25 @@ const SessionsScreen = ({ navigation }) => {
               </Pressable>
             )}
           </HStack>
-          {activeTab === "participants" ? (
-            <FlatList
-              data={participants}
-              renderItem={renderParticipant}
-              keyExtractor={(item) => item.id}
-              scrollEnabled={true}
-            />
-          ) : (
+          {/* {activeTab === "participants" ? ( */}
+          <FlatList
+            data={
+              activeTab === "participants" ? participants : sessions[activeTab]
+            }
+            renderItem={
+              activeTab === "participants" ? renderParticipant : renderSession
+            }
+            keyExtractor={(item) => item.id}
+            scrollEnabled={true}
+          />
+          {/* ) : (
             <FlatList
               data={sessions[activeTab]}
               renderItem={renderSession}
               keyExtractor={(item) => item.id}
               scrollEnabled={true}
             />
-          )}
+          )} */}
         </VStack>
       </BackgroundWrapper>
     </SafeAreaView>

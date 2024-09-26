@@ -84,7 +84,7 @@ const HomeScreenBanner = () => {
                 size="md"
                 mr={2}
                 source={{
-                  uri: connectedUser?.profileImage || null,
+                  uri: connectedUser?.profileImage,
                 }}
                 bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
               >

@@ -13,6 +13,8 @@ import React, { useEffect, useState } from "react";
 import { getObject, jsonrpcRequest } from "../../api/apiClient";
 import config from "../../api/config";
 import { BackgroundWrapper, CircularProgress } from "../../components";
+import { useThemeContext } from "../../hooks/ThemeContext";
+import MA_REUSSITE_CUSTOM_COLORS from "../../themes/variables";
 
 const GroupScreen = ({ navigation }) => {
   const route = useRoute();
@@ -21,6 +23,7 @@ const GroupScreen = ({ navigation }) => {
   const [userid, setUserid] = useState(null);
   const [password, setPassword] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { isDarkMode } = useThemeContext();
 
   useEffect(() => {
     // const connectedUser = route?.params;
@@ -63,7 +66,11 @@ const GroupScreen = ({ navigation }) => {
       <BackgroundWrapper navigation={navigation}>
         <Box pt={4} w={"100%"}>
           <Text
-            color={"black"}
+            color={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.White
+                : MA_REUSSITE_CUSTOM_COLORS.Black
+            }
             textAlign={"center"}
             fontWeight="bold"
             fontSize="lg"
@@ -93,7 +100,6 @@ const GroupScreen = ({ navigation }) => {
                     }}
                   >
                     <Box
-                      bg="white"
                       p={4}
                       mx={2}
                       my={2}
@@ -101,11 +107,27 @@ const GroupScreen = ({ navigation }) => {
                       shadow={2}
                       justifyContent="center"
                       height="100"
+                      bg={
+                        isDarkMode
+                          ? MA_REUSSITE_CUSTOM_COLORS.Black
+                          : MA_REUSSITE_CUSTOM_COLORS.White
+                      }
                     >
                       <HStack alignItems="center">
-                        <CircularProgress progress={group.progress} />
+                        <CircularProgress
+                          isDarkMode={isDarkMode}
+                          progress={group.progress}
+                        />
                         <Box flex={1} mr={5} alignItems="center">
-                          <Text color={"black"} fontWeight="bold" fontSize="lg">
+                          <Text
+                            color={
+                              isDarkMode
+                                ? MA_REUSSITE_CUSTOM_COLORS.White
+                                : MA_REUSSITE_CUSTOM_COLORS.Black
+                            }
+                            fontWeight="bold"
+                            fontSize="lg"
+                          >
                             {group.name}
                           </Text>
                         </Box>
@@ -117,7 +139,11 @@ const GroupScreen = ({ navigation }) => {
                 <Box>
                   <Text
                     mt={"30%"}
-                    color={"black"}
+                    color={
+                      isDarkMode
+                        ? MA_REUSSITE_CUSTOM_COLORS.White
+                        : MA_REUSSITE_CUSTOM_COLORS.Black
+                    }
                     textAlign={"center"}
                     fontSize={"2xl"}
                     fontWeight={"bold"}
