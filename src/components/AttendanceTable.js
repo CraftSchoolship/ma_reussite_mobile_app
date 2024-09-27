@@ -48,7 +48,11 @@ const attendanceData = [
 const renderItem = ({ item, index, isDarkMode }) => (
   <HStack
     borderBottomWidth={1}
-    borderBottomColor={isDarkMode ? "gray.700" : "gray.300"} // Adjust for dark mode
+    // borderLeftWidth={1}
+    // borderRightWidth={1}
+    borderBottomColor={isDarkMode ? "gray.700" : "gray.300"}
+    // borderLeftColor={/* isDarkMode ? "gray.700" : */ "gray.300"}
+    // borderRightColor={/* isDarkMode ? "gray.700" : */ "gray.300"}
     padding={2}
     backgroundColor={
       index % 2 === 0
@@ -95,8 +99,8 @@ const AttendanceTable = ({ isDarkMode }) => {
     <Box padding={4}>
       <HStack
         borderWidth={1}
-        borderBottomWidth={2}
-        borderColor="gray.300"
+        // borderBottomWidth={2}
+        borderColor={isDarkMode ? "gray.700" : "gray.300"}
         padding={2}
         bg={
           isDarkMode
@@ -144,15 +148,22 @@ const AttendanceTable = ({ isDarkMode }) => {
         </VStack>
       </HStack>
 
-      <FlatList
-        data={attendanceData}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        scrollEnabled={true}
-        renderItem={({ item, index }) =>
-          renderItem({ item, index, isDarkMode })
-        }
-      />
+      <Box
+        borderWidth={1}
+        borderColor={isDarkMode ? "gray.700" : "gray.300"}
+        // borderRadius={8} // optionnel, pour arrondir les bords
+        overflow="hidden" // pour s'assurer que le contenu ne dépasse pas des bords
+      >
+        <FlatList
+          data={attendanceData}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          scrollEnabled={true}
+          renderItem={({ item, index }) =>
+            renderItem({ item, index, isDarkMode })
+          }
+        />
+      </Box>
     </Box>
   );
 };
