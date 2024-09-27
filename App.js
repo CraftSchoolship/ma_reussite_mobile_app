@@ -18,6 +18,8 @@ const App = () => {
 
   const handleWebViewMessage = (event) => {
     const policyVersion = event.nativeEvent.data;
+    console.log(policyVersion);
+    
     setCurrentPolicyVersion(policyVersion);
   };
 
@@ -26,13 +28,13 @@ const App = () => {
       <NativeBaseProvider isSSR theme={customTheme}>
         <WebView
           source={{
-            uri: "https://ma-reussite2.erp.craftschoolship.com/policy/agreement",
+            uri: "https://ma-reussite-privacy.netlify.app",
           }}
           style={{ flex: 1, marginTop: "10%", marginBottom: "5%" }}
           onMessage={handleWebViewMessage}
         />
         <Button
-          w={"50%"}
+          w={"100%"}
           mx={"auto"}
           mb={"2%"}
           onPress={onAccept}
@@ -44,15 +46,20 @@ const App = () => {
     );
   };
 
+  console.log("Loading fonts");
+  
   const fontsLoaded = useFonts({
     "Lato-Regular": require("./assets/fonts/Lato-Regular.ttf"),
     "Lato-Bold": require("./assets/fonts/Lato-Bold.ttf"),
   });
 
+  console.log("Loaded fonts");
+
   const handleAccept = async () => {
     await AsyncStorage.setItem("policyAccepted", "true");
     await AsyncStorage.setItem("policyVersion", currentPolicyVersion);
     setPolicyAccepted(true);
+    console.log("Accepted Policy");
   };
 
   const checkPolicyAcceptance = async () => {
@@ -74,6 +81,8 @@ const App = () => {
   }
 
   if (!policyAccepted) {
+    console.log("");
+    
     return <PrivacyPolicyScreen onAccept={handleAccept} />;
   }
 

@@ -4,7 +4,7 @@ import config from "./config";
 
 // Create an axios instance
 const odooApi = axios.create({
-  baseURL: config.baseUrl + "/jsonrpc",
+  baseURL: config.baseUrl,
   headers: {
     "Content-Type": "application/json",
   },
@@ -15,7 +15,7 @@ const jsonRpcRequest = async (service, method, args) => {
     console.log("calling rpc with args:");
     console.log(args);
 
-    const response = await odooApi.post("/", {
+    const response = await odooApi.post("/jsonrpc", {
       jsonrpc: "2.0",
       method: "call",
       params: {
@@ -25,8 +25,6 @@ const jsonRpcRequest = async (service, method, args) => {
       },
       id: new Date().getTime(),
     });
-    console.log("RPC Response:", response.data);
-
     if ("error" in response.data) throw response.data.error;
     return response.data.result;
   } catch (error) {

@@ -23,7 +23,6 @@ const LoginScreen = () => {
     role: "",
   });
   const [selectedChild, setSelectedChild] = useState(null);
-  const [children, setChildren] = useState([]);
 
   const getStudentIds = (data) => {
     return data.map((fetchedChild) => fetchedChild.child_id[0]);
@@ -55,6 +54,7 @@ const LoginScreen = () => {
           "craft_role",
           "craft_parent_id",
           "craft_student_id",
+          "image_1920"
         ]
       );
 
@@ -63,15 +63,25 @@ const LoginScreen = () => {
         return;
       }
 
+      let profileImage = user[0].image_1920;
+
+      if (profileImage.startsWith("iVBORw0K"))
+        profileImage = `data:image/png;base64,${profileImage}`;
+      else if (profileImage.startsWith("/9j/"))
+        profileImage = `data:image/jpeg;base64,${profileImage}`;
+      else if (profileImage.startsWith("PHN2Zy") || profileImage.startsWith("PD94bWwg"))
+        profileImage = `data:image/svg+xml;base64,${profileImage}`;
+      else
+        console.log('Unknow Image type')
+
       let connectedUser = {
         ...user[0],
         email: email,
         password: password,
-        profileImage:
-          config.baseUrl +
-          `/web/image?model=res.users&id=${user_id}&field=image_1920`,
+        profileImage: profileImage,//config.baseUrl + `/web/image?model=res.users&id=${user_id}&field=image_1920&timestamp=${new Date().getTime()}`,
         role: user[0].craft_role,
       };
+
       await storeObject("connectedUser", connectedUser);
       setConnectedUser(connectedUser);
     } catch (error) {
@@ -91,29 +101,28 @@ const LoginScreen = () => {
       try {
         if (!connectedUser) return;
 
-        const parent = await read(
-          "craft.parent",
-          [connectedUser.craft_parent_id],
-          ["id", "child_ids"]
-        );
-
-        if (!parent.length || !parent[0].child_ids.length) return;
-
         const fetchedChildren = await browse(
           "craft.parent.child.line",
-          ["child_id", "id"],
-          [[["parent_id", "=", connectedUser.craft_parent_id]]]
+          ["child_id"],
+          [["parent_id", "=", connectedUser.craft_parent_id[0]]]
         );
 
+        if (!fetchedChildren.length) return;
+
+        console.log(fetchedChildren);
+        
+
         const studentIds = getStudentIds(fetchedChildren);
+        console.log(studentIds);
 
         const childrenList = await browse(
           "craft.student",
-          [[["id", "=", studentIds]]],
-          ["id", "contact_id", "image_1024"]
+          ["id", "contact_id", "image_1024"],
+          [["id", "in", studentIds]],
         );
 
-        setChildren(childrenList);
+        if (!childrenList.length) return;
+
         const initialSelectedChild = childrenList[0];
         setSelectedChild(initialSelectedChild);
 
