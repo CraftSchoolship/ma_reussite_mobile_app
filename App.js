@@ -3,9 +3,10 @@ import * as SplashScreen from "expo-splash-screen";
 import { Button, NativeBaseProvider } from "native-base";
 import React, { useEffect, useState } from "react";
 import { WebView } from "react-native-webview";
-import { AppWithTheme } from "./src/components";
+import AppWithTheme  from "./src/components/AppWithTheme";
 import MA_REUSSITE_CUSTOM_COLORS from "./src/themes/variables";
-import { ThemeProvider, useFonts } from "./src/hooks";
+import useFonts from "./src/hooks/useFonts";
+import ThemeProvider from "./src/hooks/ThemeContext";
 
 SplashScreen.preventAutoHideAsync();
 

@@ -1,12 +1,13 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { LoginScreen, ProfileScreen } from "../screens";
+import LoginScreen from "../screens/LoginScreen";
+import ProfileScreen from "../screens/ProfileScreen";
 import SessionsScreen from "../screens/SessionsScreen";
 import DrawerNavigator from "./DrawerNavigator";
 
 const Stack = createStackNavigator();
 
-export const StackNavigator = () => {
+const StackNavigator = () => {
   return (
     <Stack.Navigator initialRouteName="Login">
       <Stack.Screen
@@ -39,4 +40,4 @@ export const StackNavigator = () => {
   );
 };
 
-// export default StackNavigator;
+export default StackNavigator;

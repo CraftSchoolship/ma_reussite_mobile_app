@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ThemeContext = createContext();
 
-export const ThemeProvider = ({ children }) => {
+const ThemeProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
@@ -29,3 +29,4 @@ export const ThemeProvider = ({ children }) => {
 };
 
 export const useThemeContext = () => useContext(ThemeContext);
+export default ThemeProvider;

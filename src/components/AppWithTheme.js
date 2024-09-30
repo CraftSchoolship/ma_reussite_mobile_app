@@ -4,7 +4,7 @@ import { useThemeContext } from "../hooks/ThemeContext";
 import AppNavigator from "../navigation/AppNavigator";
 import customTheme from "../themes/customTheme";
 
-export const AppWithTheme = () => {
+const AppWithTheme = () => {
   const { isDarkMode } = useThemeContext();
   const darkTheme = extendTheme({
     colors: {
@@ -21,3 +21,5 @@ export const AppWithTheme = () => {
     </NativeBaseProvider>
   );
 };
+
+export default AppWithTheme;

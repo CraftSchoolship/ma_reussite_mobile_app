@@ -1,7 +1,7 @@
 import * as Font from "expo-font";
 import { useState, useEffect } from "react";
 
-export const useFonts = (fontMap) => {
+const useFonts = (fontMap) => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
@@ -16,4 +16,4 @@ export const useFonts = (fontMap) => {
   return fontsLoaded;
 };
 
-// export default useFonts;
+export default useFonts;
