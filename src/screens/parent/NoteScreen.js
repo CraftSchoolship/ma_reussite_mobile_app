@@ -28,10 +28,10 @@
 //   const [course, setCourse] = useState();
 //   const [institute, setInstitute] = useState();
 //   const [connectedUser, setConnectedUser] = useState({
-//     sessionId: "",
+//     uid: "",
 //     email: "",
 //     password: "",
-//     userid: "",
+//     selfId: "",
 //     role: "",
 //   });
 //   const [childrenList, setChildrenList] = useState([]);
@@ -62,9 +62,9 @@
 //       try {
 //         if (
 //           !connectedUser ||
-//           !connectedUser.sessionId ||
+//           !connectedUser.uid ||
 //           !connectedUser.password ||
-//           !connectedUser.userid
+//           !connectedUser.selfId
 //         ) {
 //           return;
 //         }
@@ -76,7 +76,7 @@
 //             domain = [["partner_id", "=", selectedChild.partner_id[0]]];
 //             break;
 //           case "student":
-//             domain = [["partner_id", "=", connectedUser.userid[0]]];
+//             domain = [["partner_id", "=", connectedUser.selfId[0]]];
 //             break;
 //           default:
 //             console.error("Unsupported role:", connectedUser.role);
@@ -84,7 +84,7 @@
 //         }
 
 //         const noteData = await jsonrpcRequest(
-//           connectedUser.sessionId,
+//           connectedUser.uid,
 //           connectedUser.password,
 //           config.model.opStudent,
 //           [domain],

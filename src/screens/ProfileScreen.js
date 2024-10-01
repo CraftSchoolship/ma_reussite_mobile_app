@@ -37,10 +37,10 @@ const ProfileScreen = () => {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclose();
   const [connectedUser, setConnectedUser] = useState({
-    sessionId: "",
+    uid: "",
     email: "",
     password: "",
-    userid: "",
+    selfId: "",
     role: "",
     profileImage: null,
     name: "",
@@ -74,10 +74,10 @@ const ProfileScreen = () => {
 
       // Mettre à jour l'utilisateur dans Odoo
       const response = await updateRecord(
-        connectedUser.sessionId,
+        connectedUser.uid,
         connectedUser.password,
         config.model.partner,
-        connectedUser.userid[0],
+        connectedUser.selfId[0],
         {
           image_1920: imageBase64,
         }
@@ -249,7 +249,7 @@ const ProfileScreen = () => {
               }
               mt={2}
             >
-              {connectedUser && connectedUser.userid[1]}
+              {connectedUser && connectedUser.selfId[1]}
             </Heading>
           </Center>
           <Divider

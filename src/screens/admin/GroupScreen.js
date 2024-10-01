@@ -17,16 +17,16 @@
 // const GroupScreen = ({ navigation }) => {
 //   const route = useRoute();
 //   const [groups, setGroups] = useState([]);
-//   const [sessionId, setSessionId] = useState(null);
-//   const [userid, setUserid] = useState(null);
+//   const [uid, setUid] = useState(null);
+//   const [selfId, setSelfId] = useState(null);
 //   const [password, setPassword] = useState(null);
 //   const [loading, setLoading] = useState(true);
 
 //   useEffect(() => {
 //     const connectedUser = route?.params;
-//     const { sessionId, email, password, userid } = connectedUser;
-//     setSessionId(sessionId);
-//     setUserid(userid[0]);
+//     const { uid, email, password, selfId } = connectedUser;
+//     setUid(uid);
+//     setSelfId(selfId[0]);
 //     setPassword(password);
 //   }, [route]);
 
@@ -34,7 +34,7 @@
 //     const fetchGroups = async () => {
 //       try {
 //         const groupsData = await await jsonrpcRequest(
-//           sessionId,
+//           uid,
 //           password,
 //           config.model.groups
 //         );
@@ -46,10 +46,10 @@
 //       }
 //     };
 
-//     if (sessionId && password && userid) {
+//     if (uid && password && selfId) {
 //       fetchGroups();
 //     }
-//   }, [sessionId, userid, password]);
+//   }, [uid, selfId, password]);
 
 //   return (
 //     <Box flex={1} bg={"white"}>

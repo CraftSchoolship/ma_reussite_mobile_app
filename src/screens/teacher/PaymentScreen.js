@@ -24,9 +24,9 @@
 //   const navigation = useNavigation();
 //   const { isOpen, onOpen, onClose } = useDisclose();
 //   const [sortOrder, setSortOrder] = useState("recent");
-//   const [sessionId, setSessionId] = useState(null);
+//   const [uid, setUid] = useState(null);
 //   const [password, setPassword] = useState(null);
-//   const [userid, setUserid] = useState(null);
+//   const [selfId, setSelfId] = useState(null);
 //   const [payments, setPayments] = useState([]);
 //   const [loading, setLoading] = useState(true);
 //   const [paymentDetails, setPaymentDetails] = useState({});
@@ -34,10 +34,10 @@
 
 //   useEffect(() => {
 //     const connectedUser = route?.params;
-//     const { sessionId, email, password, userid } = connectedUser;
-//     setSessionId(sessionId);
+//     const { uid, email, password, selfId } = connectedUser;
+//     setUid(uid);
 //     setPassword(password);
-//     setUserid(userid[0]);
+//     setSelfId(selfId[0]);
 //   }, [route]);
 
 //   const handlePress = (paymentDetails) => {
@@ -49,18 +49,18 @@
 //     const fetchPayment = async () => {
 //       try {
 //         const paymentState = await jsonrpcRequest(
-//           sessionId,
+//           uid,
 //           password,
 //           config.model.accountMove,
-//           [[["partner_id", "=", userid]]],
+//           [[["partner_id", "=", selfId]]],
 //           ["name", "payment_state"]
 //         );
 
 //         const paymentDetails = await jsonrpcRequest(
-//           sessionId,
+//           uid,
 //           password,
 //           config.model.accountMoveLine,
-//           [[["partner_id", "=", userid]]],
+//           [[["partner_id", "=", selfId]]],
 //           [
 //             "date",
 //             "display_name",
@@ -104,10 +104,10 @@
 //       }
 //     };
 
-//     if (sessionId && password && userid) {
+//     if (uid && password && selfId) {
 //       fetchPayment();
 //     }
-//   }, [sessionId, password, userid]);
+//   }, [uid, password, selfId]);
 
 //   return (
 //     <Box flex={1} bg="white">

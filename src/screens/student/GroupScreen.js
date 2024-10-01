@@ -19,8 +19,8 @@ import MA_REUSSITE_CUSTOM_COLORS from "../../themes/variables";
 const GroupScreen = ({ navigation }) => {
   const route = useRoute();
   const [groups, setGroups] = useState([]);
-  const [sessionId, setSessionId] = useState(null);
-  const [userid, setUserid] = useState(null);
+  const [uid, setUid] = useState(null);
+  const [selfId, setSelfId] = useState(null);
   const [password, setPassword] = useState(null);
   const [loading, setLoading] = useState(true);
   const { isDarkMode } = useThemeContext();
@@ -31,9 +31,9 @@ const GroupScreen = ({ navigation }) => {
     const fetchUser = async () => {
       const user = await getObject("connectedUser");
       // setConnectedUser(user);
-      const { sessionId, email, password, userid } = user;
-      setSessionId(sessionId);
-      setUserid(userid[0]);
+      const { uid, email, password, selfId } = user;
+      setUid(uid);
+      setSelfId(selfId[0]);
       setPassword(password);
       setLoading(false);
     };
@@ -44,7 +44,7 @@ const GroupScreen = ({ navigation }) => {
     const fetchGroups = async () => {
       try {
         const groupsData = await await jsonrpcRequest(
-          sessionId,
+          uid,
           password,
           config.model.groups
         );
@@ -56,10 +56,10 @@ const GroupScreen = ({ navigation }) => {
       }
     };
 
-    if (sessionId && password && userid) {
+    if (uid && password && selfId) {
       fetchGroups();
     }
-  }, [sessionId, userid, password]);
+  }, [uid, selfId, password]);
 
   return (
     <Box flex={1} bg={"white"}>

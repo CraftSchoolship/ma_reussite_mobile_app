@@ -28,10 +28,10 @@ const GroupScreen = () => {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [connectedUser, setConnectedUser] = useState({
-    sessionId: "",
+    uid: "",
     email: "",
     password: "",
-    userid: "",
+    selfId: "",
     role: "",
   });
   const [childrenList, setChildrenList] = useState([]);
@@ -62,9 +62,9 @@ const GroupScreen = () => {
       try {
         if (
           !connectedUser ||
-          !connectedUser.sessionId ||
+          !connectedUser.uid ||
           !connectedUser.password ||
-          !connectedUser.userid
+          !connectedUser.selfId
         ) {
           return;
         }
@@ -84,7 +84,7 @@ const GroupScreen = () => {
         }
 
         const groupsData = await jsonrpcRequest(
-          connectedUser.sessionId,
+          connectedUser.uid,
           connectedUser.password,
           config.model.groups
           // domain

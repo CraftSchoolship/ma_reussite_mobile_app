@@ -28,10 +28,10 @@ const LoginScreen = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [connectedUser, setConnectedUser] = useState({
-    sessionId: "",
+    uid: "",
     email: "",
     password: "",
-    userid: "",
+    selfId: "",
     role: "",
   });
   const [selectedChild, setSelectedChild] = useState(null);
@@ -48,11 +48,11 @@ const LoginScreen = () => {
     const password = values.password;
 
     try {
-      const sessionId = await authenticate(email, password);
+      const uid = await authenticate(email, password);
 
-      if (sessionId) {
+      if (uid) {
         const user = await jsonrpcRequest(
-          sessionId,
+          uid,
           password,
           config.model.users,
           [[["email", "=", email]]],
@@ -60,87 +60,24 @@ const LoginScreen = () => {
         );
 
         if (user.length > 0) {
-          // console.log("user...", user);
+          const connectedUser = {
+            uid: uid,
+            email: email,
+            password: password,
+            selfId: user[0].self,
+            role: user[0].craft_role,
+            profileImage: user[0].image_1024
+              ? `data:image/png;base64,${user[0].image_1024}`
+              : null,
+            name: user[0].name,
+            phone: user[0].phone,
+            street: user[0].street,
+          };
 
-          const userid = user[0].self;
-          const role = user[0].craft_role;
-          const imageUri = user[0].image_1024;
-          const name = user[0].name;
-          const phone = user[0].phone;
-          const street = user[0].street;
-
-          let userData;
-          switch (role) {
-            case "student":
-              userData = await jsonrpcRequest(
-                sessionId,
-                password,
-                config.model.craftStudent,
-                [[["contact_id", "in", userid]]],
-                ["image_1024"]
-              );
-              break;
-
-            case "parent":
-              userData = await jsonrpcRequest(
-                sessionId,
-                password,
-                config.model.craftParent,
-                [[["contact_id", "in", userid]]],
-                ["image_1024"]
-              );
-              break;
-
-            case "teacher":
-              userData = await jsonrpcRequest(
-                sessionId,
-                password,
-                config.model.craftTeachers,
-                [[["work_contact_id", "in", userid]]],
-                ["image_1024"]
-              );
-              break;
-
-            default:
-              userData = await jsonrpcRequest(
-                sessionId,
-                password,
-                config.model.users,
-                [[["partner_id", "in", userid]]],
-                ["image_1024"]
-              );
-              break;
-          }
-
-          const profileImage = imageUri
-            ? `data:image/png;base64,${imageUri}`
-            : null;
+          await storeObject("connectedUser", connectedUser);
+          setConnectedUser(connectedUser);
 
           setError("");
-
-          await storeObject("connectedUser", {
-            sessionId: sessionId,
-            email: email,
-            password: password,
-            userid: userid,
-            role: role,
-            profileImage: profileImage,
-            name: name,
-            phone: phone,
-            street: street,
-          });
-
-          setConnectedUser({
-            sessionId: sessionId,
-            email: email,
-            password: password,
-            userid: userid,
-            role: role,
-            profileImage: profileImage,
-            name: name,
-            phone: phone,
-            street: street,
-          });
         }
       } else {
         setError("Nom d'utilisateur ou mot de passe incorrect !");
@@ -161,7 +98,7 @@ const LoginScreen = () => {
         if (!connectedUser) return;
 
         const parent = await jsonrpcRequest(
-          connectedUser.sessionId,
+          connectedUser.uid,
           connectedUser.password,
           config.model.craftParent,
           [[["email", "=", connectedUser.email]]],
@@ -173,7 +110,7 @@ const LoginScreen = () => {
         const parentChildIds = parent[0].child_ids;
 
         const fetchedChildren = await jsonrpcRequest(
-          connectedUser.sessionId,
+          connectedUser.uid,
           connectedUser.password,
           config.model.craftParentChildLine,
           [[["id", "=", parentChildIds]]],
@@ -183,7 +120,7 @@ const LoginScreen = () => {
         const studentIds = getStudentIds(fetchedChildren);
 
         const childrenList = await jsonrpcRequest(
-          connectedUser.sessionId,
+          connectedUser.uid,
           connectedUser.password,
           config.model.craftStudent,
           [[["id", "=", studentIds]]],
@@ -208,7 +145,7 @@ const LoginScreen = () => {
     const getCurrencies = async () => {
       try {
         const currencies = await jsonrpcRequest(
-          connectedUser.sessionId,
+          connectedUser.uid,
           connectedUser.password,
           config.model.resCurrency,
           [],
@@ -260,7 +197,7 @@ const LoginScreen = () => {
               onSubmit={handleLogin}
             >
               {({ handleSubmit, isValid }) => (
-                <>
+                <Box>
                   <CustomInput
                     label="Email"
                     name="email"
@@ -288,7 +225,7 @@ const LoginScreen = () => {
                     isDisabled={!isValid}
                     loading={loading}
                   />
-                </>
+                </Box>
               )}
             </Formik>
           </Box>

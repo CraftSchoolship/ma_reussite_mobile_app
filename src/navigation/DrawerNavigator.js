@@ -1,18 +1,14 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import React, { useEffect, useState } from "react";
-import { TabNavigator } from "./TabNavigator";
-import { ParentTabNavigator } from "./ParentTabNavigator";
-import { TeacherTabNavigator } from "./TeacherTabNavigator";
-import { AdminTabNavigator } from "./AdminTabNavigator";
-import CustomDrawerContent from "../components/CustomDrawerContent";
-import { getObject } from "../api/apiClient";
 import { useRoute } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { getObject } from "../api/apiClient";
+import CustomDrawerContent from "../components/CustomDrawerContent";
 import { useThemeContext } from "../hooks/ThemeContext";
+import { TabNavigator } from "./TabNavigator";
 
 const Drawer = createDrawerNavigator();
 
 const DrawerNavigator = () => {
-  const route = useRoute();
   const [connectedUser, setConnectedUser] = useState(null);
   const [childrenList, setChildrenList] = useState([]);
   const [selectedChild, setSelectedChild] = useState(null);
@@ -40,26 +36,9 @@ const DrawerNavigator = () => {
 
     if (childrenList?.length < 1) fetchUserData();
   }, [childrenList]);
-
-  const getTabNavigatorForRole = (role) => {
-    switch (role) {
-      case "parent":
-        return ParentTabNavigator;
-      case "teacher":
-        return TeacherTabNavigator;
-      case "admin":
-        return AdminTabNavigator;
-      case "student":
-      default:
-        return TabNavigator;
-    }
-  };
-
   if (!connectedUser) {
     return null;
   }
-
-  const TabNavigatorComponent = getTabNavigatorForRole(connectedUser.role);
 
   return (
     <Drawer.Navigator
@@ -78,7 +57,7 @@ const DrawerNavigator = () => {
     >
       <Drawer.Screen
         name="TabNavigator"
-        component={TabNavigatorComponent}
+        component={TabNavigator}
         options={{ headerShown: false }}
       />
     </Drawer.Navigator>

@@ -8,9 +8,9 @@
 // const NoteScreen = () => {
 //   const route = useRoute();
 //   const navigation = useNavigation();
-//   const [sessionId, setSessionId] = useState(null);
+//   const [uid, setUid] = useState(null);
 //   const [password, setPassword] = useState(null);
-//   const [userid, setUserid] = useState(null);
+//   const [selfId, setSelfId] = useState(null);
 //   const [note, setNote] = useState();
 //   const [course, setCourse] = useState();
 //   const [institute, setInstitute] = useState();
@@ -18,20 +18,20 @@
 
 //   useEffect(() => {
 //     const connectedUser = route?.params;
-//     const { sessionId, email, password, userid } = connectedUser;
-//     setSessionId(sessionId);
+//     const { uid, email, password, selfId } = connectedUser;
+//     setUid(uid);
 //     setPassword(password);
-//     setUserid(userid[0]);
+//     setSelfId(selfId[0]);
 //   }, [route]);
 
 //   useEffect(() => {
 //     const fetchNote = async () => {
 //       try {
 //         const noteData = await jsonrpcRequest(
-//           sessionId,
+//           uid,
 //           config.password,
 //           config.model.craftStudent,
-//           // [[["partner_id", "=", userid]]],
+//           // [[["partner_id", "=", selfId]]],
 //           [],
 //           // ["prev_result", "prev_course_id", "prev_institute_id"]
 //           []
@@ -45,10 +45,10 @@
 //         setLoading(false);
 //       }
 //     };
-//     if (sessionId && password && userid) {
+//     if (uid && password && selfId) {
 //       fetchNote();
 //     }
-//   }, [sessionId, password, userid]);
+//   }, [uid, password, selfId]);
 
 //   return (
 //     <Box flex={1} bg={"white"}>

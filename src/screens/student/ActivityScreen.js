@@ -19,29 +19,29 @@
 // const ActivityScreen = () => {
 //   const route = useRoute();
 //   const navigation = useNavigation();
-//   const [sessionId, setSessionId] = useState(null);
+//   const [uid, setUid] = useState(null);
 //   const [password, setPassword] = useState(null);
-//   const [userid, setUserid] = useState(null);
+//   const [selfId, setSelfId] = useState(null);
 //   const [activities, setActivities] = useState([]);
 //   const { isOpen, onOpen, onClose } = useDisclose();
 //   const [selectedActivity, setSelectedActivity] = useState();
 
 //   useEffect(() => {
 //     const connectedUser = route?.params;
-//     const { sessionId, email, password, userid } = connectedUser;
-//     setSessionId(sessionId);
+//     const { uid, email, password, selfId } = connectedUser;
+//     setUid(uid);
 //     setPassword(password);
-//     setUserid(userid[1]);
+//     setSelfId(selfId[1]);
 //   }, [route]);
 
 //   useEffect(() => {
 //     const fetchActivities = async () => {
 //       try {
 //         const activitiesData = await jsonrpcRequest(
-//           sessionId,
+//           uid,
 //           config.password,
 //           config.model.opActivity,
-//           [[["student_id", "=", userid]]],
+//           [[["student_id", "=", selfId]]],
 //           ["student_id", "type_id", "date", "description"]
 //         );
 
@@ -53,10 +53,10 @@
 //       }
 //     };
 
-//     if (sessionId && password && userid) {
+//     if (uid && password && selfId) {
 //       fetchActivities();
 //     }
-//   }, [sessionId, password, userid]);
+//   }, [uid, password, selfId]);
 
 //   return (
 //     <Box flex={1} bg={"white"}>

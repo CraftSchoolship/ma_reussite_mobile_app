@@ -34,7 +34,7 @@
 //   const [loading, setLoading] = useState(true);
 //   const [paymentDetails, setPaymentDetails] = useState({});
 //   const [connectedUser, setConnectedUser] = useState({
-//     sessionId: "",
+//     uid: "",
 //     email: "",
 //     password: "",
 //     partnerid: "",
@@ -73,9 +73,9 @@
 //       try {
 //         if (
 //           !connectedUser ||
-//           !connectedUser.sessionId ||
+//           !connectedUser.uid ||
 //           !connectedUser.password ||
-//           !connectedUser.userid
+//           !connectedUser.selfId
 //         ) {
 //           return;
 //         }
@@ -86,14 +86,14 @@
 //             domain = [["partner_id", "=", selectedChild?.partner_id[0]]];
 //             break;
 //           case "student":
-//             domain = [["partner_id", "=", connectedUser?.userid[0]]];
+//             domain = [["partner_id", "=", connectedUser?.selfId[0]]];
 //             break;
 //           default:
 //             console.error("Unsupported role:", connectedUser?.role);
 //             return;
 //         }
 //         const paymentState = await jsonrpcRequest(
-//           connectedUser?.sessionId,
+//           connectedUser?.uid,
 //           connectedUser?.password,
 //           config.model.accountMove,
 //           [domain],
@@ -101,7 +101,7 @@
 //         );
 
 //         const paymentDetails = await jsonrpcRequest(
-//           connectedUser?.sessionId,
+//           connectedUser?.uid,
 //           connectedUser?.password,
 //           config.model.accountMoveLine,
 //           [domain],

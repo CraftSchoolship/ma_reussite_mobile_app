@@ -2,17 +2,16 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { Box, ScrollView, VStack, useDisclose } from "native-base";
 import { default as React, useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
-import { getObject, jsonrpcRequest } from "../../api/apiClient";
-import config from "../../api/config";
-import { CalendarCard } from "../../components";
-import BackgroundWrapper from "../../components/BackgroundWrapper";
-import { EventsActionSheet } from "../../components/EventsActionSheet";
-import { useThemeContext } from "../../hooks/ThemeContext";
-import CalendarLocalConfig from "../../utils/CalendarLocalConfig";
-import CalendarTheme from "../../utils/CalendarTheme";
-import { formatOdooEvents } from "../../utils/MarkedDatesFormatage";
-import { useAppContext } from "../../hooks/AppProvider";
-import MA_REUSSITE_CUSTOM_COLORS from "../../themes/variables";
+import { getObject, jsonrpcRequest } from "../api/apiClient";
+import config from "../api/config";
+import { CalendarCard } from "../components";
+import BackgroundWrapper from "../components/BackgroundWrapper";
+import { EventsActionSheet } from "../components/EventsActionSheet";
+import { useAppContext } from "../hooks/AppProvider";
+import { useThemeContext } from "../hooks/ThemeContext";
+import CalendarLocalConfig from "../utils/CalendarLocalConfig";
+import CalendarTheme from "../utils/CalendarTheme";
+import { formatOdooEvents } from "../utils/MarkedDatesFormatage";
 
 CalendarLocalConfig;
 
@@ -20,37 +19,48 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const { isOpen, onOpen, onClose } = useDisclose();
   const route = useRoute();
-  // const [sessionId, setSessionId] = useState(null);
-  // const [password, setPassword] = useState(null);
-  // const [userid, setUserid] = useState(null);
   const [events, setEvents] = useState(null);
   const [markedDate, setMarkedDate] = useState({});
   const [todaysEvents, setTodaysEvents] = useState([]);
   const [today, setToday] = useState();
-  const [selectedDay, setSelectedDay] = useState("");
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
   const { isDarkMode } = useThemeContext();
   const [connectedUser, setConnectedUser] = useState(null);
+  const [childrenList, setChildrenList] = useState([]);
   const { selectedChild, setSelectedChild } = useAppContext();
+
   useEffect(() => {
-    const fetchConnectedUser = async () => {
+    const fetchUser = async () => {
+      const storedSelectedChild = await getObject("selectedChild");
+      setSelectedChild(storedSelectedChild);
+    };
+    fetchUser();
+  }, [route]);
+
+  useEffect(() => {
+    const getConnectedUser = async () => {
       try {
         const storedUser = await getObject("connectedUser");
-        // const { sessionId, email, password, userid } = storedUser;
-        setConnectedUser(storedUser);
-        // setSessionId(sessionId);
-        // setPassword(password);
-        // setUserid(userid[0]);
-      } catch (error) {}
+        if (storedUser) {
+          setConnectedUser(storedUser);
+          const children = await getObject("children");
+          setChildrenList(children || []);
+          const child = await getObject("selectedChild");
+          setSelectedChild(child || null);
+        }
+      } catch (error) {
+        console.error("Error while getting connectedUser:", error);
+      }
     };
-    if (!connectedUser) fetchConnectedUser();
-  }, [connectedUser]);
+    if (childrenList.length < 1) {
+      getConnectedUser();
+    }
+  }, [childrenList]);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        if (!connectedUser || !connectedUser.sessionId || !selectedChild)
-          return;
+        if (!connectedUser || !connectedUser.uid) return;
 
         let domain = [];
         switch (connectedUser.role) {
@@ -58,15 +68,12 @@ const HomeScreen = () => {
             if (!selectedChild?.contact_id) return;
             domain = [["partner_ids", "=", selectedChild.contact_id[0]]];
             break;
-          case "student":
-            domain = [["partner_ids", "=", connectedUser.partnerid[0]]];
-            break;
           default:
-            console.error("Unsupported role:", connectedUser.role);
-            return;
+            domain = [["partner_ids", "=", connectedUser.selfId[0]]];
+            break;
         }
         const eventsData = await jsonrpcRequest(
-          connectedUser.sessionId,
+          connectedUser.uid,
           connectedUser.password,
           config.model.craftSession,
           [domain],

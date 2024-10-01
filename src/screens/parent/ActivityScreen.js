@@ -30,10 +30,10 @@
 //   const [loading, setLoading] = useState(true);
 //   const [selectedActivity, setSelectedActivity] = useState();
 //   const [connectedUser, setConnectedUser] = useState({
-//     sessionId: "",
+//     uid: "",
 //     email: "",
 //     password: "",
-//     userid: "",
+//     selfId: "",
 //     role: "",
 //   });
 
@@ -63,9 +63,9 @@
 //       try {
 //         if (
 //           !connectedUser ||
-//           !connectedUser.sessionId ||
+//           !connectedUser.uid ||
 //           !connectedUser.password ||
-//           !connectedUser.userid
+//           !connectedUser.selfId
 //         ) {
 //           return;
 //         }
@@ -77,7 +77,7 @@
 //             domain = [["student_id", "=", selectedChild.partner_id[1]]];
 //             break;
 //           case "student":
-//             domain = [["student_id", "=", connectedUser.userid[1]]];
+//             domain = [["student_id", "=", connectedUser.selfId[1]]];
 //             break;
 //           default:
 //             console.error("Unsupported role:", connectedUser.role);
@@ -85,7 +85,7 @@
 //         }
 
 //         const activitiesData = await jsonrpcRequest(
-//           connectedUser?.sessionId,
+//           connectedUser?.uid,
 //           connectedUser?.password,
 //           config.model.opActivity,
 //           [domain],

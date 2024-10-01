@@ -1,7 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useRoute } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityScreen,
   GroupScreen,
@@ -10,13 +10,58 @@ import {
   PaymentScreen,
 } from "../screens";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { getObject } from "../api/apiClient";
 
 const Tab = createBottomTabNavigator();
 
 export const TabNavigator = () => {
   const propagedRoute = useRoute();
+  const [connectedUser, setConnectedUser] = useState(null);
+
+  useEffect(() => {
+    const fetchConnectedUser = async () => {
+      try {
+        const storedUser = await getObject("connectedUser");
+        console.log("storedUser...", storedUser);
+
+        setConnectedUser(storedUser);
+      } catch (error) {}
+    };
+    if (!connectedUser) fetchConnectedUser();
+  }, [connectedUser]);
+
+  const getRoleSpecificTabs = () => {
+    switch (connectedUser?.role) {
+      case "student":
+      case "parent":
+        return (
+          <>
+            <Tab.Screen
+              name="Activities"
+              component={ActivityScreen}
+              options={{ tabBarShowLabel: false }}
+            />
+            <Tab.Screen
+              name="Notes"
+              component={NoteScreen}
+              options={{ tabBarShowLabel: false }}
+            />
+          </>
+        );
+      case "teacher":
+        return (
+          <Tab.Screen
+            name="Activities"
+            component={ActivityScreen}
+            options={{ tabBarShowLabel: false }}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
-    // <AppProvider>
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
@@ -48,7 +93,6 @@ export const TabNavigator = () => {
         },
         tabBarStyle: {
           backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-          // minHeight: "7%",
         },
         headerShown: false,
       })}
@@ -68,19 +112,7 @@ export const TabNavigator = () => {
         component={GroupScreen}
         options={{ tabBarShowLabel: false }}
       />
-      <Tab.Screen
-        name="Notes"
-        component={NoteScreen}
-        options={{ tabBarShowLabel: false }}
-      />
-      <Tab.Screen
-        name="Activities"
-        component={ActivityScreen}
-        options={{ tabBarShowLabel: false }}
-      />
+      {getRoleSpecificTabs()}
     </Tab.Navigator>
-    // </AppProvider>
   );
 };
-
-// export default TabNavigator;
