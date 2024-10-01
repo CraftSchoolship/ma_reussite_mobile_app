@@ -10,7 +10,7 @@
 //   const navigation = useNavigation();
 //   const [uid, setUid] = useState(null);
 //   const [password, setPassword] = useState(null);
-//   const [selfId, setSelfId] = useState(null);
+//   const [self, setSelfId] = useState(null);
 //   const [note, setNote] = useState();
 //   const [course, setCourse] = useState();
 //   const [institute, setInstitute] = useState();
@@ -18,10 +18,10 @@
 
 //   useEffect(() => {
 //     const connectedUser = route?.params;
-//     const { uid, email, password, selfId } = connectedUser;
+//     const { uid, email, password, self } = connectedUser;
 //     setUid(uid);
 //     setPassword(password);
-//     setSelfId(selfId[0]);
+//     setSelfId(self[0]);
 //   }, [route]);
 
 //   useEffect(() => {
@@ -31,7 +31,7 @@
 //           uid,
 //           config.password,
 //           config.model.craftStudent,
-//           // [[["partner_id", "=", selfId]]],
+//           // [[["partner_id", "=", self]]],
 //           [],
 //           // ["prev_result", "prev_course_id", "prev_institute_id"]
 //           []
@@ -45,10 +45,10 @@
 //         setLoading(false);
 //       }
 //     };
-//     if (uid && password && selfId) {
+//     if (uid && password && self) {
 //       fetchNote();
 //     }
-//   }, [uid, password, selfId]);
+//   }, [uid, password, self]);
 
 //   return (
 //     <Box flex={1} bg={"white"}>

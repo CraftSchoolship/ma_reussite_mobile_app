@@ -26,7 +26,7 @@
 //   const [sortOrder, setSortOrder] = useState("recent");
 //   const [uid, setUid] = useState(null);
 //   const [password, setPassword] = useState(null);
-//   const [selfId, setSelfId] = useState(null);
+//   const [self, setSelfId] = useState(null);
 //   const [payments, setPayments] = useState([]);
 //   const [loading, setLoading] = useState(true);
 //   const [paymentDetails, setPaymentDetails] = useState({});
@@ -34,10 +34,10 @@
 
 //   useEffect(() => {
 //     const connectedUser = route?.params;
-//     const { uid, email, password, selfId } = connectedUser;
+//     const { uid, email, password, self } = connectedUser;
 //     setUid(uid);
 //     setPassword(password);
-//     setSelfId(selfId[0]);
+//     setSelfId(self[0]);
 //   }, [route]);
 
 //   const handlePress = (paymentDetails) => {
@@ -52,7 +52,7 @@
 //           uid,
 //           password,
 //           config.model.accountMove,
-//           [[["partner_id", "=", selfId]]],
+//           [[["partner_id", "=", self]]],
 //           ["name", "payment_state"]
 //         );
 
@@ -60,7 +60,7 @@
 //           uid,
 //           password,
 //           config.model.accountMoveLine,
-//           [[["partner_id", "=", selfId]]],
+//           [[["partner_id", "=", self]]],
 //           [
 //             "date",
 //             "display_name",
@@ -103,10 +103,10 @@
 //       }
 //     };
 
-//     if (uid && password && selfId) {
+//     if (uid && password && self) {
 //       fetchPayment();
 //     }
-//   }, [uid, password, selfId]);
+//   }, [uid, password, self]);
 
 //   return (
 //     <Box flex={1} bg="white">

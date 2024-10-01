@@ -21,17 +21,17 @@
 //   const navigation = useNavigation();
 //   const [uid, setUid] = useState(null);
 //   const [password, setPassword] = useState(null);
-//   const [selfId, setSelfId] = useState(null);
+//   const [self, setSelfId] = useState(null);
 //   const [activities, setActivities] = useState([]);
 //   const { isOpen, onOpen, onClose } = useDisclose();
 //   const [selectedActivity, setSelectedActivity] = useState();
 
 //   useEffect(() => {
 //     const connectedUser = route?.params;
-//     const { uid, email, password, selfId } = connectedUser;
+//     const { uid, email, password, self } = connectedUser;
 //     setUid(uid);
 //     setPassword(password);
-//     setSelfId(selfId[1]);
+//     setSelfId(self[1]);
 //   }, [route]);
 
 //   useEffect(() => {
@@ -41,7 +41,7 @@
 //           uid,
 //           config.password,
 //           config.model.opActivity,
-//           [[["student_id", "=", selfId]]],
+//           [[["student_id", "=", self]]],
 //           ["student_id", "type_id", "date", "description"]
 //         );
 
@@ -53,10 +53,10 @@
 //       }
 //     };
 
-//     if (uid && password && selfId) {
+//     if (uid && password && self) {
 //       fetchActivities();
 //     }
-//   }, [uid, password, selfId]);
+//   }, [uid, password, self]);
 
 //   return (
 //     <Box flex={1} bg={"white"}>

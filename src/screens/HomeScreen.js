@@ -62,16 +62,19 @@ const HomeScreen = () => {
       try {
         if (!connectedUser || !connectedUser.uid) return;
 
+        if (connectedUser.role === "parent" && !selectedChild) return;
+
         let domain = [];
         switch (connectedUser.role) {
           case "parent":
-            if (!selectedChild?.contact_id) return;
-            domain = [["partner_ids", "=", selectedChild.contact_id[0]]];
+            if (!selectedChild?.self) return;
+            domain = [["partner_ids", "=", selectedChild.self[0]]];
             break;
           default:
-            domain = [["partner_ids", "=", connectedUser.selfId[0]]];
+            domain = [["partner_ids", "=", connectedUser.self[0]]];
             break;
         }
+
         const eventsData = await jsonrpcRequest(
           connectedUser.uid,
           connectedUser.password,
@@ -93,8 +96,9 @@ const HomeScreen = () => {
         console.error("Error fetching events:", error);
       }
     };
+
     if (connectedUser) fetchEvents();
-  }, [connectedUser]);
+  }, [connectedUser, selectedChild]);
 
   useEffect(() => {
     if (events) {

@@ -18,15 +18,15 @@
 //   const route = useRoute();
 //   const [groups, setGroups] = useState([]);
 //   const [uid, setUid] = useState(null);
-//   const [selfId, setSelfId] = useState(null);
+//   const [self, setSelfId] = useState(null);
 //   const [password, setPassword] = useState(null);
 //   const [loading, setLoading] = useState(true);
 
 //   useEffect(() => {
 //     const connectedUser = route?.params;
-//     const { uid, email, password, selfId } = connectedUser;
+//     const { uid, email, password, self } = connectedUser;
 //     setUid(uid);
-//     setSelfId(selfId[0]);
+//     setSelfId(self[0]);
 //     setPassword(password);
 //   }, [route]);
 
@@ -46,10 +46,10 @@
 //       }
 //     };
 
-//     if (uid && password && selfId) {
+//     if (uid && password && self) {
 //       fetchGroups();
 //     }
-//   }, [uid, selfId, password]);
+//   }, [uid, self, password]);
 
 //   return (
 //     <Box flex={1} bg={"white"}>

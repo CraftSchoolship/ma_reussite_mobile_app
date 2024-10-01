@@ -10,15 +10,10 @@ import {
   storeObject,
 } from "../api/apiClient";
 import config from "../api/config";
-import {
-  BackgroundWrapper,
-  CustomButton,
-  CustomInput,
-  LoginScreenBanner,
-} from "../components";
+import { CustomButton, CustomInput, LoginScreenBanner } from "../components";
 import { useThemeContext } from "../hooks/ThemeContext";
-import { loginValidationSchema } from "../validation/formValidation";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { loginValidationSchema } from "../validation/formValidation";
 
 const LoginScreen = () => {
   const input1Ref = useRef(null);
@@ -31,7 +26,7 @@ const LoginScreen = () => {
     uid: "",
     email: "",
     password: "",
-    selfId: "",
+    self: "",
     role: "",
   });
   const [selectedChild, setSelectedChild] = useState(null);
@@ -64,7 +59,7 @@ const LoginScreen = () => {
             uid: uid,
             email: email,
             password: password,
-            selfId: user[0].self,
+            self: user[0].self,
             role: user[0].craft_role,
             profileImage: user[0].image_1024
               ? `data:image/png;base64,${user[0].image_1024}`
@@ -124,7 +119,7 @@ const LoginScreen = () => {
           connectedUser.password,
           config.model.craftStudent,
           [[["id", "=", studentIds]]],
-          ["id", "contact_id", "image_1024"]
+          ["id", "image_1024", "self"]
         );
 
         setChildren(childrenList);

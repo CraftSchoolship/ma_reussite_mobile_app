@@ -20,7 +20,7 @@ const GroupScreen = ({ navigation }) => {
   const route = useRoute();
   const [groups, setGroups] = useState([]);
   const [uid, setUid] = useState(null);
-  const [selfId, setSelfId] = useState(null);
+  const [self, setSelfId] = useState(null);
   const [password, setPassword] = useState(null);
   const [loading, setLoading] = useState(true);
   const { isDarkMode } = useThemeContext();
@@ -31,9 +31,9 @@ const GroupScreen = ({ navigation }) => {
     const fetchUser = async () => {
       const user = await getObject("connectedUser");
       // setConnectedUser(user);
-      const { uid, email, password, selfId } = user;
+      const { uid, email, password, self } = user;
       setUid(uid);
-      setSelfId(selfId[0]);
+      setSelfId(self[0]);
       setPassword(password);
       setLoading(false);
     };
@@ -56,10 +56,10 @@ const GroupScreen = ({ navigation }) => {
       }
     };
 
-    if (uid && password && selfId) {
+    if (uid && password && self) {
       fetchGroups();
     }
-  }, [uid, selfId, password]);
+  }, [uid, self, password]);
 
   return (
     <Box flex={1} bg={"white"}>

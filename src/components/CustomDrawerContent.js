@@ -152,7 +152,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                 bold
                 ml={4}
               >
-                {connectedUser?.selfId?.[1] || "Prénom Nom"}
+                {connectedUser?.self?.[1] || "Prénom Nom"}
               </Text>
               <Pressable
                 onPress={() =>

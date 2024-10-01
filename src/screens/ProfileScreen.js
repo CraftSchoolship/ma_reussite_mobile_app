@@ -40,7 +40,7 @@ const ProfileScreen = () => {
     uid: "",
     email: "",
     password: "",
-    selfId: "",
+    self: "",
     role: "",
     profileImage: null,
     name: "",
@@ -77,7 +77,7 @@ const ProfileScreen = () => {
         connectedUser.uid,
         connectedUser.password,
         config.model.partner,
-        connectedUser.selfId[0],
+        connectedUser.self[0],
         {
           image_1920: imageBase64,
         }
@@ -249,7 +249,7 @@ const ProfileScreen = () => {
               }
               mt={2}
             >
-              {connectedUser && connectedUser.selfId[1]}
+              {connectedUser && connectedUser.self[1]}
             </Heading>
           </Center>
           <Divider

@@ -75,7 +75,7 @@
 //           !connectedUser ||
 //           !connectedUser.uid ||
 //           !connectedUser.password ||
-//           !connectedUser.selfId
+//           !connectedUser.self
 //         ) {
 //           return;
 //         }
@@ -86,7 +86,7 @@
 //             domain = [["partner_id", "=", selectedChild?.partner_id[0]]];
 //             break;
 //           case "student":
-//             domain = [["partner_id", "=", connectedUser?.selfId[0]]];
+//             domain = [["partner_id", "=", connectedUser?.self[0]]];
 //             break;
 //           default:
 //             console.error("Unsupported role:", connectedUser?.role);
@@ -148,7 +148,6 @@
 
 //     if (connectedUser && selectedChild) fetchPayment();
 //   }, [connectedUser, selectedChild]);
-
 
 //   return (
 //     <Box flex={1} bg="white">
