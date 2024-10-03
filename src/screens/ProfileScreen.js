@@ -18,18 +18,12 @@ import {
   useToast,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import { Alert } from "react-native"; // Ajoute cette ligne pour utiliser Alert de React Native
-import { getObject, storeObject, updateRecord } from "../api/apiClient"; // Import updateRecord
+import { Alert } from "react-native";
+import { getObject, storeObject, updateRecord } from "../api/apiClient";
 import config from "../api/config";
-import {
-  BackgroundWrapper,
-  ProfileUserEdit,
-  ProfileUserInfo,
-  ToastAlert,
-} from "../components";
-import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { ProfileUserEdit, ProfileUserInfo, ToastAlert } from "../components";
 import { useThemeContext } from "../hooks/ThemeContext";
-import { SafeAreaView } from "react-native-safe-area-context";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const ProfileScreen = () => {
   const route = useRoute();
@@ -52,7 +46,7 @@ const ProfileScreen = () => {
   const { isDarkMode } = useThemeContext();
 
   useEffect(() => {
-    if (route?.params?.edit) setIsProfileEdit(true);
+    route?.params?.edit ? setIsProfileEdit(true) : setIsProfileEdit(false);
   }, [route]);
 
   useEffect(() => {
@@ -91,7 +85,7 @@ const ProfileScreen = () => {
               status={"success"}
               isClosable={true}
               variant={"left-accent"}
-              duration={50000} 
+              duration={50000}
             />
           ),
         });
@@ -167,7 +161,7 @@ const ProfileScreen = () => {
   };
 
   return (
-    <Box flex={1} my={4}>
+    <Box flex={1} py={4}>
       <Center my={2}>
         {loading ? (
           <Avatar

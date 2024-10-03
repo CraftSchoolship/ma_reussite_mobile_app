@@ -18,7 +18,7 @@ import { useAppContext } from "../hooks/AppProvider";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useThemeContext } from "../hooks/ThemeContext";
 
-const HomeScreenBanner = ({ displayGoBackButton = false }) => {
+const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
   const route = useRoute();
   const navigation = useNavigation();
   const [connectedUser, setConnectedUser] = useState({
@@ -78,7 +78,7 @@ const HomeScreenBanner = ({ displayGoBackButton = false }) => {
                   }
                 />
               }
-              onPress={() => navigation.navigate("Groups")}
+              onPress={() => navigation.navigate(previous)}
             />
           ) : null}
           <Image
@@ -95,10 +95,11 @@ const HomeScreenBanner = ({ displayGoBackButton = false }) => {
           />
           <Pressable
             m={"auto"}
-            onPress={() =>
-              navigation.openDrawer
-                ? navigation.openDrawer()
-                : navigation.navigate("Profil")
+            onPress={
+              () => navigation.openDrawer && navigation.openDrawer()
+              // navigation.openDrawer
+              //   ? navigation.openDrawer()
+              //   : navigation.navigate("Profil")
             }
           >
             {loading ? (
@@ -130,10 +131,9 @@ const HomeScreenBanner = ({ displayGoBackButton = false }) => {
                   _pressed={{
                     bg: "primary.600:alpha.20",
                   }}
-                  onPress={() =>
-                    navigation.openDrawer
-                      ? navigation.openDrawer()
-                      : navigation.navigate("Profil")
+                  onPress={
+                    () => navigation.openDrawer && navigation.openDrawer()
+                    // : navigation.navigate("Profil")
                   }
                 />
               </Avatar>

@@ -95,16 +95,16 @@ const GroupScreen = ({ navigation }) => {
                   <Pressable
                     shadow={"9"}
                     key={index}
-                    // onPress={() => {
-                    //   navigation.navigate("Session", {
-                    //     groupName: group.name,
-                    //   });
-                    // }}
                     onPress={() => {
-                      navigation.navigate("Chevron", {
+                      navigation.navigate("Session", {
                         groupName: group.name,
                       });
                     }}
+                    // onPress={() => {
+                    //   navigation.navigate("Chevron", {
+                    //     groupName: group.name,
+                    //   });
+                    // }}
                   >
                     <Box
                       p={4}

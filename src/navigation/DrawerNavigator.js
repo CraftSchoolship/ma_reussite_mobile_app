@@ -1,9 +1,13 @@
+import { MaterialIcons } from "@expo/vector-icons";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { useRoute } from "@react-navigation/native";
+import { Icon, IconButton } from "native-base";
 import React, { useEffect, useState } from "react";
 import { getObject } from "../api/apiClient";
 import CustomDrawerContent from "../components/CustomDrawerContent";
 import { useThemeContext } from "../hooks/ThemeContext";
+import { ProfileScreen } from "../screens";
+import SessionsScreen from "../screens/SessionsScreen";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { TabNavigator } from "./TabNavigator";
 
 const Drawer = createDrawerNavigator();
@@ -59,6 +63,53 @@ const DrawerNavigator = () => {
         name="TabNavigator"
         component={TabNavigator}
         options={{ headerShown: false }}
+      />
+
+      <Drawer.Screen
+        options={({ navigation }) => ({
+          headerShown: true,
+          headerTintColor: isDarkMode
+            ? MA_REUSSITE_CUSTOM_COLORS.White
+            : MA_REUSSITE_CUSTOM_COLORS.Black,
+          headerStyle: {
+            backgroundColor: isDarkMode
+              ? MA_REUSSITE_CUSTOM_COLORS.Black
+              : MA_REUSSITE_CUSTOM_COLORS.White,
+          },
+          sceneContainerStyle: {
+            backgroundColor: isDarkMode
+              ? MA_REUSSITE_CUSTOM_COLORS.Black
+              : MA_REUSSITE_CUSTOM_COLORS.White,
+          },
+          headerLeft: () => (
+            <IconButton
+              icon={
+                <Icon
+                  as={MaterialIcons}
+                  name="arrow-back"
+                  size="lg"
+                  color={
+                    isDarkMode
+                      ? MA_REUSSITE_CUSTOM_COLORS.White
+                      : MA_REUSSITE_CUSTOM_COLORS.Black
+                  }
+                />
+              }
+              onPress={() => navigation.goBack()}
+            />
+          ),
+        })}
+        name="Profil"
+        component={ProfileScreen}
+      />
+
+      <Drawer.Screen
+        options={{
+          headerBackTitleVisible: false,
+          headerShown: false,
+        }}
+        name="Session"
+        component={SessionsScreen}
       />
     </Drawer.Navigator>
   );
