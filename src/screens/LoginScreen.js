@@ -1,11 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
-import { Box, Center, StatusBar, Text, View, VStack } from "native-base";
+import { Box, Center, Text, View, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
 import { storeArray, storeObject } from "../api/apiClient";
-import config from "../../http/config";
 import { authenticate, browse, read } from "../../http/http";
-import { CustomButton, CustomInput, LoginScreenBanner } from "../components";
+import { CustomButton, CustomInput } from "../components";
 import { loginValidationSchema } from "../validation/formValidation";
 
 const LoginScreen = () => {
@@ -54,7 +53,7 @@ const LoginScreen = () => {
           "craft_role",
           "craft_parent_id",
           "craft_student_id",
-          "image_1920"
+          "image_1920",
         ]
       );
 
@@ -69,16 +68,18 @@ const LoginScreen = () => {
         profileImage = `data:image/png;base64,${profileImage}`;
       else if (profileImage.startsWith("/9j/"))
         profileImage = `data:image/jpeg;base64,${profileImage}`;
-      else if (profileImage.startsWith("PHN2Zy") || profileImage.startsWith("PD94bWwg"))
+      else if (
+        profileImage.startsWith("PHN2Zy") ||
+        profileImage.startsWith("PD94bWwg")
+      )
         profileImage = `data:image/svg+xml;base64,${profileImage}`;
-      else
-        console.log('Unknow Image type')
+      else console.log("Unknow Image type");
 
       let connectedUser = {
         ...user[0],
         email: email,
         password: password,
-        profileImage: profileImage,//config.baseUrl + `/web/image?model=res.users&id=${user_id}&field=image_1920&timestamp=${new Date().getTime()}`,
+        profileImage: profileImage, //config.baseUrl + `/web/image?model=res.users&id=${user_id}&field=image_1920&timestamp=${new Date().getTime()}`,
         role: user[0].craft_role,
       };
 
@@ -110,7 +111,6 @@ const LoginScreen = () => {
         if (!fetchedChildren.length) return;
 
         console.log(fetchedChildren);
-        
 
         const studentIds = getStudentIds(fetchedChildren);
         console.log(studentIds);
@@ -118,7 +118,7 @@ const LoginScreen = () => {
         const childrenList = await browse(
           "craft.student",
           ["id", "contact_id", "image_1024"],
-          [["id", "in", studentIds]],
+          [["id", "in", studentIds]]
         );
 
         if (!childrenList.length) return;

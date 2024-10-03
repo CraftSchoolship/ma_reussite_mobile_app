@@ -9,18 +9,14 @@ import {
 } from "native-base";
 import { default as React, useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
+import { getObject, jsonrpcRequest } from "../../api/apiClient";
+import config from "../../api/config";
 import { CalendarCard } from "../../components";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import MA_REUSSITE_CUSTOM_COLORS from "../../themes/variables";
 import CalendarLocalConfig from "../../utils/CalendarLocalConfig";
 import { formatOdooEvents } from "../../utils/MarkedDatesFormatage";
-import { format } from "date-fns";
-import {
-  getConnectedUserDetails,
-  fetchEventsData,
-  filterEventsByMonth,
-} from "../../utils/SessionEventUtils";
-import { SafeAreaView } from "react-native";
+import { browse } from "../../../http/http";
 
 CalendarLocalConfig;
 
@@ -30,55 +26,73 @@ const HomeScreen = () => {
   const route = useRoute();
   const [sessionId, setSessionId] = useState(null);
   const [password, setPassword] = useState(null);
-  const [userid, setUserid] = useState(null);
-  const [events, setEvents] = useState([]);
+  const [user_id, setUserId] = useState(null);
+  const [partner_id, setPartnerId] = useState(null);
+  const [events, setEvents] = useState(null);
   const [markedDate, setMarkedDate] = useState({});
   const [todaysEvents, setTodaysEvents] = useState([]);
-  const [selectedDayEvents, setSelectedDayEvents] = useState([]);
+  const [today, setToday] = useState();
   const [selectedDay, setSelectedDay] = useState("");
-  const today = new Date();
+  const [selectedDayEvents, setSelectedDayEvents] = useState([]);
 
   useEffect(() => {
-    const { sessionId, password, userid } = getConnectedUserDetails(route);
-    setSessionId(sessionId);
-    setPassword(password);
-    setUserid(userid);
-  }, [route]);
+    const fetchConnectedUser = async () => {
+      try {
+        const connectedUser = await getObject("connectedUser");
+        setUserId(connectedUser.id);
+        setPartnerId(connectedUser.self[0]);
+      } catch (error) {
+        console.error("Error fetching connected user:", error);
+      }
+    };
+
+    if (!user_id) fetchConnectedUser();
+  }, [user_id]);
 
   useEffect(() => {
-    if (sessionId && password && userid) {
-      fetchEventsData(sessionId, password, userid).then(setEvents);
+    console.log("connectedUser...", user_id);
+
+    const fetchEvents = async () => {
+      try {
+        const eventsData = await browse(
+          sessionId,
+          password,
+          "craft.session",
+          [[["partner_ids", "in", partner_id]]],
+          ["classroom_id", "start", "stop", "subject_id", "teacher_id"]
+        );
+
+        setEvents(eventsData);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+    if (user_id) {
+      fetchEvents();
     }
-  }, [sessionId, password, userid]);
+  }, [partner_id]);
 
   useEffect(() => {
-    if (events.length > 0) {
-      const formattedOdooEvents = formatOdooEvents(events);
-      setMarkedDate(formattedOdooEvents);
+    if (events) {
+      const formatedOdooEvents = formatOdooEvents(events);
+      setMarkedDate(formatedOdooEvents);
     }
   }, [events]);
 
   useEffect(() => {
-    if (events.length > 0) {
-      const filteredEvents = filterEventsByMonth(events);
-      setTodaysEvents(filteredEvents);
-    }
-  }, [events]);
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, "0");
+    const day = today.getDate().toString().padStart(2, "0");
+    const dayOfWeek = CalendarLocalConfig.dayNamesShort[today.getDay()];
 
-  const handleDayPress = (day) => {
-    const selectedDate = new Date(day.timestamp);
-    const formattedDate = format(selectedDate, "yyyy-MM-dd");
-    setSelectedDay(day.dateString);
-
-    if (markedDate[formattedDate]) {
-      setSelectedDayEvents(markedDate[formattedDate].dots);
-    }
-
-    onOpen();
-  };
+    const currentDay = `${year}-${month}-${day}`;
+    setToday(`${dayOfWeek} ${day}`);
+    setTodaysEvents(markedDate[currentDay]?.dots);
+  }, [markedDate]);
 
   return (
-    <Box flex={1}>
+    <Box>
       <BackgroundWrapper navigation={navigation}>
         <Box
           mt={4}
@@ -91,7 +105,16 @@ const HomeScreen = () => {
         >
           <Calendar
             markingType={"multi-dot"}
-            onDayPress={handleDayPress}
+            onDayPress={(day) => {
+              const currentDaySelected = new Date(day.timestamp).getDay();
+              setSelectedDay(
+                `${CalendarLocalConfig.dayNamesShort[currentDaySelected]} ${day.day}`
+              );
+              if (markedDate[day.dateString] !== undefined) {
+                setSelectedDayEvents(markedDate[day.dateString].dots);
+              }
+              onOpen();
+            }}
             monthFormat={"MMMM yyyy"}
             hideArrows={false}
             disableMonthChange={false}
@@ -106,38 +129,23 @@ const HomeScreen = () => {
             }}
           />
         </Box>
-        <SafeAreaView style={{ flex: 1, width: "100%" }}>
-          <ScrollView
-            flexGrow={1}
-            h={"100%"}
-            w={"90%"}
-            mx={"auto"}
-            mb={"10%"}
-            contentContainerStyle={{ paddingBottom: 100 }}
-            showsVerticalScrollIndicator={false} // Optional: Hide the scroll indicator for cleaner UI
-          >
-            <VStack w={"full"} mb={"20%"} space={4} mt={4}>
-              {events.length > 0 ? (
-                events.map((event, index) => (
-                  <CalendarCard
-                    key={index}
-                    tag={event.subject_id[1]}
-                    date={format(new Date(event.start), "dd MMMM yyyy")}
-                    time={`${format(new Date(event.start), "HH:mm")} - ${format(
-                      new Date(event.stop),
-                      "HH:mm"
-                    )}`}
-                    subject={event.subject_id[1]}
-                    teacher={event.teacher_id[1]}
-                    classroom={event.classroom_id[1]}
-                  />
-                ))
-              ) : (
-                <Text>No events available.</Text>
-              )}
-            </VStack>
-          </ScrollView>
-        </SafeAreaView>
+        <ScrollView flexGrow={1} h={"100%"} w={"90%"} mx={"auto"} mb={"10%"}>
+          <VStack w={"full"} mb={"20%"} space={4} mt={4}>
+            {todaysEvents &&
+              todaysEvents.map((eventMarked, index) => (
+                <CalendarCard
+                  key={index}
+                  tag={eventMarked.tag}
+                  date={today}
+                  time={eventMarked.time}
+                  subject={eventMarked.subject}
+                  teacher={eventMarked.teacher}
+                  classroom={eventMarked.classroom}
+                />
+              ))}
+          </VStack>
+        </ScrollView>
+
         <Actionsheet
           isOpen={isOpen}
           onClose={() => {
@@ -160,24 +168,22 @@ const HomeScreen = () => {
               w="100%"
               flexGrow={1}
               mx={"auto"}
+              // mb={"5%"}
               contentContainerStyle={{ paddingBottom: 40 }}
             >
               <VStack space={4} px={4}>
-                {selectedDayEvents.length > 0 ? (
+                {selectedDayEvents &&
                   selectedDayEvents.map((eventMarked, index) => (
                     <CalendarCard
                       key={index}
                       tag={eventMarked.tag}
-                      date={selectedDay}
+                      date={today}
                       time={eventMarked.time}
                       subject={eventMarked.subject}
                       teacher={eventMarked.teacher}
                       classroom={eventMarked.classroom}
                     />
-                  ))
-                ) : (
-                  <Text>No events for this day.</Text>
-                )}
+                  ))}
               </VStack>
             </ScrollView>
           </Actionsheet.Content>

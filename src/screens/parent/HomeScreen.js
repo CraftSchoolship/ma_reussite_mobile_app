@@ -9,16 +9,14 @@ import {
 } from "native-base";
 import { default as React, useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
+import { getObject } from "../../api/apiClient";
 import { CalendarCard } from "../../components";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import MA_REUSSITE_CUSTOM_COLORS from "../../themes/variables";
 import CalendarLocalConfig from "../../utils/CalendarLocalConfig";
+import { formatOdooEvents } from "../../utils/MarkedDatesFormatage";
 import { useAppContext } from "../../hooks/AppProvider";
-import {
-  getConnectedUserData,
-  fetchOdooEvents,
-  processMarkedDates,
-} from "../../utils/SessionEventParentUtil.js";
+import { browse, read } from "../../../http/http";
 
 CalendarLocalConfig;
 
@@ -33,42 +31,82 @@ const HomeScreen = () => {
   const [today, setToday] = useState("");
   const [selectedDay, setSelectedDay] = useState("");
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
-  const { selectedChild, setSelectedChild } = useAppContext();
   const [connectedUser, setConnectedUser] = useState({
-    sessionId: "",
+    user_id: "",
     email: "",
-    password: "",
     partnerid: "",
     role: "",
   });
   const [childrenList, setChildrenList] = useState([]);
+  const { selectedChild, setSelectedChild } = useAppContext();
 
-  // Fetch connected user and children on component mount or route change
   useEffect(() => {
-    getConnectedUserData(setConnectedUser, setChildrenList, setSelectedChild);
+    const getConnectedUser = async () => {
+      try {
+        const connectedUser = await getObject("connectedUser");
+        if (connectedUser) {
+          setConnectedUser(connectedUser);
+          const childrenList = await getObject("children");
+          setChildrenList(childrenList);
+          const selectedChild = await getObject("selectedChild");
+          setSelectedChild(selectedChild);
+        }
+      } catch (error) {
+        console.error("Error while getting connectedUser:", error);
+      }
+    };
+    getConnectedUser();
   }, [route, setSelectedChild]);
 
-  // Fetch events based on connected user and selected child
   useEffect(() => {
-    if (connectedUser && selectedChild) {
-      fetchOdooEvents(connectedUser, selectedChild, setEvents);
-    }
+    const fetchEvents = async () => {
+      try {
+        if (!connectedUser || !connectedUser.user_id) {
+          return;
+        }
+        let domain = [];
+        switch (connectedUser?.role) {
+          case "parent":
+            if (!selectedChild?.contact_id) return;
+            domain = [["partner_ids", "=", selectedChild?.contact_id[0]]];
+            break;
+          case "student":
+            domain = [["partner_ids", "=", connectedUser?.partnerid[0]]];
+            break;
+          default:
+            console.error("Unsupported role:", connectedUser?.role);
+            return;
+        }
+        const eventsData = await browse(
+          connectedUser?.user_id,
+          connectedUser?.password,
+          "craft.session",
+          [domain],
+          ["classroom_id", "start", "stop", "subject_id", "teacher_id"]
+        );
+        console.log("eventsData", eventsData);
+
+        setEvents(eventsData);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+    if (connectedUser && selectedChild) fetchEvents();
   }, [connectedUser, selectedChild]);
 
-  // Process and set marked dates after fetching events
   useEffect(() => {
     if (events) {
-      processMarkedDates(events, setMarkedDate);
+      const formatedOdooEvents = formatOdooEvents(events);
+      setMarkedDate(formatedOdooEvents);
     }
   }, [events]);
 
-  // Update today's date and events
   useEffect(() => {
-    const todayDate = new Date();
-    const year = todayDate.getFullYear();
-    const month = (todayDate.getMonth() + 1).toString().padStart(2, "0");
-    const day = todayDate.getDate().toString().padStart(2, "0");
-    const dayOfWeek = CalendarLocalConfig.dayNamesShort[todayDate.getDay()];
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, "0");
+    const day = today.getDate().toString().padStart(2, "0");
+    const dayOfWeek = CalendarLocalConfig.dayNamesShort[today.getDay()];
 
     const currentDay = `${year}-${month}-${day}`;
     setToday(`${dayOfWeek} ${day}`);
