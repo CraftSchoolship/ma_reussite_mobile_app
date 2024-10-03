@@ -170,206 +170,202 @@ const ProfileScreen = () => {
   };
 
   return (
-    <SafeAreaView>
-      <BackgroundWrapper>
-        <Box flex={1} my={4}>
-          <Center my={2}>
-            {loading ? (
-              <Avatar
-                size="2xl"
-                source={{ uri: "https://placehold.co/400x400.png" }}
-              />
-            ) : (
-              <Avatar
-                size="xl"
-                source={{ uri: connectedUser?.profileImage }}
-                bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
-              >
-                <Avatar.Badge
-                  bg={
-                    isDarkMode
-                      ? MA_REUSSITE_CUSTOM_COLORS.Black
-                      : MA_REUSSITE_CUSTOM_COLORS.White
-                  }
-                  borderWidth={0}
-                  position="absolute"
-                  bottom={0.5}
-                  right={0.5}
-                  size={6}
-                >
-                  <IconButton
-                    icon={
-                      <Icon
-                        as={MaterialIcons}
-                        name="edit"
-                        size={4}
-                        color={
-                          isDarkMode
-                            ? MA_REUSSITE_CUSTOM_COLORS.White
-                            : MA_REUSSITE_CUSTOM_COLORS.Black
-                        }
-                        position="absolute"
-                        top={0.5}
-                        left={0.5}
-                      />
-                    }
-                    borderRadius="full"
-                    _icon={{
-                      size: "xs",
-                    }}
-                    onPress={handleProfileImagePress}
-                  />
-                </Avatar.Badge>
-                <IconButton
-                  icon={
-                    <Icon
-                      as={MaterialIcons}
-                      name="person"
-                      size="6xl"
-                      color="white"
-                      mx={"auto"}
-                    />
-                  }
-                  borderRadius="full"
-                  _icon={{
-                    color: "white",
-                    size: "xs",
-                  }}
-                  _pressed={{
-                    bg: "primary.600:alpha.20",
-                  }}
-                />
-              </Avatar>
-            )}
-            <Heading
-              color={
+    <Box flex={1} my={4}>
+      <Center my={2}>
+        {loading ? (
+          <Avatar
+            size="xl"
+            source={{ uri: "https://placehold.co/400x400.png" }}
+          />
+        ) : (
+          <Avatar
+            size="xl"
+            source={{ uri: connectedUser?.profileImage }}
+            bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
+          >
+            <Avatar.Badge
+              bg={
                 isDarkMode
-                  ? MA_REUSSITE_CUSTOM_COLORS.White
-                  : MA_REUSSITE_CUSTOM_COLORS.Black
+                  ? MA_REUSSITE_CUSTOM_COLORS.Black
+                  : MA_REUSSITE_CUSTOM_COLORS.White
               }
-              mt={2}
+              borderWidth={0}
+              position="absolute"
+              bottom={0.5}
+              right={0.5}
+              size={6}
             >
-              {connectedUser && connectedUser.self[1]}
-            </Heading>
-          </Center>
+              <IconButton
+                icon={
+                  <Icon
+                    as={MaterialIcons}
+                    name="edit"
+                    size={4}
+                    color={
+                      isDarkMode
+                        ? MA_REUSSITE_CUSTOM_COLORS.White
+                        : MA_REUSSITE_CUSTOM_COLORS.Black
+                    }
+                    position="absolute"
+                    top={0.5}
+                    left={0.5}
+                  />
+                }
+                borderRadius="full"
+                _icon={{
+                  size: "xs",
+                }}
+                onPress={handleProfileImagePress}
+              />
+            </Avatar.Badge>
+            <IconButton
+              icon={
+                <Icon
+                  as={MaterialIcons}
+                  name="person"
+                  size="6xl"
+                  color="white"
+                  mx={"auto"}
+                />
+              }
+              borderRadius="full"
+              _icon={{
+                color: "white",
+                size: "xs",
+              }}
+              _pressed={{
+                bg: "primary.600:alpha.20",
+              }}
+            />
+          </Avatar>
+        )}
+        <Heading
+          color={
+            isDarkMode
+              ? MA_REUSSITE_CUSTOM_COLORS.White
+              : MA_REUSSITE_CUSTOM_COLORS.Black
+          }
+          mt={2}
+        >
+          {connectedUser && connectedUser.self[1]}
+        </Heading>
+      </Center>
+      <Divider
+        bgColor={
+          isDarkMode
+            ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
+            : MA_REUSSITE_CUSTOM_COLORS.LightDivider
+        }
+        h={"0.5"}
+        mt={2}
+      />
+      {isProfileEdit ? (
+        <ProfileUserEdit
+          isDarkMode={isDarkMode}
+          connectedUser={connectedUser}
+        />
+      ) : (
+        <ProfileUserInfo
+          isDarkMode={isDarkMode}
+          connectedUser={connectedUser}
+        />
+      )}
+
+      <Actionsheet isOpen={isOpen} onClose={onClose}>
+        <Actionsheet.Content
+          bgColor={
+            isDarkMode
+              ? MA_REUSSITE_CUSTOM_COLORS.DarkActionSheet
+              : MA_REUSSITE_CUSTOM_COLORS.White
+          }
+          w={"4/6"}
+          mx={"auto"}
+          borderBottomRadius={"lg"}
+          borderTopRadius={"lg"}
+          mb={4}
+        >
+          <Text
+            my={2}
+            color={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.White
+                : MA_REUSSITE_CUSTOM_COLORS.Black
+            }
+          >
+            Choisir une image
+          </Text>
           <Divider
             bgColor={
               isDarkMode
-                ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
+                ? MA_REUSSITE_CUSTOM_COLORS.Black
                 : MA_REUSSITE_CUSTOM_COLORS.LightDivider
             }
-            h={"0.5"}
+            h={0.5}
             mt={2}
           />
-          {isProfileEdit ? (
-            <ProfileUserEdit
-              isDarkMode={isDarkMode}
-              connectedUser={connectedUser}
-            />
-          ) : (
-            <ProfileUserInfo
-              isDarkMode={isDarkMode}
-              connectedUser={connectedUser}
-            />
-          )}
-
-          <Actionsheet isOpen={isOpen} onClose={onClose}>
-            <Actionsheet.Content
-              bgColor={
-                isDarkMode
-                  ? MA_REUSSITE_CUSTOM_COLORS.DarkActionSheet
-                  : MA_REUSSITE_CUSTOM_COLORS.White
-              }
-              w={"4/6"}
-              mx={"auto"}
-              borderBottomRadius={"lg"}
-              borderTopRadius={"lg"}
-              mb={4}
-            >
-              <Text
-                my={2}
-                color={
-                  isDarkMode
-                    ? MA_REUSSITE_CUSTOM_COLORS.White
-                    : MA_REUSSITE_CUSTOM_COLORS.Black
-                }
-              >
-                Choisir une image
+          <Actionsheet.Item
+            onPress={pickImage}
+            bgColor={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.DarkActionSheet
+                : MA_REUSSITE_CUSTOM_COLORS.White
+            }
+            p={2}
+          >
+            <HStack ml={"5"}>
+              <FontAwesome6
+                name={"image"}
+                size={18}
+                color={MA_REUSSITE_CUSTOM_COLORS.Secondary}
+              />
+              <Text ml={4} color={MA_REUSSITE_CUSTOM_COLORS.Secondary}>
+                Album photos
               </Text>
-              <Divider
-                bgColor={
-                  isDarkMode
-                    ? MA_REUSSITE_CUSTOM_COLORS.Black
-                    : MA_REUSSITE_CUSTOM_COLORS.LightDivider
-                }
-                h={0.5}
-                mt={2}
+            </HStack>
+          </Actionsheet.Item>
+          <Divider
+            bgColor={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.Black
+                : MA_REUSSITE_CUSTOM_COLORS.LightDivider
+            }
+            h={0.5}
+          />
+          <Actionsheet.Item
+            onPress={takePhoto}
+            bgColor={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.DarkActionSheet
+                : MA_REUSSITE_CUSTOM_COLORS.White
+            }
+            p={2}
+          >
+            <HStack ml={"5"}>
+              <FontAwesome5
+                name={"camera"}
+                size={18}
+                color={MA_REUSSITE_CUSTOM_COLORS.Secondary}
               />
-              <Actionsheet.Item
-                onPress={pickImage}
-                bgColor={
-                  isDarkMode
-                    ? MA_REUSSITE_CUSTOM_COLORS.DarkActionSheet
-                    : MA_REUSSITE_CUSTOM_COLORS.White
-                }
-                p={2}
-              >
-                <HStack ml={"5"}>
-                  <FontAwesome6
-                    name={"image"}
-                    size={18}
-                    color={MA_REUSSITE_CUSTOM_COLORS.Secondary}
-                  />
-                  <Text ml={4} color={MA_REUSSITE_CUSTOM_COLORS.Secondary}>
-                    Album photos
-                  </Text>
-                </HStack>
-              </Actionsheet.Item>
-              <Divider
-                bgColor={
-                  isDarkMode
-                    ? MA_REUSSITE_CUSTOM_COLORS.Black
-                    : MA_REUSSITE_CUSTOM_COLORS.LightDivider
-                }
-                h={0.5}
-              />
-              <Actionsheet.Item
-                onPress={takePhoto}
-                bgColor={
-                  isDarkMode
-                    ? MA_REUSSITE_CUSTOM_COLORS.DarkActionSheet
-                    : MA_REUSSITE_CUSTOM_COLORS.White
-                }
-                p={2}
-              >
-                <HStack ml={"5"}>
-                  <FontAwesome5
-                    name={"camera"}
-                    size={18}
-                    color={MA_REUSSITE_CUSTOM_COLORS.Secondary}
-                  />
-                  <Text ml={"8"} color={MA_REUSSITE_CUSTOM_COLORS.Secondary}>
-                    Caméra
-                  </Text>
-                </HStack>
-              </Actionsheet.Item>
-            </Actionsheet.Content>
-            <Button
-              mb={6}
-              w={"4/6"}
-              onPress={onClose}
-              bgColor={
-                isDarkMode
-                  ? MA_REUSSITE_CUSTOM_COLORS.DarkActionSheet
-                  : MA_REUSSITE_CUSTOM_COLORS.White
-              }
-            >
-              <Text color={MA_REUSSITE_CUSTOM_COLORS.Secondary}>Annuler</Text>
-            </Button>
-          </Actionsheet>
-        </Box>
-      </BackgroundWrapper>
-    </SafeAreaView>
+              <Text ml={"8"} color={MA_REUSSITE_CUSTOM_COLORS.Secondary}>
+                Caméra
+              </Text>
+            </HStack>
+          </Actionsheet.Item>
+        </Actionsheet.Content>
+        <Button
+          mb={6}
+          w={"4/6"}
+          onPress={onClose}
+          bgColor={
+            isDarkMode
+              ? MA_REUSSITE_CUSTOM_COLORS.DarkActionSheet
+              : MA_REUSSITE_CUSTOM_COLORS.White
+          }
+        >
+          <Text color={MA_REUSSITE_CUSTOM_COLORS.Secondary}>Annuler</Text>
+        </Button>
+      </Actionsheet>
+    </Box>
   );
 };
 

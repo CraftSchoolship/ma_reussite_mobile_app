@@ -19,6 +19,7 @@ const MA_REUSSITE_CUSTOM_COLORS = {
   LightTextCalendarCard: "gray.500",
   CheckBoxColor: "#38a169",
   DarkActionSheet: "gray.800",
+  Dark: "dark.100",
 };
 
 export default MA_REUSSITE_CUSTOM_COLORS;
