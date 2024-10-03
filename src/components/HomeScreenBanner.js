@@ -3,6 +3,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   Avatar,
   Box,
+  Center,
   HStack,
   Icon,
   IconButton,
@@ -17,7 +18,7 @@ import { useAppContext } from "../hooks/AppProvider";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useThemeContext } from "../hooks/ThemeContext";
 
-const HomeScreenBanner = () => {
+const HomeScreenBanner = ({ displayGoBackButton = false }) => {
   const route = useRoute();
   const navigation = useNavigation();
   const [connectedUser, setConnectedUser] = useState({
@@ -61,11 +62,30 @@ const HomeScreenBanner = () => {
     <Box bg={isDarkMode ? "black" : "white"}>
       <VStack>
         <HStack>
+          {displayGoBackButton ? (
+            <IconButton
+              position={"absolute"}
+              top={0}
+              left={-12}
+              icon={
+                <MaterialIcons
+                  name="chevron-left"
+                  size={44}
+                  color={
+                    isDarkMode
+                      ? MA_REUSSITE_CUSTOM_COLORS.White
+                      : MA_REUSSITE_CUSTOM_COLORS.Black
+                  }
+                />
+              }
+              onPress={() => navigation.navigate("Groups")}
+            />
+          ) : null}
           <Image
             key={isDarkMode ? "dark" : "light"}
             size="sm"
             w={"70%"}
-            ml={2}
+            ml={displayGoBackButton ? 6 : 2}
             source={
               isDarkMode
                 ? require("../../assets/images/ma_reussite_login_screen.png")

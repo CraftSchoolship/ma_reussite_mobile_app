@@ -22,7 +22,7 @@ export const TabNavigator = () => {
     const fetchConnectedUser = async () => {
       try {
         const storedUser = await getObject("connectedUser");
-        console.log("storedUser...", storedUser);
+        // console.log("storedUser...", storedUser);
 
         setConnectedUser(storedUser);
       } catch (error) {}

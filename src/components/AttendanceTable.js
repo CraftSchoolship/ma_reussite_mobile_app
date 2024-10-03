@@ -96,7 +96,12 @@ const renderItem = ({ item, index, isDarkMode }) => (
 
 const AttendanceTable = ({ isDarkMode }) => {
   return (
-    <Box padding={4}>
+    <Box
+      padding={4}
+      key={isDarkMode ? "dark" : "light"}
+      bg={isDarkMode && MA_REUSSITE_CUSTOM_COLORS.Black}
+      minH={"full"}
+    >
       <HStack
         borderWidth={1}
         // borderBottomWidth={2}

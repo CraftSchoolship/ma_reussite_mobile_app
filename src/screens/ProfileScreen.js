@@ -64,15 +64,12 @@ const ProfileScreen = () => {
     fetchUser();
   }, []);
 
-  // Fonction pour mettre à jour la photo de profil dans Odoo
   const updateUserProfileImage = async (imageUri) => {
     try {
-      // Lire l'image et la convertir en base64
       const imageBase64 = await FileSystem.readAsStringAsync(imageUri, {
         encoding: FileSystem.EncodingType.Base64,
       });
 
-      // Mettre à jour l'utilisateur dans Odoo
       const response = await updateRecord(
         connectedUser.uid,
         connectedUser.password,
@@ -94,7 +91,7 @@ const ProfileScreen = () => {
               status={"success"}
               isClosable={true}
               variant={"left-accent"}
-              duration={50000} // Durée en millisecondes
+              duration={50000} 
             />
           ),
         });

@@ -21,8 +21,6 @@ const BackgroundWrapper = ({
       )}
       {isLoginScreen ? null : (
         <HomeScreenBanner
-          listOfChildren={listOfChildren}
-          selectedChild={selectedChild}
           navigation={navigation}
         />
       )}
