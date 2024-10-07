@@ -83,6 +83,11 @@ const SessionsScreen = ({ navigation }) => {
                 alignItems="center"
                 w={"10%"}
                 h={12}
+                bg={
+                  isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.Black
+                    : MA_REUSSITE_CUSTOM_COLORS.White
+                }
               >
                 {visibleTab === "first" && (
                   <IconButton

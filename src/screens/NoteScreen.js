@@ -117,7 +117,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { Box, Center, Image } from "native-base";
 import React from "react";
-import { BackgroundWrapper } from "../../components";
+import { BackgroundWrapper } from "../components";
 
 const NoteScreen = () => {
   const navigation = useNavigation();
@@ -137,7 +137,7 @@ const NoteScreen = () => {
             minH={"70%"}
             p={2}
             // m={"auto"}
-            source={require("../../../assets/images/coming_soon.png")}
+            source={require("../../assets/images/coming_soon.png")}
             alt="Alternate Text"
           />
         </Center>

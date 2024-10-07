@@ -10,28 +10,23 @@ import {
   VStack,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import { jsonrpcRequest } from "../../api/apiClient";
-import config from "../../api/config";
-import { BackgroundWrapper, CircularProgress } from "../../components";
+import { getObject, jsonrpcRequest } from "../api/apiClient";
+import config from "../api/config";
+import { BackgroundWrapper, CircularProgress } from "../components";
+import { useThemeContext } from "../hooks/ThemeContext";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const GroupScreen = ({ navigation }) => {
   const route = useRoute();
   const [groups, setGroups] = useState([]);
-  const [uid, setUid] = useState(null);
-  const [self, setSelfId] = useState(null);
-  const [password, setPassword] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { isDarkMode } = useThemeContext();
+  const [connectedUser, setConnectedUser] = useState(null);
 
   useEffect(() => {
-    // const connectedUser = route?.params;
-    // const connectedUser = ;
     const fetchUser = async () => {
       const user = await getObject("connectedUser");
-      // setConnectedUser(user);
-      const { uid, email, password, self } = user;
-      setUid(uid);
-      setSelfId(self[0]);
-      setPassword(password);
+      setConnectedUser(user);
       setLoading(false);
     };
     fetchUser();
@@ -41,10 +36,12 @@ const GroupScreen = ({ navigation }) => {
     const fetchGroups = async () => {
       try {
         const groupsData = await await jsonrpcRequest(
-          uid,
-          password,
-          config.model.groups
+          connectedUser.uid,
+          connectedUser.password,
+          config.model.groups,
+          []
         );
+
         setGroups(groupsData);
       } catch (error) {
         console.error("Error fetching groups:", error);
@@ -53,17 +50,19 @@ const GroupScreen = ({ navigation }) => {
       }
     };
 
-    if (uid && password && self) {
-      fetchGroups();
-    }
-  }, [uid, self, password]);
+    if (connectedUser?.role) fetchGroups();
+  }, [connectedUser]);
 
   return (
     <Box flex={1} bg={"white"}>
       <BackgroundWrapper navigation={navigation}>
         <Box pt={4} w={"100%"}>
           <Text
-            color={"black"}
+            color={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.White
+                : MA_REUSSITE_CUSTOM_COLORS.Black
+            }
             textAlign={"center"}
             fontWeight="bold"
             fontSize="lg"
@@ -83,19 +82,18 @@ const GroupScreen = ({ navigation }) => {
             contentContainerStyle={{ paddingBottom: 80 }}
           >
             <VStack w={"100%"} mb={"20%"}>
-              {groups.length > 0 ? (
-                groups.map((group, index) => (
+              {groups?.length > 0 ? (
+                groups?.map((group, index) => (
                   <Pressable
                     shadow={"9"}
                     key={index}
-                    // onPress={() => {
-                    //   navigation.navigate("Sessions", {
-                    //     groupName: group.name,
-                    //   });
-                    // }}
+                    onPress={() => {
+                      navigation.navigate("Session", {
+                        groupName: group.name,
+                      });
+                    }}
                   >
                     <Box
-                      bg="white"
                       p={4}
                       mx={2}
                       my={2}
@@ -103,11 +101,27 @@ const GroupScreen = ({ navigation }) => {
                       shadow={2}
                       justifyContent="center"
                       height="100"
+                      bg={
+                        isDarkMode
+                          ? MA_REUSSITE_CUSTOM_COLORS.Black
+                          : MA_REUSSITE_CUSTOM_COLORS.White
+                      }
                     >
                       <HStack alignItems="center">
-                        <CircularProgress progress={group.progress} />
+                        <CircularProgress
+                          isDarkMode={isDarkMode}
+                          progress={group.progress}
+                        />
                         <Box flex={1} mr={5} alignItems="center">
-                          <Text color={"black"} fontWeight="bold" fontSize="lg">
+                          <Text
+                            color={
+                              isDarkMode
+                                ? MA_REUSSITE_CUSTOM_COLORS.White
+                                : MA_REUSSITE_CUSTOM_COLORS.Black
+                            }
+                            fontWeight="bold"
+                            fontSize="lg"
+                          >
                             {group.name}
                           </Text>
                         </Box>
@@ -119,7 +133,11 @@ const GroupScreen = ({ navigation }) => {
                 <Box>
                   <Text
                     mt={"30%"}
-                    color={"black"}
+                    color={
+                      isDarkMode
+                        ? MA_REUSSITE_CUSTOM_COLORS.White
+                        : MA_REUSSITE_CUSTOM_COLORS.Black
+                    }
                     textAlign={"center"}
                     fontSize={"2xl"}
                     fontWeight={"bold"}
@@ -162,7 +180,7 @@ export default GroupScreen;
 //             minH={"70%"}
 //             p={2}
 //             // m={"auto"}
-//             source={require("../../../assets/images/coming_soon.png")}
+//             source={require("../../assets/images/coming_soon.png")}
 //             alt="Alternate Text"
 //           />
 //         </Center>

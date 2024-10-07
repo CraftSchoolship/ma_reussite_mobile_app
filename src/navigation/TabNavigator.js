@@ -30,29 +30,31 @@ export const TabNavigator = () => {
     if (!connectedUser) fetchConnectedUser();
   }, [connectedUser]);
 
-  const getRoleSpecificTabs = () => {
+  const getPaymentTab = () => {
+    switch (connectedUser?.role) {
+      case "student":
+      case "parent":
+      case "teacher":
+        return (
+          <Tab.Screen
+            name="Payment"
+            component={PaymentScreen}
+            options={{ tabBarShowLabel: false }}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  const getNoteTab = () => {
     switch (connectedUser?.role) {
       case "student":
       case "parent":
         return (
-          <>
-            <Tab.Screen
-              name="Activities"
-              component={ActivityScreen}
-              options={{ tabBarShowLabel: false }}
-            />
-            <Tab.Screen
-              name="Notes"
-              component={NoteScreen}
-              options={{ tabBarShowLabel: false }}
-            />
-          </>
-        );
-      case "teacher":
-        return (
           <Tab.Screen
-            name="Activities"
-            component={ActivityScreen}
+            name="Notes"
+            component={NoteScreen}
             options={{ tabBarShowLabel: false }}
           />
         );
@@ -102,17 +104,18 @@ export const TabNavigator = () => {
         component={HomeScreen}
         options={{ tabBarShowLabel: false }}
       />
-      <Tab.Screen
-        name="Payment"
-        component={PaymentScreen}
-        options={{ tabBarShowLabel: false }}
-      />
+      {getPaymentTab()}
       <Tab.Screen
         name="Groups"
         component={GroupScreen}
         options={{ tabBarShowLabel: false }}
       />
-      {getRoleSpecificTabs()}
+      {getNoteTab()}
+      <Tab.Screen
+        name="Activities"
+        component={ActivityScreen}
+        options={{ tabBarShowLabel: false }}
+      />
     </Tab.Navigator>
   );
 };

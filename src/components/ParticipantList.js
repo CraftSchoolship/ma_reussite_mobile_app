@@ -6,7 +6,7 @@ import {
   HStack,
   Icon,
   Pressable,
-  Text
+  Text,
 } from "native-base";
 import React from "react";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
@@ -78,12 +78,9 @@ const ParticipantList = ({ isDarkMode }) => {
   return (
     <Box
       minH={"full"}
-      bg={
-        isDarkMode
-          ? MA_REUSSITE_CUSTOM_COLORS.Black
-          : MA_REUSSITE_CUSTOM_COLORS.White
-      }
-      pt={6}
+      bg={isDarkMode && MA_REUSSITE_CUSTOM_COLORS.Black}
+      mt={6}
+      flex={0.9}
     >
       <FlatList
         data={participants}
@@ -94,4 +91,4 @@ const ParticipantList = ({ isDarkMode }) => {
   );
 };
 
-export default ParticipantList
+export default ParticipantList;

@@ -273,7 +273,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                         }
                         fontSize={"md"}
                       >
-                        {child.contact_id[1]}
+                        {child.self[1]}
                       </Text>
                     </HStack>
                     {child.id === selectedChild?.id ? (

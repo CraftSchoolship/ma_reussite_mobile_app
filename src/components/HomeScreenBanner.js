@@ -21,19 +21,11 @@ import { useThemeContext } from "../hooks/ThemeContext";
 const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
   const route = useRoute();
   const navigation = useNavigation();
-  const [connectedUser, setConnectedUser] = useState({
-    sessionId: "",
-    email: "",
-    password: "",
-    userid: "",
-    role: "",
-    profileImage: null,
-  });
+  const [connectedUser, setConnectedUser] = useState({});
   const [loading, setLoading] = useState(true);
   const [account, setAccount] = useState();
   const { selectedChild, setSelectedChild } = useAppContext();
   const { isDarkMode } = useThemeContext();
-  // const [imgBanner, setImgBanner] = useState("");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -49,10 +41,10 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
   }, [connectedUser]);
 
   useEffect(() => {
-    if (connectedUser?.role === "parent" && selectedChild?.contact_id) {
+    if (connectedUser?.role === "parent" && selectedChild?.self) {
       setAccount(
         <Text color={"white"} fontWeight={"medium"}>
-          {selectedChild?.contact_id[1]}
+          {selectedChild?.self[1]}
         </Text>
       );
     }
@@ -93,15 +85,7 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
             }
             alt="Alternate Text"
           />
-          <Pressable
-            m={"auto"}
-            onPress={
-              () => navigation.openDrawer && navigation.openDrawer()
-              // navigation.openDrawer
-              //   ? navigation.openDrawer()
-              //   : navigation.navigate("Profil")
-            }
-          >
+          <Pressable m={"auto"} onPress={() => navigation.openDrawer()}>
             {loading ? (
               <Avatar size="md" source={{ uri: null }} />
             ) : (
@@ -131,16 +115,13 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
                   _pressed={{
                     bg: "primary.600:alpha.20",
                   }}
-                  onPress={
-                    () => navigation.openDrawer && navigation.openDrawer()
-                    // : navigation.navigate("Profil")
-                  }
+                  onPress={() => navigation.openDrawer()}
                 />
               </Avatar>
             )}
           </Pressable>
         </HStack>
-        {connectedUser?.role === "parent" && selectedChild?.contact_id && (
+        {connectedUser?.role === "parent" && selectedChild?.self && (
           <Box
             alignSelf={"baseline"}
             ml={8}

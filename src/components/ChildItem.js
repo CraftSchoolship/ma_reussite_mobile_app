@@ -52,7 +52,7 @@ export const ChildItem = (child, index) => (
           />
         </Avatar>
         <Text color={"black"} fontWeight={"bold"} fontSize={"lg"}>
-          {child.contact_id[1]}
+          {child.self[1]}
         </Text>
       </HStack>
       {child.id === selectedChild?.id ? (

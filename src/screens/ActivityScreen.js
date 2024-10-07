@@ -1,135 +1,67 @@
 // import * as FileSystem from "expo-file-system";
-// import { MaterialIcons } from "@expo/vector-icons";
 // import { useNavigation, useRoute } from "@react-navigation/native";
 // import {
-//   Actionsheet,
 //   Box,
-//   Center,
-//   HStack,
-//   Icon,
-//   IconButton,
-//   Menu,
-//   Pressable,
-//   ScrollView,
-//   Spinner,
 //   Text,
+//   Image,
+//   ScrollView,
+//   Pressable,
+//   HStack,
 //   VStack,
 //   useDisclose,
+//   Actionsheet,
 // } from "native-base";
 // import React, { useEffect, useState } from "react";
 // import { BackgroundWrapper } from "../../components";
 // import config from "../../api/config";
-// import { getObject, jsonrpcRequest } from "../../api/apiClient";
-// import { useAppContext } from "../../hooks/AppProvider";
+// import { jsonrpcRequest } from "../../api/apiClient";
 
 // const ActivityScreen = () => {
 //   const route = useRoute();
 //   const navigation = useNavigation();
-//   const { isOpen, onOpen, onClose } = useDisclose();
+//   const [uid, setUid] = useState(null);
+//   const [password, setPassword] = useState(null);
+//   const [self, setSelfId] = useState(null);
 //   const [activities, setActivities] = useState([]);
-//   const [loading, setLoading] = useState(true);
+//   const { isOpen, onOpen, onClose } = useDisclose();
 //   const [selectedActivity, setSelectedActivity] = useState();
-//   const [connectedUser, setConnectedUser] = useState({
-//     uid: "",
-//     email: "",
-//     password: "",
-//     self: "",
-//     role: "",
-//   });
-
-//   const { selectedChild, setSelectedChild } = useAppContext();
 
 //   useEffect(() => {
-//     const getConnectedUser = async () => {
-//       if (!connectedUser) return;
-//       try {
-//         const connectedUser = await getObject("connectedUser");
-//         setConnectedUser(connectedUser);
-//         if (connectedUser) {
-//           if (!selectedChild) return;
-
-//           const selectedChild = await getObject("selectedChild");
-//           setSelectedChild(selectedChild);
-//         }
-//       } catch (error) {
-//         console.error("Error while getting connectedUser:", error);
-//       }
-//     };
-//     getConnectedUser();
-//   }, [route, setSelectedChild]);
+//     const connectedUser = route?.params;
+//     const { uid, email, password, self } = connectedUser;
+//     setUid(uid);
+//     setPassword(password);
+//     setSelfId(self[1]);
+//   }, [route]);
 
 //   useEffect(() => {
 //     const fetchActivities = async () => {
 //       try {
-//         if (
-//           !connectedUser ||
-//           !connectedUser.uid ||
-//           !connectedUser.password ||
-//           !connectedUser.self
-//         ) {
-//           return;
-//         }
-
-//         let domain = [];
-//         switch (connectedUser.role) {
-//           case "parent":
-//             if (!selectedChild?.partner_id) return;
-//             domain = [["student_id", "=", selectedChild.partner_id[1]]];
-//             break;
-//           case "student":
-//             domain = [["student_id", "=", connectedUser.self[1]]];
-//             break;
-//           default:
-//             console.error("Unsupported role:", connectedUser.role);
-//             return;
-//         }
-
 //         const activitiesData = await jsonrpcRequest(
-//           connectedUser?.uid,
-//           connectedUser?.password,
+//           uid,
+//           config.password,
 //           config.model.opActivity,
-//           [domain],
+//           [[["student_id", "=", self]]],
 //           ["student_id", "type_id", "date", "description"]
 //         );
 
-//         if (activitiesData?.length > 0) {
+//         if (activitiesData.length > 0) {
 //           setActivities(activitiesData);
 //         }
 //       } catch (error) {
-//         console.error("Error fetching activities:", error);
-//       } finally {
-//         setLoading(false);
+//         console.error("Error fetching profile image:", error);
 //       }
 //     };
 
-//     if (connectedUser && selectedChild) fetchActivities();
-//   }, [connectedUser, selectedChild]);
+//     if (uid && password && self) {
+//       fetchActivities();
+//     }
+//   }, [uid, password, self]);
 
 //   return (
 //     <Box flex={1} bg={"white"}>
 //       <BackgroundWrapper navigation={navigation}>
-//         <HStack
-//           justifyContent="space-between"
-//           alignItems="center"
-//           mt={4}
-//           mb={4}
-//           mx={"auto"}
-//           // w={"80%"}
-//         >
-//           <Text
-//             textAlign={"center"}
-//             color={"black"}
-//             fontSize="lg"
-//             fontWeight="bold"
-//           >
-//             Activités
-//           </Text>
-//         </HStack>
-//         {loading ? (
-//           <Center h={"70%"} w={"90%"} mx={"auto"}>
-//             <Spinner size="xl" />
-//           </Center>
-//         ) : (
+//         <Box>
 //           <ScrollView
 //             p={4}
 //             h={"100%"}
@@ -144,6 +76,7 @@
 //                   p={4}
 //                   my={0.5}
 //                   borderRadius={"md"}
+//                   // onPress={() => navigation.navigate("Sessions")}
 //                 >
 //                   <HStack justifyContent={"space-between"}>
 //                     <Text color={"black"} fontWeight={"bold"}>
@@ -187,7 +120,7 @@
 //               </Box>
 //             )}
 //           </ScrollView>
-//         )}
+//         </Box>
 
 //         <Actionsheet
 //           isOpen={isOpen}
@@ -232,7 +165,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { Box, Center, Image } from "native-base";
 import React from "react";
-import { BackgroundWrapper } from "../../components";
+import { BackgroundWrapper } from "../components";
 
 const ActivityScreen = () => {
   const navigation = useNavigation();
@@ -240,19 +173,14 @@ const ActivityScreen = () => {
   return (
     <Box flex={1} bg="white">
       <BackgroundWrapper navigation={navigation}>
-        <Center
-          minH={"80%"}
-          //  bgColor={"amber.400"}
-        >
+        <Center minH={"80%"}>
           <Image
-            // bgColor={"blue.300"}
             size="sm"
             w={"90%"}
             resizeMode="contain"
             minH={"70%"}
             p={2}
-            // m={"auto"}
-            source={require("../../../assets/images/coming_soon.png")}
+            source={require("../../assets/images/coming_soon.png")}
             alt="Alternate Text"
           />
         </Center>

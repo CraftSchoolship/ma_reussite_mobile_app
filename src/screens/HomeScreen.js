@@ -27,6 +27,7 @@ const HomeScreen = () => {
   const { isDarkMode } = useThemeContext();
   const [connectedUser, setConnectedUser] = useState(null);
   const [childrenList, setChildrenList] = useState([]);
+  const [selectedDay, setSelectedDay] = useState();
   const { selectedChild, setSelectedChild } = useAppContext();
 
   useEffect(() => {

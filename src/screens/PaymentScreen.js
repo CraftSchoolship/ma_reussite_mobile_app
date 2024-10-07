@@ -1,14 +1,9 @@
-// import { MaterialIcons } from "@expo/vector-icons";
 // import { useNavigation, useRoute } from "@react-navigation/native";
 // import {
 //   Actionsheet,
 //   Box,
 //   Center,
 //   HStack,
-//   Icon,
-//   IconButton,
-//   Menu,
-//   Pressable,
 //   ScrollView,
 //   Spinner,
 //   Text,
@@ -23,45 +18,27 @@
 //   PaymentCard,
 //   PaymentCardPlus,
 // } from "../../components";
-// import { useAppContext } from "../../hooks/AppProvider";
 
 // const PaymentScreen = () => {
 //   const route = useRoute();
 //   const navigation = useNavigation();
 //   const { isOpen, onOpen, onClose } = useDisclose();
 //   const [sortOrder, setSortOrder] = useState("recent");
+//   const [uid, setUid] = useState(null);
+//   const [password, setPassword] = useState(null);
+//   const [self, setSelfId] = useState(null);
 //   const [payments, setPayments] = useState([]);
 //   const [loading, setLoading] = useState(true);
 //   const [paymentDetails, setPaymentDetails] = useState({});
-//   const [connectedUser, setConnectedUser] = useState({
-//     uid: "",
-//     email: "",
-//     password: "",
-//     partnerid: "",
-//     role: "",
-//   });
-//   const [childrenList, setChildrenList] = useState([]);
-//   const { selectedChild, setSelectedChild } = useAppContext();
 //   const [currencySybol, setCurrencySybol] = useState();
 
 //   useEffect(() => {
-//     const getConnectedUser = async () => {
-//       if (!connectedUser) return;
-//       try {
-//         const connectedUser = await getObject("connectedUser");
-//         setConnectedUser(connectedUser);
-//         if (connectedUser) {
-//           if (!selectedChild) return;
-
-//           const selectedChild = await getObject("selectedChild");
-//           setSelectedChild(selectedChild);
-//         }
-//       } catch (error) {
-//         console.error("Error while getting connectedUser:", error);
-//       }
-//     };
-//     getConnectedUser();
-//   }, [route, setSelectedChild]);
+//     const connectedUser = route?.params;
+//     const { uid, email, password, self } = connectedUser;
+//     setUid(uid);
+//     setPassword(password);
+//     setSelfId(self[0]);
+//   }, [route]);
 
 //   const handlePress = (paymentDetails) => {
 //     setPaymentDetails(paymentDetails);
@@ -71,40 +48,19 @@
 //   useEffect(() => {
 //     const fetchPayment = async () => {
 //       try {
-//         if (
-//           !connectedUser ||
-//           !connectedUser.uid ||
-//           !connectedUser.password ||
-//           !connectedUser.self
-//         ) {
-//           return;
-//         }
-//         let domain = [];
-//         switch (connectedUser?.role) {
-//           case "parent":
-//             if (!selectedChild?.partner_id) return;
-//             domain = [["partner_id", "=", selectedChild?.partner_id[0]]];
-//             break;
-//           case "student":
-//             domain = [["partner_id", "=", connectedUser?.self[0]]];
-//             break;
-//           default:
-//             console.error("Unsupported role:", connectedUser?.role);
-//             return;
-//         }
 //         const paymentState = await jsonrpcRequest(
-//           connectedUser?.uid,
-//           connectedUser?.password,
+//           uid,
+//           password,
 //           config.model.accountMove,
-//           [domain],
+//           [[["partner_id", "=", self]]],
 //           ["name", "payment_state"]
 //         );
 
 //         const paymentDetails = await jsonrpcRequest(
-//           connectedUser?.uid,
-//           connectedUser?.password,
+//           uid,
+//           password,
 //           config.model.accountMoveLine,
-//           [domain],
+//           [[["partner_id", "=", self]]],
 //           [
 //             "date",
 //             "display_name",
@@ -138,6 +94,7 @@
 //             });
 //           }
 //         });
+
 //         setPayments(paymentTab);
 //       } catch (error) {
 //         console.error("Error fetching payments:", error);
@@ -146,8 +103,10 @@
 //       }
 //     };
 
-//     if (connectedUser && selectedChild) fetchPayment();
-//   }, [connectedUser, selectedChild]);
+//     if (uid && password && self) {
+//       fetchPayment();
+//     }
+//   }, [uid, password, self]);
 
 //   return (
 //     <Box flex={1} bg="white">
@@ -288,7 +247,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { Box, Center, Image } from "native-base";
 import React from "react";
-import { BackgroundWrapper } from "../../components";
+import { BackgroundWrapper } from "../components";
 
 const PaymentScreen = () => {
   const navigation = useNavigation();
@@ -303,12 +262,12 @@ const PaymentScreen = () => {
           <Image
             // bgColor={"blue.300"}
             size="sm"
+            minH={"70%"}
             w={"90%"}
             resizeMode="contain"
-            minH={"70%"}
             p={2}
             // m={"auto"}
-            source={require("../../../assets/images/coming_soon.png")}
+            source={require("../../assets/images/coming_soon.png")}
             alt="Alternate Text"
           />
         </Center>
