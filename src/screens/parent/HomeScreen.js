@@ -16,7 +16,7 @@ import MA_REUSSITE_CUSTOM_COLORS from "../../themes/variables";
 import CalendarLocalConfig from "../../utils/CalendarLocalConfig";
 import { formatOdooEvents } from "../../utils/MarkedDatesFormatage";
 import { useAppContext } from "../../hooks/AppProvider";
-import { browse, read } from "../../../http/http";
+import { browse } from "../../../http/http";
 
 CalendarLocalConfig;
 

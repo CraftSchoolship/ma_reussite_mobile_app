@@ -19,7 +19,7 @@ const App = () => {
   const handleWebViewMessage = (event) => {
     const policyVersion = event.nativeEvent.data;
     console.log(policyVersion);
-    
+
     setCurrentPolicyVersion(policyVersion);
   };
 
@@ -34,7 +34,7 @@ const App = () => {
           onMessage={handleWebViewMessage}
         />
         <Button
-          w={"100%"}
+          w={"70%"}
           mx={"auto"}
           mb={"2%"}
           onPress={onAccept}
@@ -47,7 +47,7 @@ const App = () => {
   };
 
   console.log("Loading fonts");
-  
+
   const fontsLoaded = useFonts({
     "Lato-Regular": require("./assets/fonts/Lato-Regular.ttf"),
     "Lato-Bold": require("./assets/fonts/Lato-Bold.ttf"),
@@ -82,7 +82,7 @@ const App = () => {
 
   if (!policyAccepted) {
     console.log("");
-    
+
     return <PrivacyPolicyScreen onAccept={handleAccept} />;
   }
 

@@ -53,7 +53,7 @@ const LoginScreen = () => {
           "craft_role",
           "craft_parent_id",
           "craft_student_id",
-          "image_1920",
+          "image_256",
         ]
       );
 
@@ -62,18 +62,34 @@ const LoginScreen = () => {
         return;
       }
 
-      let profileImage = user[0].image_1920;
+      let profileImage = user[0].image_256;
 
-      if (profileImage.startsWith("iVBORw0K"))
-        profileImage = `data:image/png;base64,${profileImage}`;
-      else if (profileImage.startsWith("/9j/"))
-        profileImage = `data:image/jpeg;base64,${profileImage}`;
-      else if (
-        profileImage.startsWith("PHN2Zy") ||
-        profileImage.startsWith("PD94bWwg")
-      )
-        profileImage = `data:image/svg+xml;base64,${profileImage}`;
-      else console.log("Unknow Image type");
+      if (profileImage && typeof profileImage === "string") {
+        if (profileImage.startsWith("iVBORw0K"))
+          profileImage = `data:image/png;base64,${profileImage}`;
+        else if (profileImage.startsWith("/9j/"))
+          profileImage = `data:image/jpeg;base64,${profileImage}`;
+        else if (
+          profileImage.startsWith("PHN2Zy") ||
+          profileImage.startsWith("PD94bWwg")
+        )
+          profileImage = `data:image/svg+xml;base64,${profileImage}`;
+        else console.log("Unknown image type");
+      } else {
+        console.log("No image available or image is not in the correct format");
+        // You can assign a default image or handle it as needed
+        profileImage = "default-image-url-or-placeholder";
+      }
+      // if (profileImage.startsWith("iVBORw0K"))
+      //   profileImage = `data:image/png;base64,${profileImage}`;
+      // else if (profileImage.startsWith("/9j/"))
+      //   profileImage = `data:image/jpeg;base64,${profileImage}`;
+      // else if (
+      //   profileImage.startsWith("PHN2Zy") ||
+      //   profileImage.startsWith("PD94bWwg")
+      // )
+      //   profileImage = `data:image/svg+xml;base64,${profileImage}`;
+      // else console.log("Unknow Image type");
 
       let connectedUser = {
         ...user[0],
