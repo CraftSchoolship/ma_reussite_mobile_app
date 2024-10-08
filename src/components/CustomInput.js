@@ -38,8 +38,8 @@ const CustomInput = ({
             <Pressable
               onPress={() => setShowPassword(!showPassword)}
               style={{
-                width: 50,
-                height: 50,
+                width: 48,
+                height: 48,
                 justifyContent: "center",
                 alignItems: "center",
               }}

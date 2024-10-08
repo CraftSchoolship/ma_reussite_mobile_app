@@ -117,6 +117,7 @@ const colors = {
     800: "#4d1f00",
     900: "#1f0800",
   },
+
   // Add more color categories as needed
 };
 

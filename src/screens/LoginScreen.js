@@ -176,7 +176,7 @@ const LoginScreen = () => {
   return (
     <>
       <View style={{ flex: 1, backgroundColor: "white" }}>
-        <Box style={{ flex: 1, padding: 58, marginTop: 35 }}>
+        <Box style={{ flex: 1, padding: 24, marginTop: 35 }}>
           <Center>
             <Text color={"black"} fontSize="2xl" bold>
               S'identifier
@@ -188,7 +188,7 @@ const LoginScreen = () => {
             onSubmit={handleLogin}
           >
             {({ handleSubmit, isValid }) => (
-              <VStack space={10} marginTop={10}>
+              <VStack space={4} marginTop={10}>
                 <CustomInput
                   label="Email"
                   name="email"
@@ -206,11 +206,9 @@ const LoginScreen = () => {
                   inputRef={input2Ref}
                   onSubmitEditing={handleSubmit}
                 />
-                {error ? (
-                  <Text color={"danger.500"} textAlign={"center"} mt={3}>
-                    {error}
-                  </Text>
-                ) : null}
+                <Text color={"danger.500"} textAlign={"center"} mt={3}>
+                  {error}
+                </Text>
                 <CustomButton
                   onPress={handleSubmit}
                   title="Se connecter"

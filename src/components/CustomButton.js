@@ -6,7 +6,7 @@ const CustomButton = ({ onPress, title, isDisabled, loading = true }) => {
     <Button
       onPress={onPress}
       isDisabled={isDisabled}
-      style={{ height: 50, borderRadius: 12 }}
+      style={{ height: 48, borderRadius: 12 }}
     >
       {loading ? (
         <Text>{title}</Text>
