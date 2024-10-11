@@ -7,9 +7,10 @@ import {
   VStack,
   useDisclose,
 } from "native-base";
-import { default as React, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
 import { browse } from "../../http/http";
+import { getObject } from "../api/apiClient";
 import { CalendarCard } from "../components";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
@@ -22,27 +23,31 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const { isOpen, onOpen, onClose } = useDisclose();
   const route = useRoute();
-  const [sessionId, setSessionId] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [userid, setUserid] = useState(null);
+  const [user_id, setUserId] = useState(null);
+  const [partner_id, setPartnerId] = useState(null);
   const [events, setEvents] = useState(null);
   const [markedDate, setMarkedDate] = useState({});
   const [todaysEvents, setTodaysEvents] = useState([]);
   const [today, setToday] = useState();
   const [selectedDay, setSelectedDay] = useState("");
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
+  const [eventsByMonth, setEventsByMonth] = useState({});
 
   useEffect(() => {
-    const connectedUser = route?.params;
-    const { sessionId, email, password, userid } = connectedUser;
-    setSessionId(sessionId);
-    setPassword(password);
-    setUserid(userid[0]);
-  }, [route]);
+    const fetchConnectedUser = async () => {
+      try {
+        const connectedUser = await getObject("connectedUser");
+        setUserId(connectedUser.id);
+        setPartnerId(connectedUser.self[0]);
+      } catch (error) {
+        console.error("Error fetching connected user:", error);
+      }
+    };
+
+    if (!user_id) fetchConnectedUser();
+  }, [user_id]);
 
   useEffect(() => {
-    console.log("connectedUser...", userid);
-
     const fetchEvents = async () => {
       try {
         const eventsData = await browse(
@@ -62,15 +67,28 @@ const HomeScreen = () => {
         console.error("Error fetching events:", error);
       }
     };
-    if (sessionId && password) {
+
+    if (user_id) {
       fetchEvents();
     }
-  }, [sessionId, password, userid]);
+  }, [partner_id]);
 
   useEffect(() => {
     if (events) {
       const formatedOdooEvents = formatOdooEvents(events);
       setMarkedDate(formatedOdooEvents);
+
+      // Organize events by month
+      const eventsByMonth = {};
+      for (const [date, event] of Object.entries(formatedOdooEvents)) {
+        const [year, month] = date.split("-");
+        const monthKey = `${year}-${month}`;
+        if (!eventsByMonth[monthKey]) {
+          eventsByMonth[monthKey] = [];
+        }
+        eventsByMonth[monthKey].push(...event.dots);
+      }
+      setEventsByMonth(eventsByMonth);
     }
   }, [events]);
 
@@ -83,11 +101,11 @@ const HomeScreen = () => {
 
     const currentDay = `${year}-${month}-${day}`;
     setToday(`${dayOfWeek} ${day}`);
-    setTodaysEvents(markedDate[currentDay]?.dots);
+    setTodaysEvents(markedDate[currentDay]?.dots || []);
   }, [markedDate]);
 
   return (
-    <Box>
+    <Box flex={1} bg={"white"}>
       <BackgroundWrapper navigation={navigation}>
         <Box
           mt={4}
@@ -106,7 +124,7 @@ const HomeScreen = () => {
                 `${CalendarLocalConfig.dayNamesShort[currentDaySelected]} ${day.day}`
               );
               if (markedDate[day.dateString] !== undefined) {
-                setSelectedDayEvents(markedDate[day.dateString].dots);
+                setSelectedDayEvents(markedDate[day.dateString].dots || []);
               }
               onOpen();
             }}
@@ -124,22 +142,30 @@ const HomeScreen = () => {
             }}
           />
         </Box>
-        <ScrollView flexGrow={1} h={"100%"} w={"90%"} mx={"auto"} mb={"10%"}>
-          <VStack w={"full"} mb={"20%"} space={4} mt={4}>
-            {todaysEvents &&
-              todaysEvents.map((eventMarked, index) => (
-                <CalendarCard
-                  key={index}
-                  tag={eventMarked.tag}
-                  date={today}
-                  time={eventMarked.time}
-                  subject={eventMarked.subject}
-                  teacher={eventMarked.teacher}
-                  classroom={eventMarked.classroom}
-                />
-              ))}
-          </VStack>
-        </ScrollView>
+
+        <Box flex={1} p={4}>
+          <ScrollView flex={1} contentContainerStyle={{ paddingBottom: 180 }}>
+            <VStack w={"full"} space={4}>
+              {Object.entries(eventsByMonth).map(
+                ([monthKey, events], index) => (
+                  <Box key={index} mb={6}>
+                    {events.map((event, eventIndex) => (
+                      <CalendarCard
+                        key={eventIndex}
+                        tag={event.tag}
+                        date={event.date}
+                        time={event.time}
+                        subject={event.subject}
+                        teacher={event.teacher}
+                        classroom={event.classroom}
+                      />
+                    ))}
+                  </Box>
+                )
+              )}
+            </VStack>
+          </ScrollView>
+        </Box>
 
         <Actionsheet
           isOpen={isOpen}
@@ -163,7 +189,6 @@ const HomeScreen = () => {
               w="100%"
               flexGrow={1}
               mx={"auto"}
-              // mb={"5%"}
               contentContainerStyle={{ paddingBottom: 40 }}
             >
               <VStack space={4} px={4}>
