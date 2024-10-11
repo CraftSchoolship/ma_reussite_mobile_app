@@ -4,47 +4,43 @@ import HomeScreenBanner from "./HomeScreenBanner";
 import { StatusBar, View } from "native-base";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { useThemeContext } from "../hooks/ThemeContext";
 
 const BackgroundWrapper = ({
   children,
   selectedChild,
   navigation,
   listOfChildren,
-  // role,
+  isLoginScreen = false,
 }) => {
-  const insets = useSafeAreaInsets();
+  const { isDarkMode } = useThemeContext();
   return (
-    <>
-      <View
-        style={{
-          paddingTop: insets.top,
-          // backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-        }}
-      >
+    <SafeAreaView>
+      {isDarkMode ? (
+        <StatusBar barStyle={"light-content"} backgroundColor={"black"} />
+      ) : (
+        <StatusBar barStyle={"dark-content"} />
+      )}
+      {isLoginScreen ? null : (
         <HomeScreenBanner
-          // role={role}
-          listOfChildren={listOfChildren}
-          selectedChild={selectedChild}
           navigation={navigation}
         />
-        <View>
-          <ImageBackground
-            style={styles.background}
-            source={require("../../assets/images/ma_reussite_background.png")}
-          >
-            {children}
-          </ImageBackground>
-        </View>
-      </View>
-    </>
+      )}
+      <ImageBackground
+        style={{
+          minHeight: "100%",
+        }}
+        resizeMode="cover"
+        source={
+          isDarkMode
+            ? require("../../assets/images/ma_reussite_background_dark.png")
+            : require("../../assets/images/ma_reussite_background_1.png")
+        }
+      >
+        {children}
+      </ImageBackground>
+    </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  background: {
-    resizeMode: "contain",
-    minHeight: "100%",
-  },
-});
 
 export default BackgroundWrapper;

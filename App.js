@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Button, NativeBaseProvider } from "native-base";
-import { WebView } from "react-native-webview";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";
+import { Button, NativeBaseProvider } from "native-base";
+import React, { useEffect, useState } from "react";
+import { WebView } from "react-native-webview";
+import AppWithTheme  from "./src/components/AppWithTheme";
+import MA_REUSSITE_CUSTOM_COLORS from "./src/themes/variables";
 import useFonts from "./src/hooks/useFonts";
 import { AppNavigator } from "./src/navigation/AppNavigator";
 import customTheme from "./src/themes/customTheme";
 import KeyboardDismissWrapper from "./src/hooks/useKeyboard";
 
 // import { SelectedChildProvider } from "./src/hooks/SelectedChildContext";
+import ThemeProvider from "./src/hooks/ThemeContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,7 +28,7 @@ const App = () => {
 
   const PrivacyPolicyScreen = ({ onAccept }) => {
     return (
-      <NativeBaseProvider isSSR theme={customTheme}>
+      <NativeBaseProvider>
         <WebView
           source={{
             uri: "https://ma-reussite-privacy.netlify.app",
@@ -34,11 +37,12 @@ const App = () => {
           onMessage={handleWebViewMessage}
         />
         <Button
-          w={"70%"}
-          mx={"auto"}
+          w={"100%"}
+          mx={"2%"}
           mb={"2%"}
           onPress={onAccept}
           style={{ height: 50 }}
+          bg={MA_REUSSITE_CUSTOM_COLORS.Primary}
         >
           J'accepte
         </Button>
@@ -87,13 +91,9 @@ const App = () => {
   }
 
   return (
-    <NativeBaseProvider isSSR theme={customTheme}>
-      {/* <SelectedChildProvider> */}
-      <KeyboardDismissWrapper>
-        <AppNavigator />
-      </KeyboardDismissWrapper>
-      {/* </SelectedChildProvider> */}
-    </NativeBaseProvider>
+    <ThemeProvider>
+      <AppWithTheme />
+    </ThemeProvider>
   );
 };
 

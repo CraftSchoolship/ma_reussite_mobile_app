@@ -9,14 +9,13 @@ import {
 } from "native-base";
 import { default as React, useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
-import { getObject } from "../../api/apiClient";
+import { getObject, jsonrpcRequest } from "../../api/apiClient";
+import config from "../../api/config";
 import { CalendarCard } from "../../components";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import MA_REUSSITE_CUSTOM_COLORS from "../../themes/variables";
 import CalendarLocalConfig from "../../utils/CalendarLocalConfig";
 import { formatOdooEvents } from "../../utils/MarkedDatesFormatage";
-import { useAppContext } from "../../hooks/AppProvider";
-import { browse } from "../../../http/http";
 
 CalendarLocalConfig;
 
@@ -24,75 +23,55 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const { isOpen, onOpen, onClose } = useDisclose();
   const route = useRoute();
-
+  const [sessionId, setSessionId] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [userid, setUserid] = useState(null);
   const [events, setEvents] = useState(null);
   const [markedDate, setMarkedDate] = useState({});
   const [todaysEvents, setTodaysEvents] = useState([]);
-  const [today, setToday] = useState("");
+  const [today, setToday] = useState();
   const [selectedDay, setSelectedDay] = useState("");
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
-  const [connectedUser, setConnectedUser] = useState({
-    user_id: "",
-    email: "",
-    partnerid: "",
-    role: "",
-  });
-  const [childrenList, setChildrenList] = useState([]);
-  const { selectedChild, setSelectedChild } = useAppContext();
 
   useEffect(() => {
-    const getConnectedUser = async () => {
-      try {
-        const connectedUser = await getObject("connectedUser");
-        if (connectedUser) {
-          setConnectedUser(connectedUser);
-          const childrenList = await getObject("children");
-          setChildrenList(childrenList);
-          const selectedChild = await getObject("selectedChild");
-          setSelectedChild(selectedChild);
-        }
-      } catch (error) {
-        console.error("Error while getting connectedUser:", error);
-      }
-    };
-    getConnectedUser();
-  }, [route, setSelectedChild]);
+    const connectedUser = route?.params;
+    const { sessionId, email, password, userid } = connectedUser;
+    setSessionId(sessionId);
+    setPassword(password);
+    setUserid(userid[0]);
+  }, [route]);
 
   useEffect(() => {
+    console.log("connectedUser...", userid);
+
     const fetchEvents = async () => {
       try {
-        if (!connectedUser || !connectedUser.user_id) {
-          return;
-        }
-        let domain = [];
-        switch (connectedUser?.role) {
-          case "parent":
-            if (!selectedChild?.contact_id) return;
-            domain = [["partner_ids", "=", selectedChild?.contact_id[0]]];
-            break;
-          case "student":
-            domain = [["partner_ids", "=", connectedUser?.partnerid[0]]];
-            break;
-          default:
-            console.error("Unsupported role:", connectedUser?.role);
-            return;
-        }
-        const eventsData = await browse(
-          connectedUser?.user_id,
-          connectedUser?.password,
-          "craft.session",
-          [domain],
-          ["classroom_id", "start", "stop", "subject_id", "teacher_id"]
+        const eventsData = await jsonrpcRequest(
+          sessionId,
+          password,
+          config.model.craftSession,
+          [[["partner_ids", "=", userid]]],
+          [
+            "classroom_id",
+            "recurrency",
+            "rrule",
+            "start",
+            "stop",
+            "subject_id",
+            "teacher_id",
+            "description",
+          ]
         );
-        console.log("eventsData", eventsData);
 
         setEvents(eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
     };
-    if (connectedUser && selectedChild) fetchEvents();
-  }, [connectedUser, selectedChild]);
+    if (sessionId && password) {
+      fetchEvents();
+    }
+  }, [sessionId, password, userid]);
 
   useEffect(() => {
     if (events) {
@@ -114,7 +93,7 @@ const HomeScreen = () => {
   }, [markedDate]);
 
   return (
-    <Box flex={1}>
+    <Box>
       <BackgroundWrapper navigation={navigation}>
         <Box
           mt={4}
@@ -190,6 +169,7 @@ const HomeScreen = () => {
               w="100%"
               flexGrow={1}
               mx={"auto"}
+              // mb={"5%"}
               contentContainerStyle={{ paddingBottom: 40 }}
             >
               <VStack space={4} px={4}>

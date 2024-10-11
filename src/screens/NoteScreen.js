@@ -8,9 +8,9 @@
 // const NoteScreen = () => {
 //   const route = useRoute();
 //   const navigation = useNavigation();
-//   const [sessionId, setSessionId] = useState(null);
+//   const [uid, setUid] = useState(null);
 //   const [password, setPassword] = useState(null);
-//   const [userid, setUserid] = useState(null);
+//   const [self, setSelfId] = useState(null);
 //   const [note, setNote] = useState();
 //   const [course, setCourse] = useState();
 //   const [institute, setInstitute] = useState();
@@ -18,25 +18,24 @@
 
 //   useEffect(() => {
 //     const connectedUser = route?.params;
-//     const { sessionId, email, password, userid } = connectedUser;
-//     setSessionId(sessionId);
+//     const { uid, email, password, self } = connectedUser;
+//     setUid(uid);
 //     setPassword(password);
-//     setUserid(userid[0]);
+//     setSelfId(self[0]);
 //   }, [route]);
 
 //   useEffect(() => {
 //     const fetchNote = async () => {
 //       try {
 //         const noteData = await jsonrpcRequest(
-//           sessionId,
+//           uid,
 //           config.password,
 //           config.model.craftStudent,
-//           // [[["partner_id", "=", userid]]],
+//           // [[["partner_id", "=", self]]],
 //           [],
 //           // ["prev_result", "prev_course_id", "prev_institute_id"]
 //           []
 //         );
-//         console.log("noteData...", noteData[0]);
 //         setNote(noteData[0].prev_result);
 //         setCourse(noteData[0].prev_course_id);
 //         setInstitute(noteData[0].prev_institute_id);
@@ -46,10 +45,10 @@
 //         setLoading(false);
 //       }
 //     };
-//     if (sessionId && password && userid) {
+//     if (uid && password && self) {
 //       fetchNote();
 //     }
-//   }, [sessionId, password, userid]);
+//   }, [uid, password, self]);
 
 //   return (
 //     <Box flex={1} bg={"white"}>
@@ -118,7 +117,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { Box, Center, Image } from "native-base";
 import React from "react";
-import { BackgroundWrapper } from "../../components";
+import { BackgroundWrapper } from "../components";
 
 const NoteScreen = () => {
   const navigation = useNavigation();
@@ -138,7 +137,7 @@ const NoteScreen = () => {
             minH={"70%"}
             p={2}
             // m={"auto"}
-            source={require("../../../assets/images/coming_soon.png")}
+            source={require("../../assets/images/coming_soon.png")}
             alt="Alternate Text"
           />
         </Center>

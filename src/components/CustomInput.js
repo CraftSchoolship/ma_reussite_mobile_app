@@ -2,6 +2,7 @@ import React from "react";
 import { Input, FormControl, Icon, Pressable, Text } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useField } from "formik";
+import { useThemeContext } from "../hooks/ThemeContext";
 
 const CustomInput = ({
   label,
@@ -16,21 +17,28 @@ const CustomInput = ({
   const [field, meta] = useField(name);
   const { value, onChange, onBlur } = field;
   const { error, touched } = meta;
+  const { isDarkMode } = useThemeContext();
 
   return (
-    <FormControl isInvalid={touched && !!error}>
-      <FormControl.Label>{label}</FormControl.Label>
+    <FormControl mt={"10%"} isInvalid={touched && !!error}>
+      <FormControl.Label
+        _text={{
+          color: isDarkMode ? "white" : "black",
+        }}
+      >
+        {label}
+      </FormControl.Label>
       <Input
         height={52}
         ref={inputRef}
         keyboardType={keyboardType}
         autoCapitalize="none"
         returnKeyType="next"
-        color={"black"}
+        color={isDarkMode ? "white" : "black"}
         value={value}
         onChangeText={onChange(name)}
+        borderColor={isDarkMode && "white"}
         onBlur={onBlur(name)}
-        _focus={{ backgroundColor: "transparent" }}
         onSubmitEditing={onSubmitEditing}
         type={secureTextEntry && !showPassword ? "password" : "text"}
         InputRightElement={

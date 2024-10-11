@@ -18,10 +18,11 @@ import {
   useToast,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import { Alert } from "react-native"; // Ajoute cette ligne pour utiliser Alert de React Native
+import { Alert } from "react-native";
 import { getObject, storeObject } from "../api/apiClient";
 import { update } from "../../http/http";
 import { ProfileUserEdit, ProfileUserInfo, ToastAlert } from "../components";
+import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const ProfileScreen = () => {
@@ -42,25 +43,23 @@ const ProfileScreen = () => {
   });
   const [loading, setLoading] = useState(true);
   const [isProfileEdit, setIsProfileEdit] = useState(false);
+  const { isDarkMode } = useThemeContext();
 
   useEffect(() => {
-    if (route?.params?.edit) setIsProfileEdit(true);
+    route?.params?.edit ? setIsProfileEdit(true) : setIsProfileEdit(false);
   }, [route]);
 
   useEffect(() => {
     const fetchUser = async () => {
       const user = await getObject("connectedUser");
-      console.log("User...", user.name);
       setConnectedUser(user);
       setLoading(false);
     };
     fetchUser();
   }, []);
 
-  // Fonction pour mettre à jour la photo de profil dans Odoo
   const updateUserProfileImage = async (imageUri) => {
     try {
-      // Lire l'image et la convertir en base64
       const imageBase64 = await FileSystem.readAsStringAsync(imageUri, {
         encoding: FileSystem.EncodingType.Base64,
       });
@@ -81,7 +80,7 @@ const ProfileScreen = () => {
               status={"success"}
               isClosable={true}
               variant={"left-accent"}
-              duration={50000} // Durée en millisecondes
+              duration={50000}
             />
           ),
         });
@@ -157,11 +156,11 @@ const ProfileScreen = () => {
   };
 
   return (
-    <Box flex={1} bg="white">
-      <Center mt={2}>
+    <Box flex={1} py={4}>
+      <Center my={2}>
         {loading ? (
           <Avatar
-            size="2xl"
+            size="xl"
             source={{ uri: "https://placehold.co/400x400.png" }}
           />
         ) : (
@@ -171,7 +170,11 @@ const ProfileScreen = () => {
             bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
           >
             <Avatar.Badge
-              bg="white"
+              bg={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.Black
+                  : MA_REUSSITE_CUSTOM_COLORS.White
+              }
               borderWidth={0}
               position="absolute"
               bottom={0.5}
@@ -184,7 +187,11 @@ const ProfileScreen = () => {
                     as={MaterialIcons}
                     name="edit"
                     size={4}
-                    color="black"
+                    color={
+                      isDarkMode
+                        ? MA_REUSSITE_CUSTOM_COLORS.White
+                        : MA_REUSSITE_CUSTOM_COLORS.Black
+                    }
                     position="absolute"
                     top={0.5}
                     left={0.5}
@@ -218,31 +225,79 @@ const ProfileScreen = () => {
             />
           </Avatar>
         )}
-        <Heading color={"black"} mt={2}>
-          {connectedUser && connectedUser.name}
+        <Heading
+          color={
+            isDarkMode
+              ? MA_REUSSITE_CUSTOM_COLORS.White
+              : MA_REUSSITE_CUSTOM_COLORS.Black
+          }
+          mt={2}
+        >
+          {connectedUser && connectedUser.self[1]}
         </Heading>
       </Center>
-      <Divider bgColor={"gray.100"} h={"0.5"} mt={2} />
+      <Divider
+        bgColor={
+          isDarkMode
+            ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
+            : MA_REUSSITE_CUSTOM_COLORS.LightDivider
+        }
+        h={"0.5"}
+        mt={2}
+      />
       {isProfileEdit ? (
-        <ProfileUserEdit connectedUser={connectedUser} />
+        <ProfileUserEdit
+          isDarkMode={isDarkMode}
+          connectedUser={connectedUser}
+        />
       ) : (
-        <ProfileUserInfo connectedUser={connectedUser} />
+        <ProfileUserInfo
+          isDarkMode={isDarkMode}
+          connectedUser={connectedUser}
+        />
       )}
 
       <Actionsheet isOpen={isOpen} onClose={onClose}>
         <Actionsheet.Content
-          bgColor={"white"}
+          bgColor={
+            isDarkMode
+              ? MA_REUSSITE_CUSTOM_COLORS.DarkActionSheet
+              : MA_REUSSITE_CUSTOM_COLORS.White
+          }
           w={"4/6"}
           mx={"auto"}
           borderBottomRadius={"lg"}
           borderTopRadius={"lg"}
           mb={4}
         >
-          <Text my={2} color={"black"}>
+          <Text
+            my={2}
+            color={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.White
+                : MA_REUSSITE_CUSTOM_COLORS.Black
+            }
+          >
             Choisir une image
           </Text>
-          <Divider bgColor={"gray.100"} h={0.5} mt={2} />
-          <Actionsheet.Item onPress={pickImage} bgColor={"white"} p={2}>
+          <Divider
+            bgColor={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.Black
+                : MA_REUSSITE_CUSTOM_COLORS.LightDivider
+            }
+            h={0.5}
+            mt={2}
+          />
+          <Actionsheet.Item
+            onPress={pickImage}
+            bgColor={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.DarkActionSheet
+                : MA_REUSSITE_CUSTOM_COLORS.White
+            }
+            p={2}
+          >
             <HStack ml={"5"}>
               <FontAwesome6
                 name={"image"}
@@ -254,8 +309,23 @@ const ProfileScreen = () => {
               </Text>
             </HStack>
           </Actionsheet.Item>
-          <Divider bgColor={"gray.100"} h={0.5} />
-          <Actionsheet.Item onPress={takePhoto} bgColor={"white"} p={2}>
+          <Divider
+            bgColor={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.Black
+                : MA_REUSSITE_CUSTOM_COLORS.LightDivider
+            }
+            h={0.5}
+          />
+          <Actionsheet.Item
+            onPress={takePhoto}
+            bgColor={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.DarkActionSheet
+                : MA_REUSSITE_CUSTOM_COLORS.White
+            }
+            p={2}
+          >
             <HStack ml={"5"}>
               <FontAwesome5
                 name={"camera"}
@@ -268,7 +338,16 @@ const ProfileScreen = () => {
             </HStack>
           </Actionsheet.Item>
         </Actionsheet.Content>
-        <Button mb={6} w={"4/6"} onPress={onClose} bgColor={"white"}>
+        <Button
+          mb={6}
+          w={"4/6"}
+          onPress={onClose}
+          bgColor={
+            isDarkMode
+              ? MA_REUSSITE_CUSTOM_COLORS.DarkActionSheet
+              : MA_REUSSITE_CUSTOM_COLORS.White
+          }
+        >
           <Text color={MA_REUSSITE_CUSTOM_COLORS.Secondary}>Annuler</Text>
         </Button>
       </Actionsheet>

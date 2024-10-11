@@ -1,13 +1,11 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useRoute } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityScreen,
-  GlobalHomeScreen,
   GroupScreen,
   HomeScreen,
-  HomeScreensWrapper,
   NoteScreen,
   PaymentScreen,
 } from "../screens";
@@ -21,6 +19,7 @@ import IconNotes from "../../assets/images/notes.png";
 import { Image } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CustomTabBarButton from "../components/CustomTabBarButton";
+import { getObject } from "../api/apiClient";
 
 const Tab = createBottomTabNavigator();
 
@@ -28,6 +27,57 @@ export const TabNavigator = () => {
   const insets = useSafeAreaInsets();
 
   const propagedRoute = useRoute();
+  const [connectedUser, setConnectedUser] = useState(null);
+
+  useEffect(() => {
+    const fetchConnectedUser = async () => {
+      try {
+        const storedUser = await getObject("connectedUser");
+        // console.log("storedUser...", storedUser);
+
+        setConnectedUser(storedUser);
+      } catch (error) {}
+    };
+    if (!connectedUser) fetchConnectedUser();
+  }, [connectedUser]);
+
+  const getPaymentTab = () => {
+    switch (connectedUser?.role) {
+      case "student":
+      case "parent":
+      case "teacher":
+        return (
+          <Tab.Screen
+          name="Payment"
+          component={PaymentScreen}
+          options={{
+            tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          }}
+        />
+        );
+      default:
+        return null;
+    }
+  };
+
+  const getNoteTab = () => {
+    switch (connectedUser?.role) {
+      case "student":
+      case "parent":
+        return (
+          <Tab.Screen
+          name="Notes"
+          component={NoteScreen}
+          options={{
+            tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          }}
+        />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <AppProvider>
       <Tab.Navigator
@@ -78,35 +128,23 @@ export const TabNavigator = () => {
             tabBarButton: (props) => <CustomTabBarButton {...props} />,
           }}
         />
-        <Tab.Screen
-          name="Payment"
-          component={PaymentScreen}
-          options={{
-            tabBarButton: (props) => <CustomTabBarButton {...props} />,
-          }}
-        />
-        <Tab.Screen
+      {getPaymentTab()}
+       <Tab.Screen
           name="Groups"
           component={GroupScreen}
           options={{
             tabBarButton: (props) => <CustomTabBarButton {...props} />,
           }}
         />
-        <Tab.Screen
-          name="Notes"
-          component={NoteScreen}
-          options={{
-            tabBarButton: (props) => <CustomTabBarButton {...props} />,
-          }}
-        />
-        <Tab.Screen
+      {getNoteTab()}
+      <Tab.Screen
           name="Activities"
           component={ActivityScreen}
           options={{
             tabBarButton: (props) => <CustomTabBarButton {...props} />,
           }}
         />
-      </Tab.Navigator>
-    </AppProvider>
+    </Tab.Navigator>
+  </AppProvider>
   );
 };

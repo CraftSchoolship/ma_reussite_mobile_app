@@ -8,7 +8,7 @@ import ToastAlert from "./ToastAlert";
 import { storeObject } from "../api/apiClient";
 import { update } from "../../http/http";
 
-export const ProfileUserEdit = ({ connectedUser }) => {
+export const ProfileUserEdit = ({ isDarkMode, connectedUser }) => {
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [initialValues, setInitialValues] = useState({

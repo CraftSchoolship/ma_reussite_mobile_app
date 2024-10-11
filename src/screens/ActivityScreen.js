@@ -19,29 +19,29 @@
 // const ActivityScreen = () => {
 //   const route = useRoute();
 //   const navigation = useNavigation();
-//   const [sessionId, setSessionId] = useState(null);
+//   const [uid, setUid] = useState(null);
 //   const [password, setPassword] = useState(null);
-//   const [userid, setUserid] = useState(null);
+//   const [self, setSelfId] = useState(null);
 //   const [activities, setActivities] = useState([]);
 //   const { isOpen, onOpen, onClose } = useDisclose();
 //   const [selectedActivity, setSelectedActivity] = useState();
 
 //   useEffect(() => {
 //     const connectedUser = route?.params;
-//     const { sessionId, email, password, userid } = connectedUser;
-//     setSessionId(sessionId);
+//     const { uid, email, password, self } = connectedUser;
+//     setUid(uid);
 //     setPassword(password);
-//     setUserid(userid[1]);
+//     setSelfId(self[1]);
 //   }, [route]);
 
 //   useEffect(() => {
 //     const fetchActivities = async () => {
 //       try {
 //         const activitiesData = await jsonrpcRequest(
-//           sessionId,
+//           uid,
 //           config.password,
 //           config.model.opActivity,
-//           [[["student_id", "=", userid]]],
+//           [[["student_id", "=", self]]],
 //           ["student_id", "type_id", "date", "description"]
 //         );
 
@@ -53,10 +53,10 @@
 //       }
 //     };
 
-//     if (sessionId && password && userid) {
+//     if (uid && password && self) {
 //       fetchActivities();
 //     }
-//   }, [sessionId, password, userid]);
+//   }, [uid, password, self]);
 
 //   return (
 //     <Box flex={1} bg={"white"}>
@@ -165,7 +165,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { Box, Center, Image } from "native-base";
 import React from "react";
-import { BackgroundWrapper } from "../../components";
+import { BackgroundWrapper } from "../components";
 
 const ActivityScreen = () => {
   const navigation = useNavigation();
@@ -173,19 +173,14 @@ const ActivityScreen = () => {
   return (
     <Box flex={1} bg="white">
       <BackgroundWrapper navigation={navigation}>
-        <Center
-          minH={"80%"}
-          //  bgColor={"amber.400"}
-        >
+        <Center minH={"80%"}>
           <Image
-            // bgColor={"blue.300"}
             size="sm"
             w={"90%"}
             resizeMode="contain"
             minH={"70%"}
             p={2}
-            // m={"auto"}
-            source={require("../../../assets/images/coming_soon.png")}
+            source={require("../../assets/images/coming_soon.png")}
             alt="Alternate Text"
           />
         </Center>

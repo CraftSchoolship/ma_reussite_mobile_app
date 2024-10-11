@@ -1,19 +1,16 @@
 import React from "react";
 import { Button, HStack, Spinner, Text } from "native-base";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const CustomButton = ({ onPress, title, isDisabled, loading = true }) => {
   return (
-    <Button
-      onPress={onPress}
-      isDisabled={isDisabled}
-      style={{ height: 48, borderRadius: 12 }}
-    >
+    <Button borderRadius={12} onPress={onPress} isDisabled={isDisabled}>
       {loading ? (
-        <Text>{title}</Text>
+        <Text color={"white"}>{title}</Text>
       ) : (
         <HStack>
-          <Text>{` ${title}`}</Text>
           <Spinner size="sm" color="white" />
+          <Text color={"white"}>{` ${title}`}</Text>
         </HStack>
       )}
     </Button>

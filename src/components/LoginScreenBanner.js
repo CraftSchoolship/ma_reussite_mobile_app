@@ -4,7 +4,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 
 function LoginScreenBanner() {
-  const insets = useSafeAreaInsets();
   return (
     <>
       <StatusBar barStyle="dark-content" />
