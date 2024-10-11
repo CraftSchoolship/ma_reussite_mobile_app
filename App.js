@@ -6,9 +6,6 @@ import { WebView } from "react-native-webview";
 import AppWithTheme  from "./src/components/AppWithTheme";
 import MA_REUSSITE_CUSTOM_COLORS from "./src/themes/variables";
 import useFonts from "./src/hooks/useFonts";
-import { AppNavigator } from "./src/navigation/AppNavigator";
-import customTheme from "./src/themes/customTheme";
-import KeyboardDismissWrapper from "./src/hooks/useKeyboard";
 
 // import { SelectedChildProvider } from "./src/hooks/SelectedChildContext";
 import ThemeProvider from "./src/hooks/ThemeContext";

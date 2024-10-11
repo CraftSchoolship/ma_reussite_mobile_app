@@ -1,9 +1,9 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import React, { useEffect, useState } from "react";
 import { TabNavigator } from "./TabNavigator";
-import { ParentTabNavigator } from "./ParentTabNavigator";
-import { TeacherTabNavigator } from "./TeacherTabNavigator";
-import { AdminTabNavigator } from "./AdminTabNavigator";
+// import { ParentTabNavigator } from "./ParentTabNavigator";
+// import { TeacherTabNavigator } from "./TeacherTabNavigator";
+// import { AdminTabNavigator } from "./AdminTabNavigator";
 import CustomDrawerContent from "../components/CustomDrawerContent";
 import { getObject } from "../api/apiClient";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -49,25 +49,25 @@ const DrawerNavigator = () => {
     fetchChildrenData();
   }, [connectedUser]);
 
-  const getTabNavigatorForRole = (role) => {
-    switch (role) {
-      case "parent":
-        return ParentTabNavigator;
-      case "teacher":
-        return TeacherTabNavigator;
-      case "admin":
-        return AdminTabNavigator;
-      case "student":
-      default:
-        return TabNavigator;
-    }
-  };
+  // const getTabNavigatorForRole = (role) => {
+  //   switch (role) {
+  //     case "parent":
+  //       return ParentTabNavigator;
+  //     case "teacher":
+  //       return TeacherTabNavigator;
+  //     case "admin":
+  //       return AdminTabNavigator;
+  //     case "student":
+  //     default:
+  //       return TabNavigator;
+  //   }
+  // };
 
   if (!connectedUser) {
     return null;
   }
 
-  const TabNavigatorComponent = getTabNavigatorForRole(connectedUser.role);
+  // const TabNavigatorComponent = getTabNavigatorForRole(connectedUser.role);
 
   return (
     <Drawer.Navigator

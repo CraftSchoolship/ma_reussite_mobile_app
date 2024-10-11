@@ -4,7 +4,12 @@ import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const CustomButton = ({ onPress, title, isDisabled, loading = true }) => {
   return (
-    <Button borderRadius={12} onPress={onPress} isDisabled={isDisabled}>
+    <Button 
+      onPress={onPress} 
+      isDisabled={isDisabled} 
+      style={{ height: 48, borderRadius: 12 }}
+      mt={"15%"}
+      bg={MA_REUSSITE_CUSTOM_COLORS.Primary}>
       {loading ? (
         <Text color={"white"}>{title}</Text>
       ) : (

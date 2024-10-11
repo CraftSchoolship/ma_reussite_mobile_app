@@ -1,25 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
-import {
-  Box,
-  Center,
-  KeyboardAvoidingView,
-  ScrollView,
-  StatusBar,
-  Text,
-  useToast,
-  View,
-  VStack,
-} from "native-base";
+import { Box, Center, Text, View, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  authenticate,
-  jsonrpcRequest,
-  storeArray,
-  storeObject,
-} from "../api/apiClient";
-import config from "../api/config";
-import { CustomButton, CustomInput, LoginScreenBanner } from "../components";
+import { storeArray, storeObject } from "../api/apiClient";
+import { authenticate, browse, read } from "../../http/http";
+import { CustomButton, CustomInput } from "../components";
 import { loginValidationSchema } from "../validation/formValidation";
 
 const LoginScreen = () => {
@@ -30,14 +15,13 @@ const LoginScreen = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [connectedUser, setConnectedUser] = useState({
-    uid: "",
+    sessionId: "",
     email: "",
     password: "",
-    self: "",
+    userid: "",
     role: "",
   });
-  const [selectedChild, setSelectedChild] = useState({});
-  const [children, setChildren] = useState([]);
+  const [selectedChild, setSelectedChild] = useState(null);
 
   const getStudentIds = (data) => {
     return data.map((fetchedChild) => fetchedChild.child_id[0]);
@@ -49,38 +33,48 @@ const LoginScreen = () => {
     const password = values.password;
 
     try {
-      const sessionId = await authenticate(username, password);
+      const user_id = await authenticate(email, password);
 
-      if (sessionId > 0) {
-        const user = await jsonrpcRequest(
-          sessionId,
-          password,
-          config.model.users,
-          [[["email", "=", username]]],
-          ["self", "craft_role"]
-        );
+      // if connection failed return
+      if (!user_id) {
+        setError("Nom d'utilisateur ou mot de passe incorrect !");
+        return;
+      }
 
-        if (user.length > 0) {
-          const userid = user[0].self;
-          setError("");
-          const role = user[0].craft_role;
+      const user = await read(
+        "res.users",
+        [user_id],
+        [
+          "self",
+          "name",
+          "phone",
+          "login",
+          "street",
+          "craft_role",
+          "craft_parent_id",
+          "craft_student_id",
+          "image_256",
+        ]
+      );
 
-          await storeObject("connectedUser", {
-            sessionId: sessionId,
-            email: username,
-            password: password,
-            userid: userid,
-            role: role,
-          });
+      if (!user) {
+        setError("Oops! Quelque chose s'est mal passée");
+        return;
+      }
 
-          setConnectedUser({
-            sessionId: sessionId,
-            email: username,
-            password: password,
-            userid: userid,
-            role: role,
-          });
-        }
+      let profileImage = user[0].image_256;
+
+      if (profileImage && typeof profileImage === "string") {
+        if (profileImage.startsWith("iVBORw0K"))
+          profileImage = `data:image/png;base64,${profileImage}`;
+        else if (profileImage.startsWith("/9j/"))
+          profileImage = `data:image/jpeg;base64,${profileImage}`;
+        else if (
+          profileImage.startsWith("PHN2Zy") ||
+          profileImage.startsWith("PD94bWwg")
+        )
+          profileImage = `data:image/svg+xml;base64,${profileImage}`;
+        else console.log("Unknown image type");
       } else {
         console.log("No image available or image is not in the correct format");
         // You can assign a default image or handle it as needed
@@ -124,35 +118,23 @@ const LoginScreen = () => {
       try {
         if (!connectedUser) return;
 
-        const parent = await jsonrpcRequest(
-          connectedUser.sessionId,
-          connectedUser.password,
-          config.model.craftParent,
-          [[["email", "=", connectedUser.email]]],
-          ["id", "child_ids"]
+        const fetchedChildren = await browse(
+          "craft.parent.child.line",
+          ["child_id"],
+          [["parent_id", "=", connectedUser.craft_parent_id[0]]]
         );
 
         if (!fetchedChildren.length) return;
 
-        const parentChildIds = parent[0].child_ids;
-
-        const fetchedChildren = await jsonrpcRequest(
-          connectedUser.sessionId,
-          connectedUser.password,
-          config.model.craftParentChildLine,
-          [[["id", "=", parentChildIds]]],
-          ["child_id", "id"]
-        );
+        console.log(fetchedChildren);
 
         const studentIds = getStudentIds(fetchedChildren);
         console.log(studentIds);
 
-        const childrenList = await jsonrpcRequest(
-          connectedUser.sessionId,
-          connectedUser.password,
-          config.model.craftStudent,
-          [[["id", "=", studentIds]]],
-          ["id", "contact_id"]
+        const childrenList = await browse(
+          "craft.student",
+          ["id", "contact_id", "image_1024"],
+          [["id", "in", studentIds]]
         );
 
         if (!childrenList.length) return;
@@ -173,13 +155,7 @@ const LoginScreen = () => {
   useEffect(() => {
     const getCurrencies = async () => {
       try {
-        const currencies = await jsonrpcRequest(
-          connectedUser.sessionId,
-          connectedUser.password,
-          config.model.resCurrency,
-          [],
-          ["id", "symbol"]
-        );
+        const currencies = await browse("res.currency", ["id", "symbol"]);
 
         storeObject("currencies", currencies);
       } catch (error) {
@@ -196,58 +172,55 @@ const LoginScreen = () => {
     } else if (connectedUser?.role) {
       navigation.navigate("DrawerNavigator", { connectedUser });
     }
-  }, [children, selectedChild, connectedUser]);
-
+  }, [connectedUser, selectedChild]);
   return (
-    <View flex="1">
-      <LoginScreenBanner />
-
-      <Box style={{ flex: 1, padding: 58, marginTop: 35 }}>
-        <Center>
-          <Text color={"black"} fontSize="2xl" bold>
-            S'identifier
-          </Text>
-        </Center>
-        <Formik
-          initialValues={{ email: "", password: "" }}
-          validationSchema={loginValidationSchema}
-          onSubmit={handleLogin}
-        >
-          {({ handleSubmit, isValid }) => (
-            <VStack space={10} marginTop={10}>
-              <CustomInput
-                label="Email"
-                name="email"
-                keyboardType="email-address"
-                inputRef={input1Ref}
-                onSubmitEditing={() => input2Ref.current.focus()}
-                clearButtonMode="always"
-              />
-              <CustomInput
-                label="Mot de passe"
-                name="password"
-                secureTextEntry
-                showPassword={showPassword}
-                setShowPassword={setShowPassword}
-                inputRef={input2Ref}
-                onSubmitEditing={handleSubmit}
-              />
-              {error ? (
+    <>
+      <View style={{ flex: 1, backgroundColor: "white" }}>
+        <Box style={{ flex: 1, padding: 24, marginTop: 35 }}>
+          <Center>
+            <Text color={"black"} fontSize="2xl" bold>
+              S'identifier
+            </Text>
+          </Center>
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            validationSchema={loginValidationSchema}
+            onSubmit={handleLogin}
+          >
+            {({ handleSubmit, isValid }) => (
+              <VStack space={4} marginTop={10}>
+                <CustomInput
+                  label="Email"
+                  name="email"
+                  keyboardType="email-address"
+                  inputRef={input1Ref}
+                  onSubmitEditing={() => input2Ref.current.focus()}
+                  clearButtonMode="always"
+                />
+                <CustomInput
+                  label="Mot de passe"
+                  name="password"
+                  secureTextEntry
+                  showPassword={showPassword}
+                  setShowPassword={setShowPassword}
+                  inputRef={input2Ref}
+                  onSubmitEditing={handleSubmit}
+                />
                 <Text color={"danger.500"} textAlign={"center"} mt={3}>
                   {error}
                 </Text>
-              ) : null}
-              <CustomButton
-                onPress={handleSubmit}
-                title="Se connecter"
-                isDisabled={!isValid}
-                loading={loading}
-              />
-            </VStack>
-          )}
-        </Formik>
-      </Box>
-    </View>
+                <CustomButton
+                  onPress={handleSubmit}
+                  title="Se connecter"
+                  isDisabled={!isValid}
+                  loading={loading}
+                />
+              </VStack>
+            )}
+          </Formik>
+        </Box>
+      </View>
+    </>
   );
 };
 

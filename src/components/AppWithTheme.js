@@ -1,7 +1,7 @@
 import { NativeBaseProvider, extendTheme } from "native-base";
 import React from "react";
 import { useThemeContext } from "../hooks/ThemeContext";
-import AppNavigator from "../navigation/AppNavigator";
+import { AppNavigator } from "../navigation/AppNavigator";
 import customTheme from "../themes/customTheme";
 
 const AppWithTheme = () => {

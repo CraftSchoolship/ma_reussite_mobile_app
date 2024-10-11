@@ -9,13 +9,12 @@ import {
 } from "native-base";
 import { default as React, useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
-import { getObject, jsonrpcRequest } from "../../api/apiClient";
-import config from "../../api/config";
-import { CalendarCard } from "../../components";
-import BackgroundWrapper from "../../components/BackgroundWrapper";
-import MA_REUSSITE_CUSTOM_COLORS from "../../themes/variables";
-import CalendarLocalConfig from "../../utils/CalendarLocalConfig";
-import { formatOdooEvents } from "../../utils/MarkedDatesFormatage";
+import { browse } from "../../http/http";
+import { CalendarCard } from "../components";
+import BackgroundWrapper from "../components/BackgroundWrapper";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import CalendarLocalConfig from "../utils/CalendarLocalConfig";
+import { formatOdooEvents } from "../utils/MarkedDatesFormatage";
 
 CalendarLocalConfig;
 
@@ -46,23 +45,18 @@ const HomeScreen = () => {
 
     const fetchEvents = async () => {
       try {
-        const eventsData = await jsonrpcRequest(
-          sessionId,
-          password,
-          config.model.craftSession,
-          [[["partner_ids", "=", userid]]],
+        const eventsData = await browse(
+          "craft.session",
           [
             "classroom_id",
-            "recurrency",
-            "rrule",
             "start",
             "stop",
             "subject_id",
             "teacher_id",
             "description",
-          ]
+          ],
+          [["partner_ids", "in", partner_id]]
         );
-
         setEvents(eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);
