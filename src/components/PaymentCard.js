@@ -1,7 +1,9 @@
 import { Box, HStack, Pressable, Text, VStack } from "native-base";
 import React from "react";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const PaymentCard = ({
+  isDarkMode,
   amount,
   name,
   state,
@@ -34,15 +36,19 @@ const PaymentCard = ({
   };
 
   return (
-    <Box borderRadius={10} overflow={"hidden"}>
+    <Box
+      borderRadius={10}
+      overflow={"hidden"}
+      bg={isDarkMode && MA_REUSSITE_CUSTOM_COLORS.BackgroundDark}
+    >
       <HStack
         justifyContent="space-between"
         alignItems="center"
         bg="white"
         p={4}
       >
-        <VStack w={"100%"}>
-          <HStack w={"100%"}>
+        <VStack w={"full"}>
+          <HStack w={"full"}>
             <Box w={"65%"}>
               <Text color={"black"} fontSize="lg" fontWeight="bold">
                 {product_id[1]} {date.split("-")[0]}
@@ -55,7 +61,7 @@ const PaymentCard = ({
             <Box
               alignItems={"flex-end"}
               w={"35%"}
-              h={"100%"}
+              h={"full"}
               mx={"auto"}
               mt={5}
             >

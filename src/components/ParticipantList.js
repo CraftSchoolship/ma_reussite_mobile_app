@@ -79,7 +79,7 @@ const ParticipantList = ({ isDarkMode }) => {
     <Box
       minH={"full"}
       bg={isDarkMode && MA_REUSSITE_CUSTOM_COLORS.Black}
-      mt={6}
+      pt={6}
       flex={0.9}
     >
       <FlatList

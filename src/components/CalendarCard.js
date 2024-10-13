@@ -19,7 +19,7 @@ function CalendarCard({ date, tag, time, subject, teacher, classroom }) {
       borderWidth={0.5}
       borderColor={
         isDarkMode
-          ? MA_REUSSITE_CUSTOM_COLORS.Black
+          ? MA_REUSSITE_CUSTOM_COLORS.BackgroundDark
           : MA_REUSSITE_CUSTOM_COLORS.LightBorderCalendarCard
       }
       overflow={"hidden"}
@@ -29,7 +29,7 @@ function CalendarCard({ date, tag, time, subject, teacher, classroom }) {
         alignItems="center"
         bg={
           isDarkMode
-            ? MA_REUSSITE_CUSTOM_COLORS.Black
+            ? MA_REUSSITE_CUSTOM_COLORS.BackgroundDark
             : MA_REUSSITE_CUSTOM_COLORS.LightBgCalendarCard
         }
         p={4}
