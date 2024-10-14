@@ -14,18 +14,19 @@ const BackgroundWrapper = ({
   isLoginScreen = false,
 }) => {
   const { isDarkMode } = useThemeContext();
+  const insets = useSafeAreaInsets();
   return (
-    <SafeAreaView>
+    <View
+      style={{
+        paddingTop: insets.top,
+      }}
+    >
       {isDarkMode ? (
         <StatusBar barStyle={"light-content"} backgroundColor={"black"} />
       ) : (
         <StatusBar barStyle={"dark-content"} />
       )}
-      {isLoginScreen ? null : (
-        <HomeScreenBanner
-          navigation={navigation}
-        />
-      )}
+      {isLoginScreen ? null : <HomeScreenBanner navigation={navigation} />}
       <ImageBackground
         style={{
           minHeight: "100%",
@@ -39,7 +40,7 @@ const BackgroundWrapper = ({
       >
         {children}
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
 };
 
