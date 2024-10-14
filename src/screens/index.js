@@ -5,3 +5,5 @@ export { default as PaymentScreen } from "./PaymentScreen";
 export { default as GroupScreen } from "./GroupScreen";
 export { default as NoteScreen } from "./NoteScreen";
 export { default as ActivityScreen } from "./ActivityScreen";
+export { default as PolicyScreen } from "./PolicyScreen";
+export { default as SplashScreen } from "./SplashScreen";
