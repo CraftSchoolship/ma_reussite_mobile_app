@@ -1,25 +1,35 @@
 {
   "expo": {
-    "name": "ma-reussite-mobile-app",
-    "slug": "ma-reussite-mobile-app",
-    "version": "1.0.0",
+    "name": "ma-reussite",
+    "slug": "ma-reussite",
+    "version": "1.0.2",
+    "owner": "craftschoolship",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-
-    "assetBundlePatterns": ["**/*"],
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.craftschoolship.mareussite"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.craftschoolship.mareussite"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4851c23f-ab7b-43da-8a23-655dd4c59f28"
+      }
     }
   }
 }

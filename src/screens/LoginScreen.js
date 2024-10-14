@@ -1,11 +1,30 @@
 import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
-import { Box, Center, Text, View, VStack } from "native-base";
+import { Box, Button, Center, Spinner, Text, View, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
 import { storeArray, storeObject } from "../api/apiClient";
 import { authenticate, browse, read } from "../../http/http";
 import { CustomButton, CustomInput } from "../components";
 import { loginValidationSchema } from "../validation/formValidation";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import config from "../../http/config";
+
+const wrapProfileImageBase64 = (profileImage) => {
+  if (!profileImage || typeof profileImage !== "string")
+    return config.baseUrl + "/base/static/img/avatar.png";
+
+  if (profileImage.startsWith("iVBORw0K"))
+    return `data:image/png;base64,${profileImage}`;
+
+  if (profileImage.startsWith("/9j/"))
+    return `data:image/jpeg;base64,${profileImage}`;
+
+  if (profileImage.startsWith("PHN2Zy") || profileImage.startsWith("PD94bWwg"))
+    return `data:image/svg+xml;base64,${profileImage}`;
+
+  console.log("Unknown image type");
+  return config.baseUrl + "/base/static/img/avatar.png";
+}
 
 const LoginScreen = () => {
   const input1Ref = useRef(null);
@@ -13,22 +32,46 @@ const LoginScreen = () => {
   const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [connectedUser, setConnectedUser] = useState({
-    sessionId: "",
-    email: "",
-    password: "",
-    userid: "",
-    role: "",
-  });
-  const [selectedChild, setSelectedChild] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const getStudentIds = (data) => {
-    return data.map((fetchedChild) => fetchedChild.child_id[0]);
+
+  const getCurrencies = async () => {
+    try {
+      const currencies = await browse("res.currency", ["id", "symbol"]);
+
+      storeObject("currencies", currencies);
+    } catch (error) {
+      console.error("Error fetching currency:", error);
+    }
+  };
+
+  const loadParentData = async (connectedUser) => {
+    try {
+      const fetchedChildren = await browse(
+        "craft.parent.child.line",
+        ["child_id"],
+        [["parent_id", "=", connectedUser.craft_parent_id[0]]]
+      );
+
+      const studentIds = fetchedChildren.map((fetchedChild) => fetchedChild.child_id[0]);
+      const childrenList = await browse(
+        "craft.student",
+        ["id", "name", "contact_id", "image_256"],
+        [["id", "in", studentIds]]
+      );
+
+      childrenList.forEach(student => student.image_256 = wrapProfileImageBase64(student.image_256));
+      const initialSelectedChild = childrenList.length ? childrenList[0] : null;
+
+      await storeArray("children", childrenList);
+      await storeObject("selectedChild", initialSelectedChild);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
   };
 
   const handleLogin = async (values) => {
-    setLoading(false);
+    setLoading(true);
     const email = values.email;
     const password = values.password;
 
@@ -62,117 +105,32 @@ const LoginScreen = () => {
         return;
       }
 
-      let profileImage = user[0].image_256;
-
-      if (profileImage && typeof profileImage === "string") {
-        if (profileImage.startsWith("iVBORw0K"))
-          profileImage = `data:image/png;base64,${profileImage}`;
-        else if (profileImage.startsWith("/9j/"))
-          profileImage = `data:image/jpeg;base64,${profileImage}`;
-        else if (
-          profileImage.startsWith("PHN2Zy") ||
-          profileImage.startsWith("PD94bWwg")
-        )
-          profileImage = `data:image/svg+xml;base64,${profileImage}`;
-        else console.log("Unknown image type");
-      } else {
-        console.log("No image available or image is not in the correct format");
-        // You can assign a default image or handle it as needed
-        profileImage = "default-image-url-or-placeholder";
-      }
-      // if (profileImage.startsWith("iVBORw0K"))
-      //   profileImage = `data:image/png;base64,${profileImage}`;
-      // else if (profileImage.startsWith("/9j/"))
-      //   profileImage = `data:image/jpeg;base64,${profileImage}`;
-      // else if (
-      //   profileImage.startsWith("PHN2Zy") ||
-      //   profileImage.startsWith("PD94bWwg")
-      // )
-      //   profileImage = `data:image/svg+xml;base64,${profileImage}`;
-      // else console.log("Unknow Image type");
 
       let connectedUser = {
         ...user[0],
         email: email,
         password: password,
-        profileImage: profileImage, //config.baseUrl + `/web/image?model=res.users&id=${user_id}&field=image_1920&timestamp=${new Date().getTime()}`,
+        profileImage: wrapProfileImageBase64(user[0].image_256), //config.baseUrl + `/web/image?model=res.users&id=${user_id}&field=image_1920&timestamp=${new Date().getTime()}`,
         role: user[0].craft_role,
       };
 
       await storeObject("connectedUser", connectedUser);
-      setConnectedUser(connectedUser);
+
+      // Load additional date
+      if (connectedUser?.role) await getCurrencies();
+      if (connectedUser?.role === "parent" && connectedUser?.craft_parent_id?.length) await loadParentData(connectedUser);
+
+      // go home
+      navigation.navigate("DrawerNavigator", { connectedUser });
+
     } catch (error) {
       console.error("Odoo JSON-RPC Error:", error);
       setError("Nom d'utilisateur ou mot de passe incorrect !");
     } finally {
-      setLoading(true);
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (connectedUser?.role !== "parent") return;
-
-    //TODO: FIX: This code is not working as expected
-
-    const loadParentData = async () => {
-      try {
-        if (!connectedUser) return;
-
-        const fetchedChildren = await browse(
-          "craft.parent.child.line",
-          ["child_id"],
-          [["parent_id", "=", connectedUser.craft_parent_id[0]]]
-        );
-
-        if (!fetchedChildren.length) return;
-
-        console.log(fetchedChildren);
-
-        const studentIds = getStudentIds(fetchedChildren);
-        console.log(studentIds);
-
-        const childrenList = await browse(
-          "craft.student",
-          ["id", "contact_id", "image_1024"],
-          [["id", "in", studentIds]]
-        );
-
-        if (!childrenList.length) return;
-
-        const initialSelectedChild = childrenList[0];
-        setSelectedChild(initialSelectedChild);
-
-        await storeArray("children", childrenList);
-        await storeObject("selectedChild", initialSelectedChild);
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    };
-
-    if (connectedUser?.role) loadParentData();
-  }, [connectedUser]);
-
-  useEffect(() => {
-    const getCurrencies = async () => {
-      try {
-        const currencies = await browse("res.currency", ["id", "symbol"]);
-
-        storeObject("currencies", currencies);
-      } catch (error) {
-        console.error("Error fetching currency:", error);
-      }
-    };
-
-    if (connectedUser?.role) getCurrencies();
-  }, [connectedUser]);
-
-  useEffect(() => {
-    if (connectedUser?.role === "parent" && selectedChild) {
-      navigation.navigate("DrawerNavigator", { connectedUser });
-    } else if (connectedUser?.role) {
-      navigation.navigate("DrawerNavigator", { connectedUser });
-    }
-  }, [connectedUser, selectedChild]);
   return (
     <>
       <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -209,12 +167,19 @@ const LoginScreen = () => {
                 <Text color={"danger.500"} textAlign={"center"} mt={3}>
                   {error}
                 </Text>
-                <CustomButton
+                <Button
+                  onPress={handleSubmit}
+                  isDisabled={!isValid}
+                  style={{ height: 48, borderRadius: 12, width: "100%" }}
+                  bg={MA_REUSSITE_CUSTOM_COLORS.Primary}>
+                    {!loading ? (<Text color={"white"}>Se connecter</Text>) : (<Spinner size="sm" color="white" />)}
+                </Button>
+                {/* <CustomButton
                   onPress={handleSubmit}
                   title="Se connecter"
                   isDisabled={!isValid}
                   loading={loading}
-                />
+                /> */}
               </VStack>
             )}
           </Formik>

@@ -60,7 +60,7 @@ const HomeScreen = () => {
             "teacher_id",
             "description",
           ],
-          [["partner_ids", "in", partner_id]]
+          []//[["partner_ids", "in", partner_id]]
         );
         setEvents(eventsData);
       } catch (error) {

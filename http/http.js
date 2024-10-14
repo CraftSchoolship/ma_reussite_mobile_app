@@ -1,6 +1,7 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import config from "./config";
+import { encode } from "./password_encoding";
 
 // Create an axios instance
 const odooApi = axios.create({
@@ -40,8 +41,9 @@ export const authenticate = async (username, password) => {
     if (uid) {
       config.uid = uid;
       config.pwd = password;
-      await AsyncStorage.setItem("userId", uid.toString());
+      await AsyncStorage.setItem("user_id", uid.toString());
       await AsyncStorage.setItem("username", username);
+      await AsyncStorage.setItem("password", encode(password));
       return uid;
     } else {
       return false;
@@ -55,8 +57,9 @@ export const authenticate = async (username, password) => {
 // Logout function
 export const logout = async () => {
   try {
-    await AsyncStorage.removeItem("userId");
+    await AsyncStorage.removeItem("user_id");
     await AsyncStorage.removeItem("username");
+    await AsyncStorage.removeItem("password");
   } catch (error) {
     console.error("Logout error:", error);
     throw error;

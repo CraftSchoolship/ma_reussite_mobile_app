@@ -57,17 +57,7 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
       setLoading(false);
     };
     fetchUser();
-  }, [connectedUser]);
-
-  useEffect(() => {
-    if (connectedUser?.role === "parent" && selectedChild?.contact_id) {
-      setAccount(
-        <Text color={"white"} fontWeight={"medium"}>
-          {selectedChild?.self[1]}
-        </Text>
-      );
-    }
-  }, [connectedUser, selectedChild]);
+  }, [connectedUser.id]);
 
   return (
     <Box bg={isDarkMode ? "black" : "white"}>
@@ -143,29 +133,25 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
         {connectedUser?.role === "parent" && selectedChild?.contact_id && (
           <Box
             alignSelf={"baseline"}
-            ml={8}
+            mx={8}
             px={2}
             py={0.5}
-            mb={1}
+            my={1}
             borderRadius={"sm"}
             bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
           >
-            <Image
-              size="sm"
-              resizeMode="contain"
-              source={require("../../assets/images/ma_reussite_other_screens.png")}
-              alt="Alternate Text"
-              style={{ width: 200 }}
-            />
             <Pressable m={"auto"} onPress={() => navigation.openDrawer()}>
+              <HStack>
+
               {loading ? (
-                <Avatar size="md" source={{ uri: null }} />
+                <Avatar size="sm" source={{ uri: null }} />
               ) : (
                 <Avatar
-                  size="md"
-                  ml={24}
+                  size="sm"
+                  mr={4}
+                  my={1}
                   source={{
-                    uri: connectedUser?.profileImage,
+                    uri: selectedChild?.image_256,
                   }}
                   bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
                 >
@@ -191,6 +177,10 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
                   />
                 </Avatar>
               )}
+              <Text color={"white"} fontWeight={"medium"} fontSize={22} my={1}>
+                {selectedChild?.name}
+              </Text>
+              </HStack>
             </Pressable>
             </Box>
           )}

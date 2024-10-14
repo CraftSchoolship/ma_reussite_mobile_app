@@ -1,5 +1,4 @@
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { useNavigation } from "@react-navigation/native";
 import {
@@ -21,6 +20,7 @@ import React, { useEffect, useState } from "react";
 import { getObject, storeObject } from "../api/apiClient";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useThemeContext } from "../hooks/ThemeContext";
+import { logout } from "../../http/http";
 
 const CustomDrawerContent = ({ connectedUser, ...props }) => {
   const [childrenList, setChildrenList] = useState([]);
@@ -34,10 +34,10 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
       try {
         if (connectedUser.role === "parent") {
           const children = await getObject("children");
-          setChildrenList(children || []);
+          if (children) setChildrenList(children);
 
           const storedChild = await getObject("selectedChild");
-          setSelectedChild(storedChild || {});
+          if (storedChild) setSelectedChild(storedChild);
         }
       } catch (error) {
         console.error("Error fetching connectedUser data:", error);
@@ -244,7 +244,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                         mr={2}
                         source={{
                           uri:
-                            `data:image/png;base64,${child.image_1024}` || null,
+                            `${child.image_256}` || null,
                         }}
                         bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
                       >
@@ -315,7 +315,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
         w={"100%"}
         bottom={"10%"}
         onPress={() => {
-          AsyncStorage.clear();
+          logout();
           props.navigation.reset({
             index: 0,
             routes: [{ name: "Login" }],

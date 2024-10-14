@@ -6,8 +6,8 @@ import {
   Dimensions,
   View,
   TouchableOpacity,
-  Text,
 } from "react-native";
+import { Button, Text } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RenderHtml from "react-native-render-html";
 import config from "../../http/config";
@@ -18,7 +18,7 @@ const PolicyScreen = ({ route, navigation }) => {
   const [policy, setPolicy] = useState(null);
   const [loading, setLoading] = useState(true);
   const contentWidth = Dimensions.get("window").width;
-  const { PolicyIntregityKey, connectedUser } = route.params;
+  const { PolicyIntegrityKey, skipLogin } = route.params;
 
   const insets = useSafeAreaInsets(); // Get the safe area insets
 
@@ -45,14 +45,14 @@ const PolicyScreen = ({ route, navigation }) => {
     try {
       await AsyncStorage.setItem(
         "AgreedPrivacyPolicyIntegrityKey",
-        PolicyIntregityKey
+        PolicyIntegrityKey
       );
-      const storedPolicy = await AsyncStorage.getItem(
-        "AgreedPrivacyPolicyIntegrityKey"
-      );
-      console.log("Stored Policy Agreement:", storedPolicy);
+      // const storedPolicy = await AsyncStorage.getItem(
+      //   "AgreedPrivacyPolicyIntegrityKey"
+      // );
+      // console.log("Stored Policy Agreement:", storedPolicy);
 
-      if (connectedUser) {
+      if (skipLogin) {
         navigation.navigate("DrawerNavigator");
       } else {
         navigation.navigate("Login");
@@ -78,9 +78,16 @@ const PolicyScreen = ({ route, navigation }) => {
       </ScrollView>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={agreePolicy}>
+        <Button
+          onPress={agreePolicy}
+          isDisabled={!policy}
+          style={{ height: 48, borderRadius: 12, width: "100%" }}
+          bg={MA_REUSSITE_CUSTOM_COLORS.Primary}>
           <Text style={styles.buttonText}>J'accepte</Text>
-        </TouchableOpacity>
+        </Button>
+        {/* <TouchableOpacity style={styles.button} onPress={agreePolicy}>
+          <Text style={styles.buttonText}>J'accepte</Text>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
@@ -103,7 +110,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "70%",
-    height: 50,
+    height: 48,
     backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
     justifyContent: "center",
     alignItems: "center",

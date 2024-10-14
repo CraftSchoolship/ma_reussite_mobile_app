@@ -6,6 +6,7 @@ import config from "../../http/config";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 import axios from "axios";
+import { decode } from "../../http/password_encoding";
 
 export default function SplashScreen() {
   const navigation = useNavigation();
@@ -14,27 +15,30 @@ export default function SplashScreen() {
 
   useEffect(() => {
     const showSplashScreen = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      //await new Promise((resolve) => setTimeout(resolve, 3000));
 
       try {
         const response = await axios.get(config.baseUrl + "/mobile/app/info");
         if ("error" in response.data) throw response.data.error;
-        const PolicyIntregityKey = response.data.privacy.sha256;
+        const PolicyIntegrityKey = response.data.privacy.sha256;
 
         // Retrieve stored policy agreement key
-        const AgreedPrivacyPolicyIntegrityKey = await AsyncStorage.getItem(
-          "AgreedPrivacyPolicyIntegrityKey"
-        );
+        const AgreedPrivacyPolicyIntegrityKey = await AsyncStorage.getItem("AgreedPrivacyPolicyIntegrityKey");
 
-        const connectedUser = await AsyncStorage.getItem("connectedUser");
-        if (AgreedPrivacyPolicyIntegrityKey === PolicyIntregityKey) {
-          if (connectedUser) {
+        const user_id = await AsyncStorage.getItem("user_id");
+        if (user_id) {
+          config.uid = parseInt(user_id);
+          config.pwd = decode(await AsyncStorage.getItem("password"));
+        }
+
+        if (AgreedPrivacyPolicyIntegrityKey === PolicyIntegrityKey) {
+          if (user_id) {
             navigation.navigate("DrawerNavigator");
           } else {
             navigation.navigate("Login");
           }
         } else {
-          navigation.navigate("Policy", { PolicyIntregityKey });
+          navigation.navigate("Policy", { PolicyIntegrityKey, skipLogin: user_id });
         }
       } catch (error) {
         console.error("Error during splash screen navigation:", error);
