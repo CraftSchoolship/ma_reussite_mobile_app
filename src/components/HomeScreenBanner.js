@@ -51,7 +51,14 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
   }, [connectedUser?.role, selectedChild]);
 
   return (
-    <Box bg={isDarkMode ? "black" : "white"}>
+    <Box
+      bg={
+        isDarkMode
+          ? MA_REUSSITE_CUSTOM_COLORS.Black
+          : MA_REUSSITE_CUSTOM_COLORS.White
+      }
+      pb={4}
+    >
       <VStack>
         <HStack>
           {displayGoBackButton ? (

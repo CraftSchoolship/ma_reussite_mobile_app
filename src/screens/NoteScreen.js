@@ -78,9 +78,6 @@ const NoteScreen = () => {
                 >
                   <CircularProgress
                     progress={item.score}
-                    width={5}
-                    size={60}
-                    color={item.color}
                     note={true}
                   />
                   <Box ml={4}>

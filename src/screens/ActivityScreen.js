@@ -191,35 +191,32 @@
 
 // export default ActivityScreen;
 
-import React from "react";
-import {
-  Box,
-  Text,
-  ScrollView,
-  HStack,
-  VStack,
-  Badge,
-  Pressable,
-} from "native-base";
-
-import { BackgroundWrapper } from "../components";
+import { Box, IconButton, ScrollView, Text, VStack } from "native-base";
+import React, { useState } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { BackgroundWrapper } from "../components";
+import { NotificationCard } from "../components/NotificationCard";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { NotificationDetail } from "../components/NotificationDetail";
 
 const NotificationScreen = () => {
   const navigation = useNavigation();
   const { isDarkMode } = useThemeContext();
-
-  // Données mockées pour les notifications
-  const notifications = [
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [id, setId] = useState();
+  const [notifications, setNotifications] = useState([
     {
+      id: 1,
       title: "Mise à jour de l'horaire du Cours Big Data",
-      description: "L'horaire de votre cours de Big Data a été mis à jour.",
+      description:
+        "L’horaire de votre cours de Big Data a été mis à jour, la nouvelle session se déroulera le 03/06/24 à partir de 16h et non pas le 02/06/24.",
       time: "3:00 PM",
       unread: true,
     },
     {
+      id: 2,
       title: "Changement d'enseignant du Cours Big Data",
       description:
         "Notez que pour votre séance de Big Data, un nouvel enseignant a été attribué.",
@@ -227,6 +224,7 @@ const NotificationScreen = () => {
       unread: true,
     },
     {
+      id: 3,
       title: "Facturation du Mois de Mars",
       description:
         "Vous avez effectué la totalité du paiement du mois de Mars.",
@@ -234,111 +232,131 @@ const NotificationScreen = () => {
       unread: false,
     },
     {
+      id: 4,
       title: "Mise à jour de l'horaire du Cours Big Data",
       description: "L'horaire de votre cours de Big Data a été mis à jour.",
       time: "10/05/24",
       unread: false,
     },
-    // Ajoute d'autres notifications ici si nécessaire
-  ];
+  ]);
+
+  // Fonction pour marquer une notification comme lue
+  // const markAsRead = (notificationId) => {
+  //   setNotifications((prevNotifications) =>
+  //     prevNotifications.map((notification) =>
+  //       notification.id === notificationId
+  //         ? { ...notification, unread: false }
+  //         : notification
+  //     )
+  //   );
+  // };
+
+  // const handleNotificationClick = (notificationId) => {
+  //   setId(notificationId);
+  //   setIsNotificationOpen(true);
+  //   markAsRead(notificationId);
+  // };
 
   return (
-    <Box
-      flex={1}
-      bg={
-        isDarkMode
-          ? MA_REUSSITE_CUSTOM_COLORS.Black
-          : MA_REUSSITE_CUSTOM_COLORS.White
-      }
-    >
-      <BackgroundWrapper navigation={navigation}>
-        <Box
-          flex={1}
-          bg={
+    <BackgroundWrapper navigation={navigation}>
+      <Box
+        bg={
+          isDarkMode
+            ? MA_REUSSITE_CUSTOM_COLORS.Black
+            : MA_REUSSITE_CUSTOM_COLORS.White
+        }
+        py={2}
+        shadow={4}
+        borderBottomRadius={"xl"}
+      >
+        {isNotificationOpen && (
+          <Box
+            position={"absolute"}
+            top={0}
+            left={0}
+            zIndex={2}
+            alignItems="center"
+            w={"10%"}
+            bg={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.Black
+                : MA_REUSSITE_CUSTOM_COLORS.White
+            }
+          >
+            <IconButton
+              mr={"auto"}
+              icon={
+                <MaterialIcons
+                  name="chevron-left"
+                  size={34}
+                  color={
+                    isDarkMode
+                      ? MA_REUSSITE_CUSTOM_COLORS.White
+                      : MA_REUSSITE_CUSTOM_COLORS.Black
+                  }
+                />
+              }
+              onPress={() => setIsNotificationOpen(false)}
+            />
+          </Box>
+        )}
+        <Text
+          color={
             isDarkMode
-              ? MA_REUSSITE_CUSTOM_COLORS.Black
-              : MA_REUSSITE_CUSTOM_COLORS.White
+              ? MA_REUSSITE_CUSTOM_COLORS.White
+              : MA_REUSSITE_CUSTOM_COLORS.Black
           }
+          fontSize="xl"
+          fontWeight="bold"
+          textAlign={"center"}
+          mb={2}
         >
-          <ScrollView p={4} flexGrow={1}>
-            <VStack space={3}>
-              {/* Titre de la page */}
-              <Text
-                color={
-                  isDarkMode
-                    ? MA_REUSSITE_CUSTOM_COLORS.White
-                    : MA_REUSSITE_CUSTOM_COLORS.Black
-                }
-                fontSize="xl"
-                fontWeight="bold"
-                textAlign={"center"}
-                mb={2}
-              >
-                Notifications
-              </Text>
-              {/* Liste des notifications */}
-              {notifications.map((notification, index) => (
-                <Pressable
-                  key={index}
-                  onPress={() => console.log("Notification pressée")}
-                >
-                  <Box
-                    bg={
-                      isDarkMode
-                        ? MA_REUSSITE_CUSTOM_COLORS.BackgroundDark
-                        : MA_REUSSITE_CUSTOM_COLORS.White
-                    }
-                    p={4}
-                    borderRadius={"md"}
-                    shadow={1}
-                  >
-                    <HStack>
-                      <VStack w={"4/5"} pr={3}>
-                        <Text
-                          color={
-                            isDarkMode
-                              ? MA_REUSSITE_CUSTOM_COLORS.White
-                              : MA_REUSSITE_CUSTOM_COLORS.Black
-                          }
-                          fontWeight={"bold"}
-                          noOfLines={1}
-                        >
-                          {notification.title}
-                        </Text>
-                        <Text color={"gray.500"} noOfLines={1}>
-                          {notification.description}
-                        </Text>
-                      </VStack>
-                      <VStack w={"1/5"}>
-                        <Text
-                          color={
-                            isDarkMode
-                              ? MA_REUSSITE_CUSTOM_COLORS.White
-                              : MA_REUSSITE_CUSTOM_COLORS.Black
-                          }
-                          fontWeight={"bold"}
-                        >
-                          {notification.time}
-                        </Text>
-                        {notification.unread && (
-                          <Badge
-                            colorScheme="danger"
-                            rounded="full"
-                            alignSelf="center"
-                            variant="solid"
-                            size={"xs"}
-                          />
-                        )}
-                      </VStack>
-                    </HStack>
-                  </Box>
-                </Pressable>
-              ))}
-            </VStack>
-          </ScrollView>
-        </Box>
-      </BackgroundWrapper>
-    </Box>
+          Notifications
+        </Text>
+      </Box>
+      {/* <ScrollView py={4} flexGrow={1}>
+        <VStack>
+          {isNotificationOpen ? (
+            <NotificationDetail
+              notification={notifications[id - 1]}
+              index={id}
+            />
+          ) : (
+            notifications.map((notification, index) => (
+              <NotificationCard
+                // key={notification.id}
+                setId={setId}
+                notification={notification}
+                index={index}
+                setIsNotificationOpen={setIsNotificationOpen}
+                onPress={() => handleNotificationClick(notification.id)} // Gestion du clic
+              />
+            ))
+          )}
+        </VStack>
+      </ScrollView> */}
+      <ScrollView py={4} flexGrow={1}>
+        <VStack>
+          {isNotificationOpen ? (
+            <NotificationDetail
+              notification={notifications[id - 1]}
+              index={id}
+            />
+          ) : (
+            notifications.map((notification, index) => (
+              <NotificationCard
+                key={notification.id}
+                setId={setId}
+                notification={notification}
+                index={index}
+                setIsNotificationOpen={setIsNotificationOpen}
+                setNotifications={setNotifications}
+              />
+            ))
+          )}
+        </VStack>
+      </ScrollView>
+    </BackgroundWrapper>
   );
 };
 
