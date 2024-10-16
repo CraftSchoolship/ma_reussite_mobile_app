@@ -9,13 +9,14 @@ import {
 } from "native-base";
 import React, { useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
-import { browse } from "../../http/http";
+// import { browse } from "../../http/http";
 import { getObject } from "../api/apiClient";
 import { CalendarCard } from "../components";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import CalendarLocalConfig from "../utils/CalendarLocalConfig";
 import { formatOdooEvents } from "../utils/MarkedDatesFormatage";
+import { browse } from "../../http/http";
 
 CalendarLocalConfig;
 
