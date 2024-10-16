@@ -21,6 +21,9 @@ const participants = [
   { id: "7", name: "Asad Babur" },
   { id: "8", name: "Wael Mbarek" },
   { id: "9", name: "Khadija Amri" },
+  { id: "19", name: "Khadija Amri" },
+  { id: "29", name: "Khadija Amri" },
+  { id: "39", name: "Khadija Amri" },
 ];
 
 const ParticipantList = ({ isDarkMode }) => {
@@ -32,7 +35,6 @@ const ParticipantList = ({ isDarkMode }) => {
             ? MA_REUSSITE_CUSTOM_COLORS.Black
             : MA_REUSSITE_CUSTOM_COLORS.White
         }
-        p={4}
         borderTopColor={
           isDarkMode
             ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
@@ -43,6 +45,7 @@ const ParticipantList = ({ isDarkMode }) => {
             ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
             : MA_REUSSITE_CUSTOM_COLORS.LightDivider
         }
+        p={4}
         shadow={1}
         borderBottomWidth={1}
         borderTopWidth={1}
@@ -78,8 +81,12 @@ const ParticipantList = ({ isDarkMode }) => {
   return (
     <Box
       minH={"full"}
-      bg={isDarkMode && MA_REUSSITE_CUSTOM_COLORS.Black}
-      mt={6}
+      bg={
+        isDarkMode
+          ? MA_REUSSITE_CUSTOM_COLORS.Black
+          : MA_REUSSITE_CUSTOM_COLORS.White
+      }
+      pt={6}
       flex={0.9}
     >
       <FlatList

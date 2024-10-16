@@ -1,7 +1,3 @@
-/* -------------------------------------------------------------------------- */
-/*                                  VERSION_1                                 */
-/* -------------------------------------------------------------------------- */
-
 import { useRoute } from "@react-navigation/native";
 import {
   Box,
@@ -17,35 +13,52 @@ import React, { useEffect, useState } from "react";
 import { BackgroundWrapper, CircularProgress } from "../components";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { TouchableHighlight, TouchableOpacity } from "react-native";
+
+const mockGroups = [
+  {
+    name: "Big Data",
+    progress: 90,
+  },
+  {
+    name: "AWS Cloud",
+    progress: 50,
+  },
+  {
+    name: "Java Avancé",
+    progress: 30,
+  },
+  {
+    name: "Machine Learning",
+    progress: 80,
+  },
+  {
+    name: "SpringBoot",
+    progress: 90,
+  },
+  {
+    name: "SpringBoot",
+    progress: 90,
+  },
+  {
+    name: "SpringBoot",
+    progress: 90,
+  },
+  {
+    name: "SpringBoot",
+    progress: 90,
+  },
+  {
+    name: "SpringBoot",
+    progress: 90,
+  },
+];
 
 const GroupScreen = ({ navigation }) => {
   const route = useRoute();
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const { isDarkMode } = useThemeContext();
-
-  const mockGroups = [
-    {
-      name: "Big Data",
-      progress: 90,
-    },
-    {
-      name: "AWS Cloud",
-      progress: 50,
-    },
-    {
-      name: "Java Avancé",
-      progress: 30,
-    },
-    {
-      name: "Machine Learning",
-      progress: 80,
-    },
-    {
-      name: "SpringBoot",
-      progress: 90,
-    },
-  ];
 
   useEffect(() => {
     setTimeout(() => {
@@ -85,7 +98,8 @@ const GroupScreen = ({ navigation }) => {
             <VStack w={"100%"} mb={"20%"}>
               {groups?.length > 0 ? (
                 groups?.map((group, index) => (
-                  <Pressable
+                  <TouchableOpacity
+                    activeOpacity={1}
                     shadow={"9"}
                     key={index}
                     onPress={() => {
@@ -128,7 +142,7 @@ const GroupScreen = ({ navigation }) => {
                         </Box>
                       </HStack>
                     </Box>
-                  </Pressable>
+                  </TouchableOpacity>
                 ))
               ) : (
                 <Box>

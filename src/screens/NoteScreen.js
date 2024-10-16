@@ -56,6 +56,34 @@ const fakeNotesData = [
     maxScore: 20,
     color: "green.400",
   },
+  {
+    id: "6",
+    evaluation: "Evaluation SpringBoot",
+    score: 14,
+    maxScore: 20,
+    color: "green.400",
+  },
+  {
+    id: "7",
+    evaluation: "Evaluation SB",
+    score: 12,
+    maxScore: 20,
+    color: "green.400",
+  },
+  {
+    id: "8",
+    evaluation: "Evaluation Boot",
+    score: 13,
+    maxScore: 20,
+    color: "green.400",
+  },
+  {
+    id: "9",
+    evaluation: "Evaluation Spring",
+    score: 11,
+    maxScore: 20,
+    color: "green.400",
+  },
 ];
 
 const NoteScreen = () => {
@@ -87,6 +115,8 @@ const NoteScreen = () => {
         </Center>
       ) : (
         <VStack
+          // background={"amber.300"}
+          flex={0.8}
           borderTopWidth={1}
           borderColor={
             isDarkMode
@@ -206,7 +236,10 @@ const NoteScreen = () => {
           </VStack>
 
           <FlatList
+            flex={1}
             data={filteredData}
+            // scrollEnabled={true}
+            // contentContainerStyle={{ flexGrow: 1 }}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <Box

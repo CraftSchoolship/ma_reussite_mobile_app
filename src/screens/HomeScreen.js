@@ -17,6 +17,8 @@ import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import CalendarLocalConfig from "../utils/CalendarLocalConfig";
 import { formatOdooEvents } from "../utils/MarkedDatesFormatage";
 import { browse } from "../../http/http";
+import { useThemeContext } from "../hooks/ThemeContext";
+import CalendarTheme from "../utils/CalendarTheme";
 
 CalendarLocalConfig;
 
@@ -33,6 +35,7 @@ const HomeScreen = () => {
   const [selectedDay, setSelectedDay] = useState("");
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
   const [eventsByMonth, setEventsByMonth] = useState({});
+  const { isDarkMode } = useThemeContext();
 
   useEffect(() => {
     const fetchConnectedUser = async () => {
@@ -61,7 +64,7 @@ const HomeScreen = () => {
             "teacher_id",
             "description",
           ],
-          []//[["partner_ids", "in", partner_id]]
+          [] //[["partner_ids", "in", partner_id]]
         );
         setEvents(eventsData);
       } catch (error) {
@@ -118,6 +121,7 @@ const HomeScreen = () => {
           overflow={"hidden"}
         >
           <Calendar
+            key={isDarkMode ? "dark" : "light"}
             markingType={"multi-dot"}
             onDayPress={(day) => {
               const currentDaySelected = new Date(day.timestamp).getDay();
@@ -134,13 +138,14 @@ const HomeScreen = () => {
             disableMonthChange={false}
             firstDay={1}
             markedDates={markedDate}
-            theme={{
-              selectedDayBackgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-              todayTextColor: "white",
-              todayBackgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-              arrowColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-              monthTextColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-            }}
+            // theme={{
+            //   selectedDayBackgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
+            //   todayTextColor: "white",
+            //   todayBackgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
+            //   arrowColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
+            //   monthTextColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
+            // }}
+            theme={CalendarTheme(isDarkMode)}
           />
         </Box>
 

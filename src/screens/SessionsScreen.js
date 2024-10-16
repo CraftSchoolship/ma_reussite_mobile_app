@@ -68,7 +68,7 @@ const SessionsScreen = ({ navigation }) => {
           fontWeight="bold"
           fontSize="lg"
         >
-          Master 1 DevOps
+          {groupName}
         </Text>
       </Box>
       <Box mt={4} flex={1}>
