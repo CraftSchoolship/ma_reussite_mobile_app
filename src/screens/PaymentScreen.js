@@ -4,6 +4,7 @@ import {
   Actionsheet,
   Box,
   Center,
+  Divider,
   HamburgerIcon,
   HStack,
   Icon,
@@ -94,7 +95,6 @@ const PaymentScreen = () => {
   const [paymentDetails, setPaymentDetails] = useState({});
   const { isDarkMode } = useThemeContext();
 
-  // Fonction de tri en fonction de la date
   const compareDates = (a, b) => {
     const months = {
       Janvier: 0,
@@ -120,7 +120,6 @@ const PaymentScreen = () => {
     return sortOrder === "recent" ? dateB - dateA : dateA - dateB;
   };
 
-  // Utiliser useEffect pour trier les paiements quand sortOrder change
   useEffect(() => {
     const sorted = [...payments].sort(compareDates);
     setSortedPayments(sorted);
@@ -156,9 +155,15 @@ const PaymentScreen = () => {
           </Text>
 
           <Menu
+            borderWidth={1}
+            borderColor={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
+                : MA_REUSSITE_CUSTOM_COLORS.LightDivider
+            }
             bg={
               isDarkMode
-                ? MA_REUSSITE_CUSTOM_COLORS.White
+                ? MA_REUSSITE_CUSTOM_COLORS.Black
                 : MA_REUSSITE_CUSTOM_COLORS.White
             }
             trigger={(triggerProps) => {
@@ -173,21 +178,24 @@ const PaymentScreen = () => {
                         ? MA_REUSSITE_CUSTOM_COLORS.Black
                         : MA_REUSSITE_CUSTOM_COLORS.White
                     }
-                    // p={2}
-                    // borderWidth={1}
-                    // borderColor={"white"}
+                    borderWidth={1}
+                    borderColor={
+                      isDarkMode
+                        ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
+                        : MA_REUSSITE_CUSTOM_COLORS.LightDivider
+                    }
                     shadow={1}
                     borderRadius={"lg"}
                   >
                     <Icon
                       as={MaterialIcons}
                       name="filter-alt"
-                      size="4xl" // Taille de l'icône
+                      size="4xl"
                       color={
                         isDarkMode
                           ? MA_REUSSITE_CUSTOM_COLORS.White
                           : MA_REUSSITE_CUSTOM_COLORS.Black
-                      } // Couleur de l'icône
+                      }
                     />
                   </Box>
                 </Pressable>
@@ -195,21 +203,22 @@ const PaymentScreen = () => {
             }}
           >
             <Menu.Item
-              color={
-                isDarkMode
+              _text={{
+                color: isDarkMode
                   ? MA_REUSSITE_CUSTOM_COLORS.White
-                  : MA_REUSSITE_CUSTOM_COLORS.Black
-              }
+                  : MA_REUSSITE_CUSTOM_COLORS.Black,
+              }}
               onPress={() => setSortOrder("oldest")}
             >
               Plus anciens
             </Menu.Item>
+            <Divider />
             <Menu.Item
-              color={
-                isDarkMode
+              _text={{
+                color: isDarkMode
                   ? MA_REUSSITE_CUSTOM_COLORS.White
-                  : MA_REUSSITE_CUSTOM_COLORS.Black
-              }
+                  : MA_REUSSITE_CUSTOM_COLORS.Black,
+              }}
               onPress={() => setSortOrder("recent")}
             >
               Plus récents
@@ -222,14 +231,14 @@ const PaymentScreen = () => {
           </Center>
         ) : (
           <ScrollView
+            flex={1}
             flexGrow={1}
-            h={"80%"}
             w={"90%"}
             mx={"auto"}
             mb={"10%"}
-            contentContainerStyle={{ paddingBottom: 80 }}
+            contentContainerStyle={{ paddingBottom: 120 }}
           >
-            <VStack w={"full"} mb={"10%"} space={4} minH={"80%"}>
+            <VStack w={"full"} mb={"1/6"} space={4} minH={"80%"}>
               {sortedPayments?.length > 0 ? (
                 sortedPayments?.map((payment, index) => (
                   <PaymentCard
@@ -307,10 +316,3 @@ const PaymentScreen = () => {
 };
 
 export default PaymentScreen;
-
-// 
-// la semaine passée on a eu une reunion Berthone et moi, il a validé la screen note
-// pour la screen activity il y un bouton à ajouter parce qu'on attendait que Glad 
-// nous dise à quoi cà servait. 
-// pour les taches à faire, je devais finir le payment screen aujourd'hui. je viens de 
-// finir et de le pousser. 

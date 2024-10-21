@@ -1,14 +1,16 @@
-import { Badge, Box, HStack, Pressable, Text, VStack } from "native-base";
+import { Ionicons } from "@expo/vector-icons";
+import { Box, Button, HStack, Icon, Text, VStack } from "native-base";
 import React from "react";
-
-import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useThemeContext } from "../hooks/ThemeContext";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+
 export const NotificationDetail = ({ notification, index }) => {
   const { isDarkMode } = useThemeContext();
 
   return (
-    <Pressable key={index} onPress={() => console.log("Notification pressée")}>
+    <Box alignItems={"center"}>
       <Box
+        key={index}
         bg={
           isDarkMode
             ? MA_REUSSITE_CUSTOM_COLORS.Black
@@ -39,6 +41,27 @@ export const NotificationDetail = ({ notification, index }) => {
           </VStack>
         </HStack>
       </Box>
-    </Pressable>
+
+      <Box w={"4/6"} mt={"5/6"}>
+        <Button bg={MA_REUSSITE_CUSTOM_COLORS.Secondary}>
+          <Text
+            fontWeight={"bold"}
+            fontSize={"lg"}
+            color={MA_REUSSITE_CUSTOM_COLORS.White}
+          >
+            Afficher
+          </Text>
+        </Button>
+        <Icon
+          position={"absolute"}
+          right={6}
+          top={3}
+          as={Ionicons}
+          name="eye"
+          size="lg"
+          color={MA_REUSSITE_CUSTOM_COLORS.White}
+        />
+      </Box>
+    </Box>
   );
 };

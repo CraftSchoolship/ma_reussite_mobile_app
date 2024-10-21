@@ -24,7 +24,7 @@ const BackgroundWrapper = ({
       {isDarkMode ? (
         <StatusBar barStyle={"light-content"} backgroundColor={"black"} />
       ) : (
-        <StatusBar barStyle={"dark-content"} />
+        <StatusBar barStyle={"dark-content"} backgroundColor={"white"} />
       )}
       {isLoginScreen ? null : <HomeScreenBanner navigation={navigation} />}
       <ImageBackground
