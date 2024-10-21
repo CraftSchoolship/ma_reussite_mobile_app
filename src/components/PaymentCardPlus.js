@@ -1,8 +1,13 @@
 import { Box, HStack, Text, VStack } from "native-base";
 import React, { useEffect, useState } from "react";
 import { getObject } from "../api/apiClient";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
-const PaymentCardPlus = ({ paymentDetails, occupation = "student" }) => {
+const PaymentCardPlus = ({
+  isDarkMode,
+  paymentDetails,
+  occupation = "student",
+}) => {
   const statusPayment =
     paymentDetails.state !== "not_paid"
       ? { color: "success.600", text: "Payé" }
@@ -31,37 +36,71 @@ const PaymentCardPlus = ({ paymentDetails, occupation = "student" }) => {
       <HStack
         justifyContent="space-between"
         alignItems="center"
-        bg="white"
+        bg={
+          isDarkMode
+            ? MA_REUSSITE_CUSTOM_COLORS.Black
+            : MA_REUSSITE_CUSTOM_COLORS.White
+        }
         p={4}
       >
         <VStack w={"100%"}>
           <VStack w={"100%"}>
-            <Text color={"black"} mb={2} fontSize="lg" fontWeight="bold">
+            <Text
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+              mb={2}
+              fontSize="lg"
+              fontWeight="bold"
+            >
               {paymentDetails.display_name}
             </Text>
-            <Text color={"black"} mb={2}>
+            <Text
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+              mb={2}
+            >
               {`Référence : ${paymentDetails.name}`}
             </Text>
-            <Text color={"black"} mb={2}>
+            <Text
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+              mb={2}
+            >
               {occupation === "student" ? "Etudiant(e) : " : "Professeur(e) : "}
-              {paymentDetails.user_id[1]}
+              {/* {paymentDetails.user_id[1]} */}
+              {occupation === "student" ? "Etudiant " : "Professeur "}
             </Text>
-            {/* {taxName && (
-              <>
-                <Text color={"black"} mb={2}>
-                  {`HT : ${paymentDetails.price_subtotal} ${paymentDetails.currency_sybol}`}
-                </Text>
-                <Text color={"black"} mb={2}>
-                  {`Taxe : ${taxName}`}
-                </Text>
-              </>
-            )} */}
-            <Text fontSize={"lg"} mb={2} color="black">
+            
+            <Text
+              fontSize={"lg"}
+              mb={2}
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+            >
               {occupation === "student" ? "Somme TTC : " : "Salaire : "}
               {`${paymentDetails.amount} ${paymentDetails.currency_sybol}`}
             </Text>
             {paymentDetails.state === "not_paid" && (
-              <Text color={"black"} mb={2}>
+              <Text
+                color={
+                  isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.White
+                    : MA_REUSSITE_CUSTOM_COLORS.Black
+                }
+                mb={2}
+              >
                 {`Date d'échéance : ${paymentDetails.date.split("-")[2]} ${
                   paymentDetails.product_id[1]
                 } ${paymentDetails.date.split("-")[0]}`}

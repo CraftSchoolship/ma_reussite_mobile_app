@@ -53,6 +53,6 @@ const styles = StyleSheet.create({
     height: 78,
     borderRadius: 90,
     backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-    paddingTop: 20,
+    paddingTop: 30,
   },
 });

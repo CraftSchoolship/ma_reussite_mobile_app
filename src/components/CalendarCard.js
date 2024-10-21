@@ -23,6 +23,7 @@ function CalendarCard({ date, tag, time, subject, teacher, classroom }) {
           : MA_REUSSITE_CUSTOM_COLORS.LightBorderCalendarCard
       }
       overflow={"hidden"}
+      mb={4}
     >
       <HStack
         justifyContent="space-between"

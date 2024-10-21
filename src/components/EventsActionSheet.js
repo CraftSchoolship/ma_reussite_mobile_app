@@ -24,7 +24,7 @@ export const EventsActionSheet = ({
       <Actionsheet.Content
         bg={
           isDarkMode
-            ? MA_REUSSITE_CUSTOM_COLORS.DarkActionSheet
+            ? MA_REUSSITE_CUSTOM_COLORS.BackgroundDark
             : MA_REUSSITE_CUSTOM_COLORS.White
         }
       >
