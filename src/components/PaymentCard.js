@@ -3,6 +3,8 @@ import React from "react";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const PaymentCard = ({
+  month,
+  year,
   amount,
   name,
   state,
@@ -15,14 +17,20 @@ const PaymentCard = ({
   tax_ids,
   price_subtotal,
   occupation = "student",
+  deposit,
   isDarkMode,
 }) => {
   const statusPayment =
     state !== "not_paid"
-      ? { color: "success.600", text: "Confirmé" }
-      : { color: "danger.600", text: "En Attente" };
+      ? { color: MA_REUSSITE_CUSTOM_COLORS.Success, text: "Confirmé" }
+      : deposit > 0
+      ? { color: MA_REUSSITE_CUSTOM_COLORS.Secondary, text: "En Attente" }
+      : { color: MA_REUSSITE_CUSTOM_COLORS.Danger, text: "En Attente" };
 
   const paymentDetails = {
+    month: month,
+    year: year,
+    deposit: deposit,
     amount: amount,
     name: name,
     state: state,
@@ -59,7 +67,7 @@ const PaymentCard = ({
                 fontSize="lg"
                 fontWeight="bold"
               >
-                {product_id[1]} {date.split("-")[0]}
+                {`${month} ${year}`}
               </Text>
               <Text
                 fontSize={"md"}
@@ -69,8 +77,7 @@ const PaymentCard = ({
                     : MA_REUSSITE_CUSTOM_COLORS.Black
                 }
               >
-                {occupation === "student" ? "Somme : " : "Salaire : "}
-                {`${amount} ${currency_sybol}`}
+                {`${name} : ${amount} ${currency_sybol}`}
               </Text>
             </Box>
             <Box

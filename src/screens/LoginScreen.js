@@ -1,13 +1,14 @@
 import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
-import { Box, Button, Center, Spinner, Text, View, VStack } from "native-base";
-import React, { useEffect, useRef, useState } from "react";
-import { storeArray, storeObject } from "../api/apiClient";
-import { authenticate, browse, read } from "../../http/http";
-import { CustomButton, CustomInput } from "../components";
-import { loginValidationSchema } from "../validation/formValidation";
-import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { Box, Center, Text, VStack } from "native-base";
+import React, { useRef, useState } from "react";
 import config from "../../http/config";
+import { authenticate, browse, read } from "../../http/http";
+import { storeArray, storeObject } from "../api/apiClient";
+import { CustomButton, CustomInput } from "../components";
+import { useThemeContext } from "../hooks/ThemeContext";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { loginValidationSchema } from "../validation/formValidation";
 
 const wrapProfileImageBase64 = (profileImage) => {
   if (!profileImage || typeof profileImage !== "string")
@@ -24,7 +25,7 @@ const wrapProfileImageBase64 = (profileImage) => {
 
   console.log("Unknown image type");
   return config.baseUrl + "/base/static/img/avatar.png";
-}
+};
 
 const LoginScreen = () => {
   const input1Ref = useRef(null);
@@ -33,7 +34,7 @@ const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const { isDarkMode } = useThemeContext();
 
   const getCurrencies = async () => {
     try {
@@ -53,14 +54,19 @@ const LoginScreen = () => {
         [["parent_id", "=", connectedUser.craft_parent_id[0]]]
       );
 
-      const studentIds = fetchedChildren.map((fetchedChild) => fetchedChild.child_id[0]);
+      const studentIds = fetchedChildren.map(
+        (fetchedChild) => fetchedChild.child_id[0]
+      );
       const childrenList = await browse(
         "craft.student",
         ["id", "name", "contact_id", "image_256"],
         [["id", "in", studentIds]]
       );
 
-      childrenList.forEach(student => student.image_256 = wrapProfileImageBase64(student.image_256));
+      childrenList.forEach(
+        (student) =>
+          (student.image_256 = wrapProfileImageBase64(student.image_256))
+      );
       const initialSelectedChild = childrenList.length ? childrenList[0] : null;
 
       await storeArray("children", childrenList);
@@ -105,7 +111,6 @@ const LoginScreen = () => {
         return;
       }
 
-
       let connectedUser = {
         ...user[0],
         email: email,
@@ -118,11 +123,14 @@ const LoginScreen = () => {
 
       // Load additional date
       if (connectedUser?.role) await getCurrencies();
-      if (connectedUser?.role === "parent" && connectedUser?.craft_parent_id?.length) await loadParentData(connectedUser);
+      if (
+        connectedUser?.role === "parent" &&
+        connectedUser?.craft_parent_id?.length
+      )
+        await loadParentData(connectedUser);
 
       // go home
       navigation.navigate("DrawerNavigator", { connectedUser });
-
     } catch (error) {
       console.error("Odoo JSON-RPC Error:", error);
       setError("Nom d'utilisateur ou mot de passe incorrect !");
@@ -132,60 +140,66 @@ const LoginScreen = () => {
   };
 
   return (
-    <>
-      <View style={{ flex: 1, backgroundColor: "white" }}>
-        <Box style={{ flex: 1, padding: 24, marginTop: 35 }}>
-          <Center>
-            <Text color={"black"} fontSize="2xl" bold>
-              S'identifier
-            </Text>
-          </Center>
-          <Formik
-            initialValues={{ email: "", password: "" }}
-            validationSchema={loginValidationSchema}
-            onSubmit={handleLogin}
+    <Box
+      flex={1}
+      bg={
+        isDarkMode
+          ? MA_REUSSITE_CUSTOM_COLORS.Black
+          : MA_REUSSITE_CUSTOM_COLORS.White
+      }
+    >
+      <Box flex={1} p={6} mt={9}>
+        <Center>
+          <Text
+            color={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.White
+                : MA_REUSSITE_CUSTOM_COLORS.Black
+            }
+            fontSize="2xl"
+            bold
           >
-            {({ handleSubmit, isValid }) => (
-              <VStack space={4} marginTop={10}>
-                <CustomInput
-                  label="Email"
-                  name="email"
-                  keyboardType="email-address"
-                  inputRef={input1Ref}
-                  onSubmitEditing={() => input2Ref.current.focus()}
-                  clearButtonMode="always"
-                />
-                <CustomInput
-                  label="Mot de passe"
-                  name="password"
-                  secureTextEntry
-                  showPassword={showPassword}
-                  setShowPassword={setShowPassword}
-                  inputRef={input2Ref}
-                  onSubmitEditing={handleSubmit}
-                />
-                <Text color={"danger.500"} textAlign={"center"} mt={3}>
-                  {error}
-                </Text>
-                <Button
-                  onPress={handleSubmit}
-                  isDisabled={!isValid}
-                  style={{ height: 48, borderRadius: 12, width: "100%" }}
-                  bg={MA_REUSSITE_CUSTOM_COLORS.Primary}>
-                    {!loading ? (<Text color={"white"}>Se connecter</Text>) : (<Spinner size="sm" color="white" />)}
-                </Button>
-                {/* <CustomButton
-                  onPress={handleSubmit}
-                  title="Se connecter"
-                  isDisabled={!isValid}
-                  loading={loading}
-                /> */}
-              </VStack>
-            )}
-          </Formik>
-        </Box>
-      </View>
-    </>
+            S'identifier
+          </Text>
+        </Center>
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={loginValidationSchema}
+          onSubmit={handleLogin}
+        >
+          {({ handleSubmit, isValid }) => (
+            <VStack space={4} marginTop={10}>
+              <CustomInput
+                label="Email"
+                name="email"
+                keyboardType="email-address"
+                inputRef={input1Ref}
+                onSubmitEditing={() => input2Ref.current.focus()}
+                clearButtonMode="always"
+              />
+              <CustomInput
+                label="Mot de passe"
+                name="password"
+                secureTextEntry
+                showPassword={showPassword}
+                setShowPassword={setShowPassword}
+                inputRef={input2Ref}
+                onSubmitEditing={handleSubmit}
+              />
+              <Text color={"danger.500"} textAlign={"center"} mt={3}>
+                {error}
+              </Text>
+              <CustomButton
+                onPress={handleSubmit}
+                title="Se connecter"
+                isDisabled={!isValid}
+                loading={loading}
+              />
+            </VStack>
+          )}
+        </Formik>
+      </Box>
+    </Box>
   );
 };
 

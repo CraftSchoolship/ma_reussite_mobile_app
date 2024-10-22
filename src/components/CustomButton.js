@@ -11,11 +11,11 @@ const CustomButton = ({ onPress, title, isDisabled, loading = true }) => {
       mt={"15%"}
       bg={MA_REUSSITE_CUSTOM_COLORS.Primary}
     >
-      {loading ? (
+      {!loading ? (
         <Text color={"white"}>{title}</Text>
       ) : (
         <HStack>
-          <Text color={"white"}>{` ${title}`}</Text>
+          {/* <Text color={"white"}>{` ${title}`}</Text> */}
           <Spinner size="sm" color="white" />
         </HStack>
       )}

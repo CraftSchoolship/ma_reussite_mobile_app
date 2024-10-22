@@ -10,8 +10,10 @@ const PaymentCardPlus = ({
 }) => {
   const statusPayment =
     paymentDetails.state !== "not_paid"
-      ? { color: "success.600", text: "Payé" }
-      : { color: "danger.600", text: "Non Payé" };
+      ? { color: MA_REUSSITE_CUSTOM_COLORS.Success, text: "Confirmé" }
+      : paymentDetails.deposit > 0
+      ? { color: MA_REUSSITE_CUSTOM_COLORS.Secondary, text: "En Attente" }
+      : { color: MA_REUSSITE_CUSTOM_COLORS.Danger, text: "En Attente" };
 
   const [taxName, setTaxName] = useState();
 
@@ -52,10 +54,10 @@ const PaymentCardPlus = ({
                   : MA_REUSSITE_CUSTOM_COLORS.Black
               }
               mb={2}
-              fontSize="lg"
-              fontWeight="bold"
+              fontSize={"md"}
+              fontWeight={"bold"}
             >
-              {paymentDetails.display_name}
+              {`Mois : ${paymentDetails.month}`}
             </Text>
             <Text
               color={
@@ -64,8 +66,14 @@ const PaymentCardPlus = ({
                   : MA_REUSSITE_CUSTOM_COLORS.Black
               }
               mb={2}
+              fontSize={"md"}
+              fontWeight={"bold"}
             >
-              {`Référence : ${paymentDetails.name}`}
+              {`${
+                paymentDetails.deposit > 0
+                  ? "Date du dernier paiement "
+                  : "Dernier delai"
+              } : ${paymentDetails.date}`}
             </Text>
             <Text
               color={
@@ -74,48 +82,65 @@ const PaymentCardPlus = ({
                   : MA_REUSSITE_CUSTOM_COLORS.Black
               }
               mb={2}
+              fontSize={"md"}
+              fontWeight={"bold"}
             >
-              {occupation === "student" ? "Etudiant(e) : " : "Professeur(e) : "}
-              {/* {paymentDetails.user_id[1]} */}
-              {occupation === "student" ? "Etudiant " : "Professeur "}
+              {`${paymentDetails.name} : ${paymentDetails.amount} ${paymentDetails.currency_sybol}`}
             </Text>
-            
             <Text
-              fontSize={"lg"}
-              mb={2}
               color={
                 isDarkMode
                   ? MA_REUSSITE_CUSTOM_COLORS.White
                   : MA_REUSSITE_CUSTOM_COLORS.Black
               }
+              mb={2}
+              fontSize={"md"}
+              fontWeight={"bold"}
             >
-              {occupation === "student" ? "Somme TTC : " : "Salaire : "}
-              {`${paymentDetails.amount} ${paymentDetails.currency_sybol}`}
+              {`Montant payé : ${paymentDetails.deposit} ${paymentDetails.currency_sybol}`}
             </Text>
-            {paymentDetails.state === "not_paid" && (
-              <Text
-                color={
-                  isDarkMode
-                    ? MA_REUSSITE_CUSTOM_COLORS.White
-                    : MA_REUSSITE_CUSTOM_COLORS.Black
-                }
-                mb={2}
-              >
-                {`Date d'échéance : ${paymentDetails.date.split("-")[2]} ${
-                  paymentDetails.product_id[1]
-                } ${paymentDetails.date.split("-")[0]}`}
+            <Text
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+              mb={2}
+              fontSize={"md"}
+              fontWeight={"bold"}
+            >
+              {`Montant dû : ${
+                paymentDetails.amount - paymentDetails.deposit
+              } ${paymentDetails.currency_sybol}`}
+            </Text>
+            <Text
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+              mb={2}
+              fontSize={"md"}
+              fontWeight={"bold"}
+            >
+              Statut :
+              <Text color={statusPayment.color}>
+                {` ${statusPayment.text}`}
               </Text>
-            )}
-            <Box
-              bg={statusPayment.color}
-              px={4}
-              mr={"auto"}
-              py={0.5}
+            </Text>
+
+            <Text
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
               mb={2}
-              rounded="xl"
+              fontSize={"md"}
+              fontWeight={"bold"}
             >
-              <Text color={"white"}>{statusPayment.text}</Text>
-            </Box>
+              Description : .....................
+            </Text>
           </VStack>
         </VStack>
       </HStack>
@@ -124,3 +149,16 @@ const PaymentCardPlus = ({
 };
 
 export default PaymentCardPlus;
+
+{
+  /*
+  Mois : Mai
+Dernier delai : 31/05/2024 Date du dernier payement :
+Frais de scolarité : 800 €
+Montant payé : 0 €
+Montant dû : 800€
+Statut : En Attente
+Description : .....................
+  
+  */
+}

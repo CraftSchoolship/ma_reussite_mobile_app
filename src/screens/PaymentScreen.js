@@ -25,11 +25,14 @@ import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 // Tableau des paiements
 const payments = [
   {
-    date: "Janvier 2024",
+    date: "10/01/2024",
+    month: "Janvier",
+    year: "2024",
     name: "Frais de scolarité",
     product_id: 101,
     price_subtotal: 300,
     price_total: 350,
+    deposit: 350,
     display_name: "Paiement Scolarité Janvier",
     payment_state: "paid",
     partner_id: 1,
@@ -37,11 +40,14 @@ const payments = [
     tax_ids: [1],
   },
   {
-    date: "Février 2024",
+    date: "10/02/2024",
+    month: "Février",
+    year: "2024",
     name: "Frais de scolarité",
     product_id: 102,
     price_subtotal: 300,
     price_total: 350,
+    deposit: 350,
     display_name: "Paiement Scolarité Février",
     payment_state: "paid",
     partner_id: 1,
@@ -49,11 +55,14 @@ const payments = [
     tax_ids: [1],
   },
   {
-    date: "Mars 2024",
+    date: "10/03/2024",
+    month: "Mars",
+    year: "2024",
     name: "Frais de scolarité",
     product_id: 103,
     price_subtotal: 300,
     price_total: 350,
+    deposit: 350,
     display_name: "Paiement Scolarité Mars",
     payment_state: "paid",
     partner_id: 1,
@@ -61,11 +70,14 @@ const payments = [
     tax_ids: [1],
   },
   {
-    date: "Avril 2024",
+    date: "10/04/2024",
+    month: "Avril",
+    year: "2024",
     name: "Frais de scolarité",
     product_id: 104,
     price_subtotal: 300,
     price_total: 350,
+    deposit: 200,
     display_name: "Paiement Scolarité Avril",
     payment_state: "not_paid",
     partner_id: 1,
@@ -73,11 +85,14 @@ const payments = [
     tax_ids: [1],
   },
   {
-    date: "Mai 2024",
+    date: "10/05/2024",
+    month: "Mai",
+    year: "2024",
     name: "Frais de scolarité",
     product_id: 105,
     price_subtotal: 300,
     price_total: 350,
+    deposit: 0,
     display_name: "Paiement Scolarité Mai",
     payment_state: "not_paid",
     partner_id: 1,
@@ -111,11 +126,11 @@ const PaymentScreen = () => {
       Décembre: 11,
     };
 
-    const [monthA, yearA] = a.date.split(" ");
-    const [monthB, yearB] = b.date.split(" ");
+    const [monthA, yearA] = a.date.split("/");
+    const [monthB, yearB] = b.date.split("/");
 
-    const dateA = new Date(yearA, months[monthA]);
-    const dateB = new Date(yearB, months[monthB]);
+    const dateA = new Date(yearA, monthA);
+    const dateB = new Date(yearB, monthB);
 
     return sortOrder === "recent" ? dateB - dateA : dateA - dateB;
   };
@@ -155,6 +170,7 @@ const PaymentScreen = () => {
           </Text>
 
           <Menu
+            mr={5}
             borderWidth={1}
             borderColor={
               isDarkMode
@@ -210,7 +226,7 @@ const PaymentScreen = () => {
               }}
               onPress={() => setSortOrder("oldest")}
             >
-              Plus anciens
+              Plus anciens {`${sortOrder === "oldest" ? "✓" : ""}`}
             </Menu.Item>
             <Divider />
             <Menu.Item
@@ -221,7 +237,7 @@ const PaymentScreen = () => {
               }}
               onPress={() => setSortOrder("recent")}
             >
-              Plus récents
+              Plus récents {`${sortOrder === "recent" ? "✓" : ""}`}
             </Menu.Item>
           </Menu>
         </HStack>
@@ -245,9 +261,12 @@ const PaymentScreen = () => {
                     isDarkMode={isDarkMode}
                     key={index}
                     date={payment.date}
+                    month={payment.month}
+                    year={payment.year}
                     name={payment.name}
                     product_id={payment.product_id}
                     price_subtotal={payment.price_subtotal}
+                    deposit={payment.deposit}
                     display_name={payment.display_name}
                     amount={payment.price_total}
                     state={payment.payment_state}
@@ -296,10 +315,10 @@ const PaymentScreen = () => {
                     ? MA_REUSSITE_CUSTOM_COLORS.White
                     : MA_REUSSITE_CUSTOM_COLORS.Black
                 }
-                fontSize="lg"
+                fontSize="xl"
                 fontWeight="bold"
               >
-                Détails du fiche de paie
+                Récapitulatif
               </Text>
             </Box>
             {paymentDetails.name !== undefined && (
