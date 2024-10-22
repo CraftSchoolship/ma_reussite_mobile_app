@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
-import { Box, Center, Text, VStack } from "native-base";
+import { Box, Center, Text, View, VStack, Button, Spinner } from "native-base";
 import React, { useRef, useState } from "react";
 import config from "../../http/config";
 import { authenticate, browse, read } from "../../http/http";
@@ -140,7 +140,7 @@ const LoginScreen = () => {
   };
 
   return (
-    <Box
+    <View
       flex={1}
       bg={
         isDarkMode
@@ -148,7 +148,7 @@ const LoginScreen = () => {
           : MA_REUSSITE_CUSTOM_COLORS.White
       }
     >
-      <Box flex={1} p={6} mt={9}>
+      <Box style={{ padding: 24, marginTop: 35 }}>
         <Center>
           <Text
             color={
@@ -189,17 +189,29 @@ const LoginScreen = () => {
               <Text color={"danger.500"} textAlign={"center"} mt={3}>
                 {error}
               </Text>
-              <CustomButton
+              <Button
+                onPress={handleSubmit}
+                isDisabled={!isValid}
+                style={{ height: 48, borderRadius: 12, width: "100%" }}
+                bg={MA_REUSSITE_CUSTOM_COLORS.Primary}
+              >
+                {!loading ? (
+                  <Text color={"white"}>Se connecter</Text>
+                ) : (
+                  <Spinner size="sm" color="white" />
+                )}
+              </Button>
+              {/* <CustomButton
                 onPress={handleSubmit}
                 title="Se connecter"
                 isDisabled={!isValid}
                 loading={loading}
-              />
+              /> */}
             </VStack>
           )}
         </Formik>
       </Box>
-    </Box>
+    </View>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Image, Platform } from "native-base";
+import { Box, Image } from "native-base";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useThemeContext } from "../hooks/ThemeContext";
@@ -11,22 +11,16 @@ function LoginScreenBanner() {
 
   return (
     <>
-      <StatusBar
-        backgroundColor={
-          isDarkMode
+      <Box
+        style={{
+          paddingTop: insets.top + 10,
+          backgroundColor: isDarkMode
             ? MA_REUSSITE_CUSTOM_COLORS.Black
-            : MA_REUSSITE_CUSTOM_COLORS.White
-        }
-        barStyle={isDarkMode ? "light-content" : "dark-content"}
-      />
-      {/* {isDarkMode ? (
-        <StatusBar barStyle={"light-content"} backgroundColor={"black"} />
-      ) : (
-        <StatusBar barStyle={"dark-content"} backgroundColor={"white"} />
-      )} */}
-      <Box style={{ paddingTop: insets.top }}>
+            : MA_REUSSITE_CUSTOM_COLORS.White,
+        }}
+      >
         <Image
-          size="sm"
+          size="md"
           w={"full"}
           backgroundColor={MA_REUSSITE_CUSTOM_COLORS.Primary}
           resizeMode="contain"
