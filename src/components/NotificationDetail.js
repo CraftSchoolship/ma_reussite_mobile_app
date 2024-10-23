@@ -3,9 +3,11 @@ import { Box, Button, HStack, Icon, Text, VStack } from "native-base";
 import React from "react";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { useNavigation } from "@react-navigation/native";
 
 export const NotificationDetail = ({ notification, index }) => {
   const { isDarkMode } = useThemeContext();
+  const navigation = useNavigation();
 
   return (
     <Box alignItems={"center"}>
@@ -43,7 +45,13 @@ export const NotificationDetail = ({ notification, index }) => {
       </Box>
 
       <Box w={"4/6"} mt={"5/6"}>
-        <Button bg={MA_REUSSITE_CUSTOM_COLORS.Secondary}>
+        <Button
+          bg={MA_REUSSITE_CUSTOM_COLORS.Secondary}
+          _pressed={{ bg: MA_REUSSITE_CUSTOM_COLORS.Secondary, opacity: 0.5 }}
+          onPress={() => {
+            navigation.navigate(notification?.redirectTo);
+          }}
+        >
           <Text
             fontWeight={"bold"}
             fontSize={"lg"}

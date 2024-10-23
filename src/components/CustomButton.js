@@ -8,14 +8,12 @@ const CustomButton = ({ onPress, title, isDisabled, loading = true }) => {
       onPress={onPress}
       isDisabled={isDisabled}
       style={{ height: 48, borderRadius: 12 }}
-      mt={"15%"}
       bg={MA_REUSSITE_CUSTOM_COLORS.Primary}
     >
       {!loading ? (
         <Text color={"white"}>{title}</Text>
       ) : (
         <HStack>
-          {/* <Text color={"white"}>{` ${title}`}</Text> */}
           <Spinner size="sm" color="white" />
         </HStack>
       )}

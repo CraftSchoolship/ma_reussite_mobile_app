@@ -1,9 +1,6 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import React, { useEffect, useState } from "react";
 import { TabNavigator } from "./TabNavigator";
-// import { ParentTabNavigator } from "./ParentTabNavigator";
-// import { TeacherTabNavigator } from "./TeacherTabNavigator";
-// import { AdminTabNavigator } from "./AdminTabNavigator";
 import CustomDrawerContent from "../components/CustomDrawerContent";
 import { getObject } from "../api/apiClient";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -11,6 +8,7 @@ import { Icon, IconButton } from "native-base";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { ProfileScreen } from "../screens";
 import SessionsScreen from "../screens/SessionsScreen";
+import ChildrenScreen from "../screens/ChildrenScreen";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const Drawer = createDrawerNavigator();
@@ -49,25 +47,9 @@ const DrawerNavigator = () => {
     fetchChildrenData();
   }, [connectedUser]);
 
-  // const getTabNavigatorForRole = (role) => {
-  //   switch (role) {
-  //     case "parent":
-  //       return ParentTabNavigator;
-  //     case "teacher":
-  //       return TeacherTabNavigator;
-  //     case "admin":
-  //       return AdminTabNavigator;
-  //     case "student":
-  //     default:
-  //       return TabNavigator;
-  //   }
-  // };
-
   if (!connectedUser) {
     return null;
   }
-
-  // const TabNavigatorComponent = getTabNavigatorForRole(connectedUser.role);
 
   return (
     <Drawer.Navigator
@@ -135,6 +117,15 @@ const DrawerNavigator = () => {
         }}
         name="Session"
         component={SessionsScreen}
+      />
+
+      <Drawer.Screen
+        options={{
+          headerBackTitleVisible: false,
+          headerShown: false,
+        }}
+        name="Children"
+        component={ChildrenScreen}
       />
     </Drawer.Navigator>
   );

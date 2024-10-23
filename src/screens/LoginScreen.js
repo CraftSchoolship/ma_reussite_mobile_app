@@ -189,24 +189,12 @@ const LoginScreen = () => {
               <Text color={"danger.500"} textAlign={"center"} mt={3}>
                 {error}
               </Text>
-              <Button
-                onPress={handleSubmit}
-                isDisabled={!isValid}
-                style={{ height: 48, borderRadius: 12, width: "100%" }}
-                bg={MA_REUSSITE_CUSTOM_COLORS.Primary}
-              >
-                {!loading ? (
-                  <Text color={"white"}>Se connecter</Text>
-                ) : (
-                  <Spinner size="sm" color="white" />
-                )}
-              </Button>
-              {/* <CustomButton
+              <CustomButton
                 onPress={handleSubmit}
                 title="Se connecter"
                 isDisabled={!isValid}
                 loading={loading}
-              /> */}
+              />
             </VStack>
           )}
         </Formik>

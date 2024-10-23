@@ -11,9 +11,9 @@ import { NotificationDetail } from "../components/NotificationDetail";
 const NotificationScreen = () => {
   const navigation = useNavigation();
   const { isDarkMode } = useThemeContext();
-  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-  const [id, setId] = useState();
-  const [notifications, setNotifications] = useState([
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [selectedNotificationId, setSelectedNotificationId] = useState(null);
+  const [notificationList, updateNotificationList] = useState([
     {
       id: 1,
       title: "Mise à jour de l'horaire du Cours Big Data",
@@ -21,6 +21,7 @@ const NotificationScreen = () => {
         "L’horaire de votre cours de Big Data a été mis à jour, la nouvelle session se déroulera le 03/06/24 à partir de 16h et non pas le 02/06/24.",
       time: "3:00 PM",
       unread: true,
+      redirectTo: "Groups",
     },
     {
       id: 2,
@@ -29,6 +30,7 @@ const NotificationScreen = () => {
         "Notez que pour votre séance de Big Data, un nouvel enseignant a été attribué.",
       time: "10:00 AM",
       unread: true,
+      redirectTo: "Groups",
     },
     {
       id: 3,
@@ -37,6 +39,7 @@ const NotificationScreen = () => {
         "Vous avez effectué la totalité du paiement du mois de Mars.",
       time: "03/06/24",
       unread: false,
+      redirectTo: "Payment",
     },
     {
       id: 4,
@@ -44,6 +47,7 @@ const NotificationScreen = () => {
       description: "L'horaire de votre cours de Big Data a été mis à jour.",
       time: "10/05/24",
       unread: false,
+      redirectTo: "Groups",
     },
   ]);
 
@@ -57,24 +61,19 @@ const NotificationScreen = () => {
         }
         py={2}
         shadow={4}
-        borderBottomRadius={"xl"}
+        borderBottomRadius="xl"
       >
-        {isNotificationOpen && (
+        {notificationOpen && (
           <Box
-            position={"absolute"}
+            position="absolute"
             top={0}
             left={0}
             zIndex={2}
             alignItems="center"
-            w={"10%"}
-            bg={
-              isDarkMode
-                ? MA_REUSSITE_CUSTOM_COLORS.Black
-                : MA_REUSSITE_CUSTOM_COLORS.White
-            }
+            w="10%"
           >
             <IconButton
-              mr={"auto"}
+              mr="auto"
               icon={
                 <MaterialIcons
                   name="chevron-left"
@@ -86,7 +85,7 @@ const NotificationScreen = () => {
                   }
                 />
               }
-              onPress={() => setIsNotificationOpen(false)}
+              onPress={() => setNotificationOpen(false)}
             />
           </Box>
         )}
@@ -98,7 +97,7 @@ const NotificationScreen = () => {
           }
           fontSize="xl"
           fontWeight="bold"
-          textAlign={"center"}
+          textAlign="center"
           mb={2}
         >
           Notifications
@@ -106,20 +105,20 @@ const NotificationScreen = () => {
       </Box>
       <ScrollView py={4} flexGrow={1}>
         <VStack>
-          {isNotificationOpen ? (
+          {notificationOpen ? (
             <NotificationDetail
-              notification={notifications[id - 1]}
-              index={id}
+              notification={notificationList[selectedNotificationId - 1]}
+              index={selectedNotificationId}
             />
           ) : (
-            notifications.map((notification, index) => (
+            notificationList.map((notification, index) => (
               <NotificationCard
                 key={notification.id}
-                setId={setId}
+                setId={setSelectedNotificationId}
                 notification={notification}
                 index={index}
-                setIsNotificationOpen={setIsNotificationOpen}
-                setNotifications={setNotifications}
+                setIsNotificationOpen={setNotificationOpen}
+                setNotifications={updateNotificationList}
               />
             ))
           )}
@@ -130,36 +129,3 @@ const NotificationScreen = () => {
 };
 
 export default NotificationScreen;
-
-/* -------------------------------------------------------------------------- */
-/*                                  VERSION 2                                 */
-/* -------------------------------------------------------------------------- */
-
-// import { useNavigation } from "@react-navigation/native";
-// import { Box, Center, Image } from "native-base";
-// import React from "react";
-// import { BackgroundWrapper } from "../components";
-
-// const ActivityScreen = () => {
-//   const navigation = useNavigation();
-
-//   return (
-//     <Box flex={1} bg="white">
-//       <BackgroundWrapper navigation={navigation}>
-//         <Center minH={"80%"}>
-//           <Image
-//             size="sm"
-//             w={"90%"}
-//             resizeMode="contain"
-//             minH={"70%"}
-//             p={2}
-//             source={require("../../assets/images/coming_soon.png")}
-//             alt="Alternate Text"
-//           />
-//         </Center>
-//       </BackgroundWrapper>
-//     </Box>
-//   );
-// };
-
-// export default ActivityScreen;

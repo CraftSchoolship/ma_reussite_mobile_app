@@ -55,7 +55,6 @@ const mockGroups = [
 ];
 
 const GroupScreen = ({ navigation }) => {
-  const route = useRoute();
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const { isDarkMode } = useThemeContext();
