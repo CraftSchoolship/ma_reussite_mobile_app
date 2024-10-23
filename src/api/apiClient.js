@@ -55,17 +55,4 @@ const getArray = async (key) => {
   }
 };
 
-export {
-  // authenticate,
-  // jsonrpcRequest,
-  // createRecord,
-  // updateRecord,
-  // deleteRecord,
-  // customRpcCall,
-  storeString,
-  getString,
-  storeObject,
-  getObject,
-  storeArray,
-  getArray,
-};
+export { storeString, getString, storeObject, getObject, storeArray, getArray };
