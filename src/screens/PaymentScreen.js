@@ -356,7 +356,7 @@ import React, { useState, useEffect } from "react";
 import { BackgroundWrapper, PaymentCard, PaymentCardPlus } from "../components";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
-import { browse, read, search_read } from "../../http/http";
+import { browse } from "../../http/http";
 import { getObject } from "../api/apiClient";
 
 const PaymentScreen = () => {
@@ -384,35 +384,16 @@ const PaymentScreen = () => {
         const userId = await getObject("user_id");
         if (userId) {
           const paymentsData = await browse(
-            "craft.invoice",
-            [
-              "student_id",
-              "fee_line_ids",
-              "installment_line_ids",
-              "state",
-              "payment_date",
-              "display_name",
-              "amount_untaxed",
-              "amount_total",
-              "amount_paid",
-              "currency_symbol",
-              "partner_id",
-              "tax_ids",
-            ],
+            "craft.tuition.invoice",
+            ["due_date", "state", "amount", "currency_id", "amount"],
             [["student_id", "=", parseInt(userId)]]
           );
 
           const transformedPayments = paymentsData.map((payment) => ({
-            date: payment.payment_date,
-            name: payment.display_name,
-            product_id: payment.fee_line_ids?.[0]?.product_id,
-            price_subtotal: payment.amount_untaxed,
-            price_total: payment.amount_total,
-            deposit: payment.amount_paid,
-            payment_state: payment.state,
-            partner_id: payment.partner_id,
-            currency_symbol: payment.currency_symbol,
-            tax_ids: payment.tax_ids,
+            date: payment.due_date,
+            state: payment.state,
+            amount: payment.amount,
+            currency_id: payment.currency_id,
           }));
 
           setSortedPayments(transformedPayments.sort(compareDates));
@@ -427,7 +408,6 @@ const PaymentScreen = () => {
     fetchPayments();
   }, [sortOrder]);
 
-  // Handle payment card press
   const handlePress = (paymentDetails) => {
     setPaymentDetails(paymentDetails);
     onOpen();
@@ -548,15 +528,9 @@ const PaymentScreen = () => {
                     isDarkMode={isDarkMode}
                     key={index}
                     date={payment.date}
-                    name={payment.name}
-                    product_id={payment.product_id}
-                    price_subtotal={payment.price_subtotal}
-                    deposit={payment.deposit}
-                    amount={payment.price_total}
-                    state={payment.payment_state}
-                    user_id={payment.partner_id}
-                    currency_symbol={payment.currency_symbol}
-                    tax_ids={payment.tax_ids}
+                    state={payment.state}
+                    amount={payment.amount}
+                    currency_id={payment.currency_id}
                     handlePress={handlePress}
                     onOpen={onOpen}
                   />
