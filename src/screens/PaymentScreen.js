@@ -380,23 +380,47 @@ const PaymentScreen = () => {
   useEffect(() => {
     const fetchPayments = async () => {
       setLoading(true);
+
       try {
         const userId = await getObject("user_id");
         if (userId) {
-          const paymentsData = await browse(
-            "craft.tuition.invoice",
-            ["due_date", "state", "amount", "currency_id", "amount"],
-            [["student_id", "=", parseInt(userId)]]
+          const studentData = await browse(
+            "res.users",
+            ["craft_student_id"],
+            [["id", "=", parseInt(userId)]]
           );
 
-          const transformedPayments = paymentsData.map((payment) => ({
-            date: payment.due_date,
-            state: payment.state,
-            amount: payment.amount,
-            currency_id: payment.currency_id,
-          }));
+          // Log the retrieved student data
+          console.log("Student Data:", studentData);
 
-          setSortedPayments(transformedPayments.sort(compareDates));
+          const studentTuple = studentData[0]?.craft_student_id;
+
+          // Extract the student ID from the tuple
+          const studentId = Array.isArray(studentTuple)
+            ? studentTuple[0]
+            : null;
+
+          // Ensure studentId is valid and an integer
+          if (studentId && typeof studentId === "number") {
+            const paymentsData = await browse(
+              "craft.tuition.invoice",
+              ["due_date", "amount", "state", "currency_id"],
+              [["student_id", "=", studentId]]
+            );
+
+            console.log("Payments Data:", paymentsData);
+
+            const transformedPayments = paymentsData.map((payment) => ({
+              date: payment.due_date,
+              state: payment.state,
+              amount: payment.amount,
+              currency_id: payment.currency_id,
+            }));
+
+            setSortedPayments(transformedPayments.sort(compareDates));
+          } else {
+            console.error("Invalid student ID:", studentId);
+          }
         }
       } catch (error) {
         console.error("Error fetching payments:", error);

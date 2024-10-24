@@ -15,15 +15,9 @@ const Tab = createMaterialTopTabNavigator();
 const SessionsScreen = ({ navigation }) => {
   const [visibleTab, setVisibleTab] = useState("first");
   const { isDarkMode } = useThemeContext();
-  const [groupName, setGroupName] = useState("");
   const route = useRoute();
-
-  useEffect(() => {
-    if (route) {
-      const groupName = route?.params?.groupName;
-      setGroupName(groupName);
-    }
-  }, [route]);
+  const groupName = route?.params?.groupName;
+  const students = route?.params?.students || [];
 
   const tabBarOptions = (margin) => ({
     tabBarStyle: {
@@ -89,27 +83,30 @@ const SessionsScreen = ({ navigation }) => {
                     : MA_REUSSITE_CUSTOM_COLORS.White
                 }
               >
-                {visibleTab === "first" && (
-                  <IconButton
-                    icon={
-                      <MaterialIcons
-                        name="chevron-right"
-                        size={24}
-                        color={
-                          isDarkMode
-                            ? MA_REUSSITE_CUSTOM_COLORS.White
-                            : MA_REUSSITE_CUSTOM_COLORS.Black
-                        }
-                      />
-                    }
-                    onPress={() => setVisibleTab("second")}
-                  />
-                )}
+                <IconButton
+                  icon={
+                    <MaterialIcons
+                      name="chevron-right"
+                      size={24}
+                      color={
+                        isDarkMode
+                          ? MA_REUSSITE_CUSTOM_COLORS.White
+                          : MA_REUSSITE_CUSTOM_COLORS.Black
+                      }
+                    />
+                  }
+                  onPress={() => setVisibleTab("second")}
+                />
               </Box>
               <Tab.Navigator screenOptions={tabBarOptions("right")}>
                 <Tab.Screen
                   name="Participants"
-                  children={() => <ParticipantList isDarkMode={isDarkMode} />}
+                  children={() => (
+                    <ParticipantList
+                      isDarkMode={isDarkMode}
+                      students={students}
+                    />
+                  )}
                 />
                 <Tab.Screen
                   name="Sessions passées"
@@ -133,23 +130,20 @@ const SessionsScreen = ({ navigation }) => {
                     : MA_REUSSITE_CUSTOM_COLORS.White
                 }
               >
-                {visibleTab === "second" && (
-                  <IconButton
-                    mr={"auto"}
-                    icon={
-                      <MaterialIcons
-                        name="chevron-left"
-                        size={24}
-                        color={
-                          isDarkMode
-                            ? MA_REUSSITE_CUSTOM_COLORS.White
-                            : MA_REUSSITE_CUSTOM_COLORS.Black
-                        }
-                      />
-                    }
-                    onPress={() => setVisibleTab("first")}
-                  />
-                )}
+                <IconButton
+                  icon={
+                    <MaterialIcons
+                      name="chevron-left"
+                      size={24}
+                      color={
+                        isDarkMode
+                          ? MA_REUSSITE_CUSTOM_COLORS.White
+                          : MA_REUSSITE_CUSTOM_COLORS.Black
+                      }
+                    />
+                  }
+                  onPress={() => setVisibleTab("first")}
+                />
               </Box>
               <Tab.Navigator screenOptions={tabBarOptions("left")}>
                 <Tab.Screen
