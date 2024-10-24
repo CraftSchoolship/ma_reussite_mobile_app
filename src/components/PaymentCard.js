@@ -12,7 +12,7 @@ const PaymentCard = ({
   product_id,
   display_name,
   user_id,
-  currency_sybol,
+  currency_symbol,
   handlePress,
   tax_ids,
   price_subtotal,
@@ -38,7 +38,7 @@ const PaymentCard = ({
     product_id: product_id,
     display_name: display_name,
     user_id: user_id,
-    currency_sybol: currency_sybol,
+    currency_symbol: currency_symbol,
     tax_ids: tax_ids,
     price_subtotal: price_subtotal,
   };
@@ -67,9 +67,9 @@ const PaymentCard = ({
                 fontSize="lg"
                 fontWeight="bold"
               >
-                {`${month} ${year}`}
+                {`${name} : ${amount} ${currency_symbol}`}
               </Text>
-              <Text
+              {/*<Text
                 fontSize={"md"}
                 color={
                   isDarkMode
@@ -77,15 +77,15 @@ const PaymentCard = ({
                     : MA_REUSSITE_CUSTOM_COLORS.Black
                 }
               >
-                {`${name} : ${amount} ${currency_sybol}`}
-              </Text>
+                {`${name} : ${amount} ${currency_symbol}`}
+              </Text>*/}
             </Box>
             <Box
               alignItems={"flex-end"}
               w={"35%"}
               h={"100%"}
               mx={"auto"}
-              mt={5}
+              mt={0}
             >
               <Box
                 mt={2}

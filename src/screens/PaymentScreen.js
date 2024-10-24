@@ -384,43 +384,43 @@ const PaymentScreen = () => {
       try {
         const userId = await getObject("user_id");
         if (userId) {
-          const studentData = await browse(
-            "res.users",
-            ["craft_student_id"],
-            [["id", "=", parseInt(userId)]]
-          );
+          // const studentData = await browse(
+          //   "res.users",
+          //   ["craft_student_id"],
+          //   [["id", "=", parseInt(userId)]]
+          // );
 
           // Log the retrieved student data
-          console.log("Student Data:", studentData);
+          // console.log("Student Data:", studentData);
 
-          const studentTuple = studentData[0]?.craft_student_id;
+          // const studentTuple = studentData[0]?.craft_student_id;
 
           // Extract the student ID from the tuple
-          const studentId = Array.isArray(studentTuple)
-            ? studentTuple[0]
-            : null;
+          // const studentId = Array.isArray(studentTuple)
+          //   ? studentTuple[0]
+          //   : null;
 
           // Ensure studentId is valid and an integer
-          if (studentId && typeof studentId === "number") {
-            const paymentsData = await browse(
-              "craft.tuition.invoice",
-              ["due_date", "amount", "state", "currency_id"],
-              [["student_id", "=", studentId]]
-            );
+          // if (studentId && typeof studentId === "number") {
+          const paymentsData = await browse(
+            "craft.tuition.invoice",
+            ["due_date", "amount", "state", "order_id", "move_id", "currency_id"],
+            []//[["student_id", "=", studentId]],
+          );
 
-            console.log("Payments Data:", paymentsData);
+          console.log("Payments Data:", paymentsData);
 
-            const transformedPayments = paymentsData.map((payment) => ({
-              date: payment.due_date,
-              state: payment.state,
-              amount: payment.amount,
-              currency_id: payment.currency_id,
-            }));
+          // const transformedPayments = paymentsData.map((payment) => ({
+          //   date: payment.due_date,
+          //   state: payment.state,
+          //   amount: payment.amount,
+          //   currency_id: payment.currency_id,
+          // }));
 
-            setSortedPayments(transformedPayments.sort(compareDates));
-          } else {
-            console.error("Invalid student ID:", studentId);
-          }
+          setSortedPayments(paymentsData.sort(compareDates));
+          // } else {
+          //   console.error("Invalid student ID:", studentId);
+          // }
         }
       } catch (error) {
         console.error("Error fetching payments:", error);
@@ -551,10 +551,11 @@ const PaymentScreen = () => {
                   <PaymentCard
                     isDarkMode={isDarkMode}
                     key={index}
-                    date={payment.date}
+                    date={payment.due_date}
                     state={payment.state}
                     amount={payment.amount}
-                    currency_id={payment.currency_id}
+                    name={payment.order_id[1]}
+                    currency_symbol={payment.currency_id[1]}
                     handlePress={handlePress}
                     onOpen={onOpen}
                   />

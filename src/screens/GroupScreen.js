@@ -202,19 +202,11 @@ const GroupScreen = ({ navigation }) => {
         if (userId) {
           const groupsData = await browse(
             "craft.class",
-            ["name", "student_ids", "level_id"],
+            ["name", "student_ids", "level_id", "hourly_volume_progress"],
             []
           );
 
-          const transformedGroups = groupsData.map((group) => ({
-            id: group.id, // Add id for navigation
-            name: group.name,
-            level: group.level_id[1],
-            students: group.student_ids,
-            progress: Math.floor(Math.random() * 101),
-          }));
-
-          setGroups(transformedGroups);
+          setGroups(groupsData);
         }
       } catch (error) {
         console.error("Error fetching groups:", error);
@@ -261,7 +253,7 @@ const GroupScreen = ({ navigation }) => {
             fontWeight="bold"
             fontSize="lg"
           >
-            {groups.length > 0 ? groups[0].level : "Pas de niveau"}
+            {groups.length > 0 ? groups[0].level_id[1] : "Pas de niveau"}
           </Text>
         </Box>
         {loading ? (
@@ -298,7 +290,7 @@ const GroupScreen = ({ navigation }) => {
                       <HStack alignItems="center">
                         <CircularProgress
                           isDarkMode={isDarkMode}
-                          progress={group.progress}
+                          progress={group.hourly_volume_progress}
                         />
                         <Box flex={1} mr={5} alignItems="center">
                           <Text
