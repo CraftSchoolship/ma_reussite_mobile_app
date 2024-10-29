@@ -6,7 +6,6 @@ import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 const PaymentCardPlus = ({
   isDarkMode,
   paymentDetails,
-  occupation = "student",
 }) => {
   const statusPayment =
     paymentDetails.state !== "not_paid"

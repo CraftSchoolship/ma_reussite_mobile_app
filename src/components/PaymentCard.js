@@ -1,47 +1,36 @@
 import { Box, HStack, Pressable, Text, VStack } from "native-base";
-import React from "react";
+import React, { useEffect } from "react";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
-const PaymentCard = ({
-  month,
-  year,
-  amount,
-  name,
-  state,
-  date,
-  product_id,
-  display_name,
-  user_id,
-  currency_sybol,
-  handlePress,
-  tax_ids,
-  price_subtotal,
-  occupation = "student",
-  deposit,
-  isDarkMode,
-}) => {
+const PaymentCard = ({ payment, handlePress, isDarkMode, itemId }) => {
   const statusPayment =
-    state !== "not_paid"
+    payment?.state !== "not_paid"
       ? { color: MA_REUSSITE_CUSTOM_COLORS.Success, text: "Confirmé" }
-      : deposit > 0
+      : payment?.deposit > 0
       ? { color: MA_REUSSITE_CUSTOM_COLORS.Secondary, text: "En Attente" }
       : { color: MA_REUSSITE_CUSTOM_COLORS.Danger, text: "En Attente" };
 
   const paymentDetails = {
-    month: month,
-    year: year,
-    deposit: deposit,
-    amount: amount,
-    name: name,
-    state: state,
-    date: date,
-    product_id: product_id,
-    display_name: display_name,
-    user_id: user_id,
-    currency_sybol: currency_sybol,
-    tax_ids: tax_ids,
-    price_subtotal: price_subtotal,
+    month: payment?.month,
+    year: payment?.year,
+    deposit: payment?.deposit,
+    amount: payment?.price_total,
+    name: payment?.name,
+    state: payment?.state,
+    date: payment?.date,
+    product_id: payment?.product_id,
+    display_name: payment?.display_name,
+    user_id: payment?.user_id,
+    currency_sybol: payment?.currency_sybol,
+    tax_ids: payment?.tax_ids,
+    price_subtotal: payment?.price_subtotal,
   };
+
+  useEffect(() => {
+    if (itemId !== null && payment?.id === itemId) {
+      handlePress(paymentDetails);
+    }
+  }, [itemId, payment?.id, handlePress]);
 
   return (
     <Box borderRadius={10} overflow={"hidden"}>
@@ -67,7 +56,7 @@ const PaymentCard = ({
                 fontSize="lg"
                 fontWeight="bold"
               >
-                {`${month} ${year}`}
+                {`${payment?.month} ${payment?.year}`}
               </Text>
               <Text
                 fontSize={"md"}
@@ -77,7 +66,7 @@ const PaymentCard = ({
                     : MA_REUSSITE_CUSTOM_COLORS.Black
                 }
               >
-                {`${name} : ${amount} ${currency_sybol}`}
+                {`${payment?.name} : ${payment?.amount} ${payment?.currency_sybol}`}
               </Text>
             </Box>
             <Box
@@ -93,7 +82,6 @@ const PaymentCard = ({
                 bg={statusPayment.color}
                 px={4}
                 py={0.5}
-                // shadow={1}
                 rounded="xl"
               >
                 <Text color={MA_REUSSITE_CUSTOM_COLORS.White}>

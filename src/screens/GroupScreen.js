@@ -64,10 +64,21 @@ const mockGroups = [
 ];
 
 const GroupScreen = ({ navigation }) => {
-  const route = useRoute();
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const { isDarkMode } = useThemeContext();
+  const route = useRoute();
+  const itemId = route?.params?.itemId || null;
+
+  if (itemId !== null) {
+    mockGroups.map((group) => {
+      if (group.id === itemId) {
+        navigation.navigate("Session", {
+          groupName: group.name,
+        });
+      }
+    });
+  }
 
   useEffect(() => {
     setTimeout(() => {
@@ -179,6 +190,7 @@ const GroupScreen = ({ navigation }) => {
 };
 
 export default GroupScreen;
+
 // import {
 //   Box,
 //   Center,

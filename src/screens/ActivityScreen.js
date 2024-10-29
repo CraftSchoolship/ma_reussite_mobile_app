@@ -22,32 +22,35 @@ const NotificationScreen = () => {
       time: "3:00 PM",
       unread: true,
       redirectTo: "Groups",
+      itemId: 1,
     },
     {
       id: 2,
-      title: "Changement d'enseignant du Cours Big Data",
+      title: "Changement d'enseignant du Cours Machine Learning",
       description:
-        "Notez que pour votre séance de Big Data, un nouvel enseignant a été attribué.",
+        "Notez que pour votre séance de Machine Learning, un nouvel enseignant a été attribué.",
       time: "10:00 AM",
       unread: true,
       redirectTo: "Groups",
+      itemId: 4,
     },
     {
       id: 3,
-      title: "Facturation du Mois de Mars",
-      description:
-        "Vous avez effectué la totalité du paiement du mois de Mars.",
+      title: "Facturation du Mois de Mai",
+      description: "Vous avez effectué la totalité du paiement du mois de Mai.",
       time: "03/06/24",
       unread: false,
       redirectTo: "Payment",
+      itemId: 4,
     },
     {
       id: 4,
-      title: "Mise à jour de l'horaire du Cours Big Data",
-      description: "L'horaire de votre cours de Big Data a été mis à jour.",
+      title: "Mise à jour de l'horaire du Cours AWS Cloud",
+      description: "L'horaire de votre cours de AWS Cloud a été mis à jour.",
       time: "10/05/24",
       unread: false,
       redirectTo: "Groups",
+      itemId: 2,
     },
   ]);
 

@@ -49,7 +49,9 @@ export const NotificationDetail = ({ notification, index }) => {
           bg={MA_REUSSITE_CUSTOM_COLORS.Secondary}
           _pressed={{ bg: MA_REUSSITE_CUSTOM_COLORS.Secondary, opacity: 0.5 }}
           onPress={() => {
-            navigation.navigate(notification?.redirectTo);
+            navigation.navigate(notification?.redirectTo, {
+              itemId: notification?.itemId,
+            });
           }}
         >
           <Text
