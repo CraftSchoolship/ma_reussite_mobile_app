@@ -319,24 +319,6 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
           });
         }}
       />
-      <DrawerItem
-        label={"Select Child"}
-        labelStyle={{
-          textAlign: "center",
-          color: "#fff",
-          width: "115%",
-        }}
-        style={{
-          backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-          alignContent: "center",
-        }}
-        px={4}
-        w={"100%"}
-        bottom={"10%"}
-        onPress={() => {
-          navigation.navigate("Children");
-        }}
-      />
     </>
   );
 };

@@ -176,12 +176,20 @@ const AttendanceTable = ({ isDarkMode, subjectIds, isFutureSessions }) => {
         </VStack>
       </HStack>
 
-      <FlatList
-        data={attendanceData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        showsVerticalScrollIndicator={false}
-      />
+      {attendanceData.length === 0 ? (
+        <Box alignItems="center" padding={4}>
+          <Text color={isDarkMode ? "gray.500" : "gray.700"}>
+            There is nothing for now.
+          </Text>
+        </Box>
+      ) : (
+        <FlatList
+          data={attendanceData}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </Box>
   );
 };

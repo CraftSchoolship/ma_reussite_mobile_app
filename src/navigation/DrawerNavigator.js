@@ -8,7 +8,6 @@ import { Icon, IconButton } from "native-base";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { ProfileScreen } from "../screens";
 import SessionsScreen from "../screens/SessionsScreen";
-import ChildrenScreen from "../screens/ChildrenScreen";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const Drawer = createDrawerNavigator();
@@ -117,15 +116,6 @@ const DrawerNavigator = () => {
         }}
         name="Session"
         component={SessionsScreen}
-      />
-
-      <Drawer.Screen
-        options={{
-          headerBackTitleVisible: false,
-          headerShown: false,
-        }}
-        name="Children"
-        component={ChildrenScreen}
       />
     </Drawer.Navigator>
   );
