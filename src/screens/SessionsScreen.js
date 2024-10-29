@@ -18,7 +18,7 @@ const SessionsScreen = ({}) => {
   const route = useRoute();
   const groupName = route?.params?.groupName;
   const students = route?.params?.students || [];
-  const subjectIds = route?.params?.subjectIds || [];
+  const subjectId = route?.params?.subjectId || 0;
 
   const tabBarOptions = (margin) => ({
     tabBarStyle: {
@@ -68,40 +68,50 @@ const SessionsScreen = ({}) => {
       </Box>
       <Box mt={4} flex={1}>
         <NavigationContainer independent={true}>
-          {visibleTab === "first" ? (
-            <>
-              <Box
-                position={"absolute"}
-                top={0}
-                right={0}
-                zIndex={2}
-                alignItems="center"
-                w={"10%"}
-                h={12}
-                bg={
-                  isDarkMode
-                    ? MA_REUSSITE_CUSTOM_COLORS.Black
-                    : MA_REUSSITE_CUSTOM_COLORS.White
+          <>
+            <Box
+              position={"absolute"}
+              top={0}
+              right={visibleTab === "first" ? 0 : null}
+              left={visibleTab === "second" ? 0 : null}
+              zIndex={2}
+              alignItems="center"
+              w={"10%"}
+              h={12}
+              bg={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.Black
+                  : MA_REUSSITE_CUSTOM_COLORS.White
+              }
+            >
+              <IconButton
+                icon={
+                  <MaterialIcons
+                    name={
+                      visibleTab === "first" ? "chevron-right" : "chevron-left"
+                    }
+                    size={24}
+                    color={
+                      isDarkMode
+                        ? MA_REUSSITE_CUSTOM_COLORS.White
+                        : MA_REUSSITE_CUSTOM_COLORS.Black
+                    }
+                  />
                 }
-              >
-                <IconButton
-                  icon={
-                    <MaterialIcons
-                      name="chevron-right"
-                      size={24}
-                      color={
-                        isDarkMode
-                          ? MA_REUSSITE_CUSTOM_COLORS.White
-                          : MA_REUSSITE_CUSTOM_COLORS.Black
-                      }
-                    />
-                  }
-                  onPress={() => setVisibleTab("second")}
-                />
-              </Box>
-              <Tab.Navigator screenOptions={tabBarOptions("right")}>
+                onPress={() =>
+                  setVisibleTab(visibleTab === "first" ? "second" : "first")
+                }
+              />
+            </Box>
+            <Tab.Navigator
+              screenOptions={tabBarOptions(
+                visibleTab === "first" ? "right" : "left"
+              )}
+            >
+              {visibleTab === "first" ? (
                 <Tab.Screen
                   name="Participants"
+                  id="participants"
                   children={() => (
                     <ParticipantList
                       isDarkMode={isDarkMode}
@@ -109,73 +119,33 @@ const SessionsScreen = ({}) => {
                     />
                   )}
                 />
-                <Tab.Screen
-                  name="Présences"
-                  children={() => (
-                    <AttendanceTable
-                      isDarkMode={isDarkMode}
-                      subjectIds={subjectIds}
-                      isFutureSessions={false}
-                    />
-                  )}
-                />
-              </Tab.Navigator>
-            </>
-          ) : (
-            <>
-              <Box
-                position={"absolute"}
-                top={0}
-                left={0}
-                zIndex={2}
-                alignItems="center"
-                w={"10%"}
-                h={12}
-                bg={
-                  isDarkMode
-                    ? MA_REUSSITE_CUSTOM_COLORS.Black
-                    : MA_REUSSITE_CUSTOM_COLORS.White
-                }
-              >
-                <IconButton
-                  icon={
-                    <MaterialIcons
-                      name="chevron-left"
-                      size={24}
-                      color={
-                        isDarkMode
-                          ? MA_REUSSITE_CUSTOM_COLORS.White
-                          : MA_REUSSITE_CUSTOM_COLORS.Black
-                      }
-                    />
-                  }
-                  onPress={() => setVisibleTab("first")}
-                />
-              </Box>
-              <Tab.Navigator screenOptions={tabBarOptions("left")}>
-                <Tab.Screen
-                  name="Présences"
-                  children={() => (
-                    <AttendanceTable
-                      isDarkMode={isDarkMode}
-                      subjectIds={subjectIds}
-                      isFutureSessions={false}
-                    />
-                  )}
-                />
+              ) : null}
+              <Tab.Screen
+                name="Présences"
+                id="attendance"
+                children={() => (
+                  <AttendanceTable
+                    isDarkMode={isDarkMode}
+                    subjectId={subjectId}
+                    isFutureSessions={false}
+                  />
+                )}
+              />
+              {visibleTab === "second" ? (
                 <Tab.Screen
                   name="Sessions futures"
+                  id="sessions"
                   children={() => (
                     <AttendanceTable
                       isDarkMode={isDarkMode}
-                      subjectIds={subjectIds}
+                      subjectId={subjectId}
                       isFutureSessions={true}
                     />
                   )}
                 />
-              </Tab.Navigator>
-            </>
-          )}
+              ) : null}
+            </Tab.Navigator>
+          </>
         </NavigationContainer>
       </Box>
     </Box>

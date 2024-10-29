@@ -33,7 +33,7 @@ const GroupScreen = ({ navigation }) => {
               "student_ids",
               "level_id",
               "hourly_volume_progress",
-              "subject_ids",
+              "subject_id",
             ],
             []
           );
@@ -64,7 +64,7 @@ const GroupScreen = ({ navigation }) => {
       navigation.navigate("Session", {
         groupName: group.name,
         students: studentNames,
-        subjectIds: group.subject_ids,
+        subjectId: group.subject_id[0],
       });
     } catch (error) {
       console.error("Error fetching students:", error);

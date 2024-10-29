@@ -29,7 +29,12 @@ const BackgroundWrapper = ({
       ) : (
         <StatusBar barStyle={"dark-content"} backgroundColor={"white"} />
       )}
-      {isLoginScreen ? null : <HomeScreenBanner navigation={navigation} />}
+      {isLoginScreen ? null : (
+        <HomeScreenBanner
+          navigation={navigation}
+          selectedChild={selectedChild}
+        />
+      )}
       <ImageBackground
         style={{
           minHeight: "100%",
