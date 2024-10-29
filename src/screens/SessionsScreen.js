@@ -12,12 +12,13 @@ import ParticipantList from "../components/ParticipantList";
 
 const Tab = createMaterialTopTabNavigator();
 
-const SessionsScreen = ({ navigation }) => {
+const SessionsScreen = ({}) => {
   const [visibleTab, setVisibleTab] = useState("first");
   const { isDarkMode } = useThemeContext();
   const route = useRoute();
   const groupName = route?.params?.groupName;
   const students = route?.params?.students || [];
+  const subjectIds = route?.params?.subjectIds || [];
 
   const tabBarOptions = (margin) => ({
     tabBarStyle: {
@@ -109,8 +110,14 @@ const SessionsScreen = ({ navigation }) => {
                   )}
                 />
                 <Tab.Screen
-                  name="Sessions passées"
-                  children={() => <AttendanceTable isDarkMode={isDarkMode} />}
+                  name="Présences"
+                  children={() => (
+                    <AttendanceTable
+                      isDarkMode={isDarkMode}
+                      subjectIds={subjectIds}
+                      isFutureSessions={false}
+                    />
+                  )}
                 />
               </Tab.Navigator>
             </>
@@ -147,12 +154,24 @@ const SessionsScreen = ({ navigation }) => {
               </Box>
               <Tab.Navigator screenOptions={tabBarOptions("left")}>
                 <Tab.Screen
-                  name="Sessions passées"
-                  children={() => <AttendanceTable isDarkMode={isDarkMode} />}
+                  name="Présences"
+                  children={() => (
+                    <AttendanceTable
+                      isDarkMode={isDarkMode}
+                      subjectIds={subjectIds}
+                      isFutureSessions={false}
+                    />
+                  )}
                 />
                 <Tab.Screen
                   name="Sessions futures"
-                  children={() => <AttendanceTable isDarkMode={isDarkMode} />}
+                  children={() => (
+                    <AttendanceTable
+                      isDarkMode={isDarkMode}
+                      subjectIds={subjectIds}
+                      isFutureSessions={true}
+                    />
+                  )}
                 />
               </Tab.Navigator>
             </>
