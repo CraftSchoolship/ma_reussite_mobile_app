@@ -384,43 +384,22 @@ const PaymentScreen = () => {
       try {
         const userId = await getObject("user_id");
         if (userId) {
-          // const studentData = await browse(
-          //   "res.users",
-          //   ["craft_student_id"],
-          //   [["id", "=", parseInt(userId)]]
-          // );
-
-          // Log the retrieved student data
-          // console.log("Student Data:", studentData);
-
-          // const studentTuple = studentData[0]?.craft_student_id;
-
-          // Extract the student ID from the tuple
-          // const studentId = Array.isArray(studentTuple)
-          //   ? studentTuple[0]
-          //   : null;
-
-          // Ensure studentId is valid and an integer
-          // if (studentId && typeof studentId === "number") {
           const paymentsData = await browse(
             "craft.tuition.invoice",
-            ["due_date", "amount", "state", "order_id", "move_id", "currency_id"],
-            []//[["student_id", "=", studentId]],
+            [
+              "due_date",
+              "amount",
+              "state",
+              "order_id",
+              "move_id",
+              "currency_id",
+            ],
+            []
           );
 
           console.log("Payments Data:", paymentsData);
 
-          // const transformedPayments = paymentsData.map((payment) => ({
-          //   date: payment.due_date,
-          //   state: payment.state,
-          //   amount: payment.amount,
-          //   currency_id: payment.currency_id,
-          // }));
-
           setSortedPayments(paymentsData.sort(compareDates));
-          // } else {
-          //   console.error("Invalid student ID:", studentId);
-          // }
         }
       } catch (error) {
         console.error("Error fetching payments:", error);

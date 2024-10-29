@@ -3,21 +3,13 @@ import React from "react";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const PaymentCard = ({
-  month,
-  year,
+  date,
   amount,
   name,
   state,
-  date,
-  product_id,
-  display_name,
-  user_id,
   currency_symbol,
   handlePress,
-  tax_ids,
-  price_subtotal,
-  occupation = "student",
-  deposit,
+  deposit = 0,
   isDarkMode,
 }) => {
   const statusPayment =
@@ -27,24 +19,8 @@ const PaymentCard = ({
       ? { color: MA_REUSSITE_CUSTOM_COLORS.Secondary, text: "En Attente" }
       : { color: MA_REUSSITE_CUSTOM_COLORS.Danger, text: "En Attente" };
 
-  const paymentDetails = {
-    month: month,
-    year: year,
-    deposit: deposit,
-    amount: amount,
-    name: name,
-    state: state,
-    date: date,
-    product_id: product_id,
-    display_name: display_name,
-    user_id: user_id,
-    currency_symbol: currency_symbol,
-    tax_ids: tax_ids,
-    price_subtotal: price_subtotal,
-  };
-
   return (
-    <Box borderRadius={10} overflow={"hidden"}>
+    <Box borderRadius={10} overflow="hidden" mx={3} my={1}>
       <HStack
         justifyContent="space-between"
         alignItems="center"
@@ -55,9 +31,9 @@ const PaymentCard = ({
         }
         p={4}
       >
-        <VStack w={"100%"}>
-          <HStack w={"100%"}>
-            <Box w={"65%"}>
+        <VStack w="100%">
+          <HStack w="100%" alignItems="center">
+            <Box flex={0.65}>
               <Text
                 color={
                   isDarkMode
@@ -69,31 +45,23 @@ const PaymentCard = ({
               >
                 {`${name} : ${amount} ${currency_symbol}`}
               </Text>
-              {/*<Text
-                fontSize={"md"}
+              <Text
+                fontSize="md"
                 color={
                   isDarkMode
-                    ? MA_REUSSITE_CUSTOM_COLORS.White
+                    ? MA_REUSSITE_CUSTOM_COLORS.LightTextCalendarCard
                     : MA_REUSSITE_CUSTOM_COLORS.Black
                 }
               >
-                {`${name} : ${amount} ${currency_symbol}`}
-              </Text>*/}
+                {`Date: ${date}`}
+              </Text>
             </Box>
-            <Box
-              alignItems={"flex-end"}
-              w={"35%"}
-              h={"100%"}
-              mx={"auto"}
-              mt={0}
-            >
+            <Box alignItems="flex-end" flex={0.35} mt={2}>
               <Box
-                mt={2}
                 alignSelf="flex-end"
                 bg={statusPayment.color}
                 px={4}
                 py={0.5}
-                // shadow={1}
                 rounded="xl"
               >
                 <Text color={MA_REUSSITE_CUSTOM_COLORS.White}>
@@ -102,15 +70,22 @@ const PaymentCard = ({
               </Box>
             </Box>
           </HStack>
-          <HStack>
+          <HStack mt={2}>
             <Pressable
-              onPress={() => {
-                handlePress(paymentDetails);
-              }}
+              onPress={() =>
+                handlePress({
+                  date,
+                  amount,
+                  name,
+                  state,
+                  currency_symbol,
+                  deposit,
+                })
+              }
             >
               <Text color={MA_REUSSITE_CUSTOM_COLORS.LightTextCalendarCard}>
                 Détails du paiement...
-                <Text underline={true} fontWeight="500" color="blue.500">
+                <Text underline fontWeight="500" color="blue.500">
                   Voir plus
                 </Text>
               </Text>
