@@ -17,7 +17,7 @@ const AttendanceTable = ({ isDarkMode, subjectId, isFutureSessions }) => {
             ]
           : [["subject_id", "=", subjectId]];
         const fields = isFutureSessions
-          ? ["date", "timing"]
+          ? ["start", "timing"]
           : ["date", "timing", "present", "absent", "excused", "late"];
 
         const model = isFutureSessions
@@ -59,7 +59,7 @@ const AttendanceTable = ({ isDarkMode, subjectId, isFutureSessions }) => {
               : MA_REUSSITE_CUSTOM_COLORS.Black
           }
         >
-          {item.date}
+          {isFutureSessions ? item.start : item.date}
         </Text>
       </VStack>
       <VStack flex={1} alignItems="center">
