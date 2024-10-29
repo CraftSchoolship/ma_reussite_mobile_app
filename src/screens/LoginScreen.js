@@ -9,6 +9,7 @@ import { CustomButton, CustomInput } from "../components";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { loginValidationSchema } from "../validation/formValidation";
+import { el } from "date-fns/locale";
 
 const wrapProfileImageBase64 = (profileImage) => {
   if (!profileImage || typeof profileImage !== "string")
@@ -130,7 +131,10 @@ const LoginScreen = () => {
         await loadParentData(connectedUser);
 
       // go home
-      navigation.navigate("DrawerNavigator", { connectedUser });
+      if (connectedUser?.role === "parent")
+        navigation.navigate("Children", { connectedUser });
+      else navigation.navigate("DrawerNavigator", { connectedUser });
+      
     } catch (error) {
       console.error("Odoo JSON-RPC Error:", error);
       setError("Nom d'utilisateur ou mot de passe incorrect !");

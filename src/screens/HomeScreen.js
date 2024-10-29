@@ -39,6 +39,12 @@ const HomeScreen = () => {
   const { isDarkMode } = useThemeContext();
 
   useEffect(() => {
+    if (route?.params) {
+      console.log("Route Params:", route?.params?.seletedChild?.name);
+    }
+  }, [route]);
+
+  useEffect(() => {
     const fetchConnectedUser = async () => {
       try {
         const connectedUser = await getObject("connectedUser");

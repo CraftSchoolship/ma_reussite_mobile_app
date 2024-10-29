@@ -1,6 +1,6 @@
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   Avatar,
   Box,
@@ -27,6 +27,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
   const [selectedChild, setSelectedChild] = useState(null);
   const navigation = useNavigation();
   const { isDarkMode, toggleDarkMode } = useThemeContext();
+  const route = useRoute();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -42,9 +43,8 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
         console.error("Error fetching connectedUser data:", error);
       }
     };
-
     if (childrenList?.length < 1) fetchUserData();
-  }, [childrenList]);
+  }, [childrenList, route]);
 
   return (
     <>
@@ -317,24 +317,6 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
             index: 0,
             routes: [{ name: "Login" }],
           });
-        }}
-      />
-      <DrawerItem
-        label={"Select Child"}
-        labelStyle={{
-          textAlign: "center",
-          color: "#fff",
-          width: "115%",
-        }}
-        style={{
-          backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-          alignContent: "center",
-        }}
-        px={4}
-        w={"100%"}
-        bottom={"10%"}
-        onPress={() => {
-          navigation.navigate("Children");
         }}
       />
     </>

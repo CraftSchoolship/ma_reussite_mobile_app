@@ -5,6 +5,7 @@ import {
   ProfileScreen,
   SplashScreen,
   PolicyScreen,
+  ChildrenScreen,
 } from "../screens";
 import DrawerNavigator from "./DrawerNavigator";
 import { LoginScreenBanner } from "../components";
@@ -42,6 +43,15 @@ export const StackNavigator = () => {
         }}
         name="Profile"
         component={ProfileScreen}
+      />
+
+      <Stack.Screen
+        options={{
+          headerBackTitleVisible: false,
+          headerShown: false,
+        }}
+        name="Children"
+        component={ChildrenScreen}
       />
     </Stack.Navigator>
   );

@@ -119,14 +119,14 @@ const DrawerNavigator = () => {
         component={SessionsScreen}
       />
 
-      <Drawer.Screen
+      {/* <Drawer.Screen
         options={{
           headerBackTitleVisible: false,
           headerShown: false,
         }}
         name="Children"
         component={ChildrenScreen}
-      />
+      /> */}
     </Drawer.Navigator>
   );
 };

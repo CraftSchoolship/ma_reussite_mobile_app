@@ -1,77 +1,40 @@
+import { useNavigation, useRoute } from "@react-navigation/native";
 import {
-  Avatar,
   Box,
-  Button,
   FlatList,
-  HStack,
-  Icon,
-  IconButton,
-  Text,
+  Text
 } from "native-base";
-import React from "react";
-import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
-import { MaterialIcons } from "@expo/vector-icons";
-import { useThemeContext } from "../hooks/ThemeContext";
+import React, { useEffect, useState } from "react";
 import { connectedUser } from "../../http/http";
+import { getObject } from "../api/apiClient";
 import { LoginScreenBanner } from "../components";
+import { ChildItem } from "../components/ParentChildItem";
+import { useThemeContext } from "../hooks/ThemeContext";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
-const ChildItem = ({ item }) => {
-  return (
-    <Button
-      bg={MA_REUSSITE_CUSTOM_COLORS.Primary}
-      px={4}
-      py={2}
-      my={2}
-      rounded={10}
-      justifyContent={"space-between"}
-    >
-      <HStack bg={MA_REUSSITE_CUSTOM_COLORS.Primary}>
-        <Avatar
-          size="md"
-          mr={4}
-          source={{
-            uri: connectedUser?.profileImage || null,
-          }}
-          bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
-        >
-          <IconButton
-            icon={
-              <Icon
-                as={MaterialIcons}
-                name="person"
-                size="2xl"
-                color="white"
-                mx={"auto"}
-              />
-            }
-            borderRadius="full"
-            _icon={{
-              color: "white",
-              size: "xs",
-            }}
-          />
-        </Avatar>
-        <Text
-          color={MA_REUSSITE_CUSTOM_COLORS.White}
-          my={"auto"}
-          fontSize={"md"}
-          borderRadius={10}
-        >
-          {item.name}
-        </Text>
-      </HStack>
-    </Button>
-  );
-};
-
-const mockChildren = [
-  { id: "1", name: "Mohammed Mohamed" },
-  { id: "2", name: "Samir Tata" },
-  { id: "3", name: "Sami Yangui" },
-];
 
 const ChildrenScreen = () => {
   const { isDarkMode } = useThemeContext();
+  const [childrenList, setChildrenList] = useState([]);
+  const navigation = useNavigation();
+  const route = useRoute();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const { connectedUser } = route.params || {};
+
+      try {
+        if (connectedUser?.role === "parent") {
+          const children = await getObject("children");
+          if (children) setChildrenList(children);
+        }
+      } catch (error) {
+        console.error("Error fetching connectedUser data:", error);
+      }
+    };
+
+    if (childrenList?.length < 1) fetchUserData();
+  }, [childrenList, route]);
 
   return (
     <Box
@@ -98,8 +61,10 @@ const ChildrenScreen = () => {
       </Text>
       <Box mx={"auto"} w={"4/6"} flex={1}>
         <FlatList
-          data={mockChildren}
-          renderItem={ChildItem}
+          data={childrenList}
+          renderItem={({ item }) => (
+            <ChildItem item={item} navigation={navigation} connectedUser={connectedUser} />
+          )}
           keyExtractor={(item) => item.id}
         />
       </Box>
