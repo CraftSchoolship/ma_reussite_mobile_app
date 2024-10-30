@@ -1,6 +1,15 @@
 import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
-import { Box, Center, Text, View, VStack, Button, Spinner } from "native-base";
+import {
+  Box,
+  Center,
+  Text,
+  View,
+  VStack,
+  Button,
+  Spinner,
+  Image,
+} from "native-base";
 import React, { useRef, useState } from "react";
 import config from "../../http/config";
 import { authenticate, browse, read } from "../../http/http";
@@ -9,6 +18,7 @@ import { CustomButton, CustomInput } from "../components";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { loginValidationSchema } from "../validation/formValidation";
+import { microsoftSignIn } from "../../http/microsoft";
 
 const wrapProfileImageBase64 = (profileImage) => {
   if (!profileImage || typeof profileImage !== "string")
@@ -189,12 +199,53 @@ const LoginScreen = () => {
               <Text color={"danger.500"} textAlign={"center"} mt={3}>
                 {error}
               </Text>
-              <CustomButton
+              <Button
                 onPress={handleSubmit}
-                title="Se connecter"
                 isDisabled={!isValid}
-                loading={loading}
-              />
+                style={{ height: 48, borderRadius: 12, width: "100%" }}
+                bg={MA_REUSSITE_CUSTOM_COLORS.Primary}
+              >
+                {!loading ? (
+                  <Text color={"white"}>Se connecter</Text>
+                ) : (
+                  <Spinner size="sm" color="white" />
+                )}
+              </Button>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginVertical: 20,
+                }}
+              >
+                <View style={{ flex: 1, height: 1, backgroundColor: "gray" }} />
+                <Text style={{ width: 50, textAlign: "center" }}>or</Text>
+                <View style={{ flex: 1, height: 1, backgroundColor: "gray" }} />
+              </View>
+              <Button
+                leftIcon={
+                  <Image
+                    source={require("../../assets/images/micro.png")}
+                    ml="2"
+                    resizeMode="contain"
+                    alt="Microsoft logo"
+                    size={30}
+                    marginRight={6}
+                    marginLeft={6}
+                  />
+                }
+                onPress={microsoftSignIn}
+                isDisabled={!isValid}
+                style={{ height: 48, borderRadius: 12, width: "100%" }}
+                bg={MA_REUSSITE_CUSTOM_COLORS.Primary}
+              >
+                {!loading ? (
+                  <Text color={"white"}>Continuer avec microsoft</Text>
+                ) : (
+                  <Spinner size="sm" color="white" />
+                )}
+              </Button>
             </VStack>
           )}
         </Formik>
