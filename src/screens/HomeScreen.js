@@ -65,8 +65,12 @@ const HomeScreen = () => {
             "teacher_id",
             "description",
           ],
-          [] //[["partner_ids", "in", partner_id]]
+          [
+            ["start", ">", new Date().toISOString()],
+            ["stop", "<", new Date(new Date().valueOf() + (7 * 24 * 60 * 60 * 1000)).toISOString()],
+          ]
         );
+        
         setEvents(eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);

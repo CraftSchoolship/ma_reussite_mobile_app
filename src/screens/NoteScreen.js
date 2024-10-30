@@ -20,7 +20,7 @@ import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { Ionicons } from "@expo/vector-icons";
 
-const fakeNotesData = [
+const fakeNotesData = [/*
   {
     id: "1",
     evaluation: "Evaluation Big Data",
@@ -83,14 +83,14 @@ const fakeNotesData = [
     score: 11,
     maxScore: 20,
     color: "green.400",
-  },
+  },*/
 ];
 
 const NoteScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
-  const [degrees, setDegrees] = useState("Master 1 Devops");
+  const [degrees, setDegrees] = useState("");
   const { isDarkMode } = useThemeContext();
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState(fakeNotesData);
@@ -234,8 +234,8 @@ const NoteScreen = () => {
               Notes de l'étudiant
             </Text>
           </VStack>
-
-          <FlatList
+          {filteredData?.length ?
+          (<FlatList
             flex={1}
             data={filteredData}
             // scrollEnabled={true}
@@ -275,8 +275,20 @@ const NoteScreen = () => {
                   </Text>
                 </Box>
               </Box>
-            )}
-          />
+            )}/>) :
+          (<Text
+            mt={"30%"}
+            color={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.White
+                : MA_REUSSITE_CUSTOM_COLORS.Black
+            }
+            textAlign={"center"}
+            fontSize={"2xl"}
+            fontWeight={"bold"}
+          >
+            Pas de notes
+          </Text>)}
         </VStack>
       )}
     </BackgroundWrapper>

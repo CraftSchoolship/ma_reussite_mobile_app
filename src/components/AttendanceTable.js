@@ -59,7 +59,7 @@ const AttendanceTable = ({ isDarkMode, subjectId, isFutureSessions }) => {
               : MA_REUSSITE_CUSTOM_COLORS.Black
           }
         >
-          {isFutureSessions ? item.start : item.date}
+          {(isFutureSessions ? item.start : item.date).substring(0, 10)}
         </Text>
       </VStack>
       <VStack flex={1} alignItems="center">

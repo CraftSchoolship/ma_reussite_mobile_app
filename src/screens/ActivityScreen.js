@@ -13,7 +13,7 @@ const NotificationScreen = () => {
   const { isDarkMode } = useThemeContext();
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [selectedNotificationId, setSelectedNotificationId] = useState(null);
-  const [notificationList, updateNotificationList] = useState([
+  const [notificationList, updateNotificationList] = useState([/*
     {
       id: 1,
       title: "Mise à jour de l'horaire du Cours Big Data",
@@ -48,7 +48,7 @@ const NotificationScreen = () => {
       time: "10/05/24",
       unread: false,
       redirectTo: "Groups",
-    },
+    },*/
   ]);
 
   return (
@@ -110,7 +110,7 @@ const NotificationScreen = () => {
               notification={notificationList[selectedNotificationId - 1]}
               index={selectedNotificationId}
             />
-          ) : (
+          ) : ( notificationList.length ?
             notificationList.map((notification, index) => (
               <NotificationCard
                 key={notification.id}
@@ -120,7 +120,20 @@ const NotificationScreen = () => {
                 setIsNotificationOpen={setNotificationOpen}
                 setNotifications={updateNotificationList}
               />
-            ))
+            )) :
+            (<Text
+              mt={"30%"}
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+              textAlign={"center"}
+              fontSize={"2xl"}
+              fontWeight={"bold"}
+            >
+              Pas de notifications
+            </Text>)
           )}
         </VStack>
       </ScrollView>

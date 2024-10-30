@@ -548,7 +548,7 @@ const PaymentScreen = () => {
                     fontSize="2xl"
                     fontWeight="bold"
                   >
-                    Pas de paiement
+                    Pas de paiements
                   </Text>
                 </Box>
               )}
