@@ -2,7 +2,7 @@
   "expo": {
     "name": "ma-reussite",
     "slug": "ma-reussite",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "owner": "craftschoolship",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,7 +14,11 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.craftschoolship.mareussite"
+      "bundleIdentifier": "com.craftschoolship.mareussite",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "This app uses the photo library to allow you to choose and upload a profile picture.",
+        "NSCameraUsageDescription": "This app uses the camera to take profile pictures and to scan qr codes on student cards."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -22,7 +26,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.craftschoolship.mareussite",
-      "versionCode": 4,
+      "versionCode": 5,
       "permissions": [
         "com.google.android.gms.permission.AD_ID"
       ]
