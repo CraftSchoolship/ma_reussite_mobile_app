@@ -116,6 +116,8 @@ const HomeScreen = () => {
           markingType={"multi-dot"}
           onDayPress={(day) => {            
             setSelectedDayEvents((markedDate[day.dateString]?.dots || []))
+            Object.values(markedDate).forEach(item => item.selected = false);
+            markedDate[day.dateString] = {...markedDate[day.dateString], selected:true};
           }}
           monthFormat={"MMMM yyyy"}
           hideArrows={false}
