@@ -1,11 +1,4 @@
-import {
-  Actionsheet,
-  Box,
-  ScrollView,
-  Text,
-  useDisclose,
-  VStack,
-} from "native-base";
+import { Actionsheet, Box, ScrollView, Text, VStack } from "native-base";
 import React from "react";
 import { CalendarCard } from "../components";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
@@ -13,12 +6,10 @@ import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 export const EventsActionSheet = ({
   isDarkMode,
   selectedDayEvents,
-  setSelectedDayEvents,
   today,
   isOpen,
   onClose,
 }) => {
-  //   const { isOpen, onOpen, onClose } = useDisclose();
   return (
     <Actionsheet isOpen={isOpen} onClose={onClose}>
       <Actionsheet.Content

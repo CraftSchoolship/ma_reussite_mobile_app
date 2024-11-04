@@ -49,10 +49,12 @@ function CalendarCard({ date, tag, time, subject, teacher, classroom }) {
               color={
                 isDarkMode
                   ? MA_REUSSITE_CUSTOM_COLORS.White
-                  : MA_REUSSITE_CUSTOM_COLORS.LightTextCalendarCard
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
               }
+              fontSize={"lg"}
+              textTransform={"capitalize"}
             >
-              {date}, {time}, {`(Salle ${classroom})`}
+              {date}, {time}
             </Text>
           </HStack>
           <HStack my={1}>
@@ -62,19 +64,33 @@ function CalendarCard({ date, tag, time, subject, teacher, classroom }) {
                   ? MA_REUSSITE_CUSTOM_COLORS.White
                   : MA_REUSSITE_CUSTOM_COLORS.Black
               }
-              fontWeight="bold"
               fontSize={"lg"}
               textTransform={"capitalize"}
             >
               {`Cours : ${subject}`}
             </Text>
           </HStack>
+          <HStack my={2}>
+            <Text
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+              fontSize={"lg"}
+              textTransform={"capitalize"}
+            >
+              {`Salle : ${classroom}`}
+            </Text>
+          </HStack>
           <Text
             color={
               isDarkMode
                 ? MA_REUSSITE_CUSTOM_COLORS.White
-                : MA_REUSSITE_CUSTOM_COLORS.LightTextCalendarCard
+                : MA_REUSSITE_CUSTOM_COLORS.Black
             }
+            fontSize={"lg"}
+            textTransform={"capitalize"}
           >{`Prof : ${teacher}`}</Text>
         </VStack>
       </HStack>

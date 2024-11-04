@@ -64,13 +64,19 @@ const HomeScreen = () => {
             "subject_id",
             "teacher_id",
             "description",
-          ],
-          [
-            ["start", ">", new Date().toISOString()],
-            ["stop", "<", new Date(new Date().valueOf() + (7 * 24 * 60 * 60 * 1000)).toISOString()],
           ]
+          // [
+          //   ["start", ">", new Date().toISOString()],
+          //   [
+          //     "stop",
+          //     "<",
+          //     new Date(
+          //       new Date().valueOf() + 7 * 24 * 60 * 60 * 1000
+          //     ).toISOString(),
+          //   ],
+          // ]
         );
-        
+
         setEvents(eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);
