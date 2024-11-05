@@ -132,72 +132,54 @@ const SessionsScreen = () => {
                 />
                 <Tab.Screen
                   name="Présences"
-                  children={() => (
-                    <>
-                      {isLoading ? (
-                        <Box
-                          flex={1}
-                          justifyContent="center"
-                          alignItems="center"
-                        >
-                          <Spinner color={isDarkMode ? "white" : "black"} />
-                        </Box>
-                      ) : (
-                        <AttendanceTable
-                          isDarkMode={isDarkMode}
-                          subjectId={subjectId}
-                          isFutureSessions={false}
-                        />
-                      )}
-                    </>
-                  )}
+                  children={() =>
+                    isLoading ? (
+                      <Box flex={1} justifyContent="center" alignItems="center">
+                        <Spinner color={isDarkMode ? "white" : "black"} />
+                      </Box>
+                    ) : (
+                      <AttendanceTable
+                        isDarkMode={isDarkMode}
+                        subjectId={subjectId}
+                        isFutureSessions={false}
+                      />
+                    )
+                  }
                 />
               </>
             ) : (
               <>
                 <Tab.Screen
                   name="Présences"
-                  children={() => (
-                    <>
-                      {isLoading ? (
-                        <Box
-                          flex={1}
-                          justifyContent="center"
-                          alignItems="center"
-                        >
-                          <Spinner color={isDarkMode ? "white" : "black"} />
-                        </Box>
-                      ) : (
-                        <AttendanceTable
-                          isDarkMode={isDarkMode}
-                          subjectId={subjectId}
-                          isFutureSessions={false}
-                        />
-                      )}
-                    </>
-                  )}
+                  children={() =>
+                    isLoading ? (
+                      <Box flex={1} justifyContent="center" alignItems="center">
+                        <Spinner color={isDarkMode ? "white" : "black"} />
+                      </Box>
+                    ) : (
+                      <AttendanceTable
+                        isDarkMode={isDarkMode}
+                        subjectId={subjectId}
+                        isFutureSessions={false}
+                      />
+                    )
+                  }
                 />
                 <Tab.Screen
                   name="Sessions futures"
-                  children={() => (
-                    <>
-                      {isLoading ? (
-                        <Box
-                          flex={1}
-                          justifyContent="center"
-                          alignItems="center"
-                        >
-                          <Spinner color={isDarkMode ? "white" : "black"} />
-                        </Box>
-                      ) : (
-                        <AttendanceTable
-                          isDarkMode={isDarkMode}
-                          subjectId={subjectId}
-                          isFutureSessions={true}
-                        />
-                      )}
-                    </>
-                  )}
+                  children={() =>
+                    isLoading ? (
+                      <Box flex={1} justifyContent="center" alignItems="center">
+                        <Spinner color={isDarkMode ? "white" : "black"} />
+                      </Box>
+                    ) : (
+                      <AttendanceTable
+                        isDarkMode={isDarkMode}
+                        subjectId={subjectId}
+                        isFutureSessions={true}
+                      />
+                    )
+                  }
                 />
               </>
             )}

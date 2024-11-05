@@ -38,7 +38,7 @@ const HomeScreen = () => {
     const fetchConnectedUser = async () => {
       try {
         const connectedUser = await getObject("connectedUser");
-        setUser(connectedUser)
+        setUser(connectedUser);
         setUserId(connectedUser.id);
       } catch (error) {
         console.error("Error fetching connected user:", error);
@@ -114,10 +114,15 @@ const HomeScreen = () => {
         <Calendar
           key={isDarkMode ? "dark" : "light"}
           markingType={"multi-dot"}
-          onDayPress={(day) => {            
-            setSelectedDayEvents((markedDate[day.dateString]?.dots || []))
-            Object.values(markedDate).forEach(item => item.selected = false);
-            markedDate[day.dateString] = {...markedDate[day.dateString], selected:true};
+          onDayPress={(day) => {
+            setSelectedDayEvents(markedDate[day.dateString]?.dots || []);
+            Object.values(markedDate).forEach(
+              (item) => (item.selected = false)
+            );
+            markedDate[day.dateString] = {
+              ...markedDate[day.dateString],
+              selected: true,
+            };
           }}
           monthFormat={"MMMM yyyy"}
           hideArrows={false}
@@ -136,21 +141,24 @@ const HomeScreen = () => {
         contentContainerStyle={{ paddingBottom: 120 }}
       >
         <VStack w={"full"} mb={"20%"} mt={4}>
-            <Box>
-              {selectedDayEvents.map((event, eventIndex) => (
-                <CalendarCard
-                  name={event.name}
-                  key={eventIndex}
-                  tag={event.tag}
-                  date={event.date}
-                  time={event.time}
-                  subject={event.subject}
-                  teacher={event.teacher}
-                  classroom={event.classroom}
-                  onClick={() => {setSelectedEvent(event); onOpen();}}
-                />
-              ))}
-            </Box>
+          <Box>
+            {selectedDayEvents.map((event, eventIndex) => (
+              <CalendarCard
+                name={event.name}
+                key={eventIndex}
+                tag={event.tag}
+                date={event.date}
+                time={event.time}
+                subject={event.subject}
+                teacher={event.teacher}
+                classroom={event.classroom}
+                onClick={() => {
+                  setSelectedEvent(event);
+                  onOpen();
+                }}
+              />
+            ))}
+          </Box>
         </VStack>
       </ScrollView>
 

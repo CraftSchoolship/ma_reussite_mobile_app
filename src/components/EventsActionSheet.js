@@ -1,8 +1,16 @@
-import { Actionsheet, Box, Button, HStack, Icon, ScrollView, Text, VStack } from "native-base";
+import {
+  Actionsheet,
+  Box,
+  Button,
+  HStack,
+  Icon,
+  ScrollView,
+  Text,
+  VStack,
+} from "native-base";
 import React from "react";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { MaterialIcons } from "@expo/vector-icons";
-
 
 export const EventsActionSheet = ({
   isDarkMode,
@@ -94,15 +102,15 @@ export const EventsActionSheet = ({
                     </Text>
                   </HStack>
                   <HStack my={2}>
-                  <Text
-                    color={
-                      isDarkMode
-                        ? MA_REUSSITE_CUSTOM_COLORS.White
-                        : MA_REUSSITE_CUSTOM_COLORS.Black
-                    }
-                    fontSize={"lg"}
-                    textTransform={"capitalize"}
-                  >{`Prof : ${selectedEvent.teacher}`}</Text>
+                    <Text
+                      color={
+                        isDarkMode
+                          ? MA_REUSSITE_CUSTOM_COLORS.White
+                          : MA_REUSSITE_CUSTOM_COLORS.Black
+                      }
+                      fontSize={"lg"}
+                      textTransform={"capitalize"}
+                    >{`Prof : ${selectedEvent.teacher}`}</Text>
                   </HStack>
                   <Text
                     color={
@@ -115,17 +123,22 @@ export const EventsActionSheet = ({
                   >
                     {`Salle : ${selectedEvent.classroom}`}
                   </Text>
-                  {user?.role == "admin" || user?.role == "teacher" || user?.role == "staff" ?
-                  (<Button 
-                    mt={8}
-                    mb={2}
-                    w={"full"}
-                    fontSize={"lg"}
-                    onPress={() => {
-                      // TODO implement the routing to attendance screen here
-                      console.log("Hello world");
-                    }}
-                  >Présence</Button>) : null}
+                  {user?.role == "admin" ||
+                  user?.role == "teacher" ||
+                  user?.role == "staff" ? (
+                    <Button
+                      mt={8}
+                      mb={2}
+                      w={"full"}
+                      fontSize={"lg"}
+                      onPress={() => {
+                        // TODO implement the routing to attendance screen here
+                        console.log("Hello world");
+                      }}
+                    >
+                      Présence
+                    </Button>
+                  ) : null}
                 </VStack>
               </HStack>
             </Box>
