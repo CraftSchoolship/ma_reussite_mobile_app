@@ -134,7 +134,7 @@ export const EventsActionSheet = ({
                       fontSize={"lg"}
                       onPress={() => {
                         onClose();
-                        navigation.navigate("AttendanceStaff");
+                        navigation.navigate("AttendanceStaff", {session: selectedEvent._raw});
                       }}
                     >
                       Présence

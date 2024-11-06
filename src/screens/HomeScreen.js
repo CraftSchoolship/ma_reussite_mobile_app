@@ -62,16 +62,10 @@ const HomeScreen = () => {
             "teacher_id",
             "description",
           ]
-          // [
-          //   ["start", ">", new Date().toISOString()],
-          //   [
-          //     "stop",
-          //     "<",
-          //     new Date(
-          //       new Date().valueOf() + 7 * 24 * 60 * 60 * 1000
-          //     ).toISOString(),
-          //   ],
-          // ]
+          [
+            ["start", ">=", new Date().toISOString().substring(0,10)],
+            ["state", "=", 'confirmed']
+          ]
         );
 
         setEvents(eventsData);

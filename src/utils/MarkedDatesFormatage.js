@@ -18,6 +18,7 @@ const generateRecurrenceDates = (event) => {
     endDate.setHours(endHour, endMinute, endSecond);
 
     return {
+      _raw: event,
       start: startDate,
       stop: endDate,
       subject: event.subject_id[1],
@@ -38,6 +39,7 @@ const formatOdooEvents = (events) => {
     } else {
       eventDates.push({
         ...event,
+        _raw: event,
         start: new Date(event.start),
         stop: new Date(event.stop),
         classroom: event.classroom_id[1],
@@ -60,13 +62,10 @@ const formatOdooEvents = (events) => {
       const tag = "cours";
 
       const eventDetails = {
+        ...eventDetail,
         color: color,
         tag: tag,
         time: time,
-        name: eventDetail.name,
-        subject: eventDetail.subject,
-        teacher: eventDetail.teacher,
-        classroom: eventDetail.classroom,
         date: eventDetail.start.toISOString().substring(0,10),
       };
 

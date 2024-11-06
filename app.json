@@ -43,9 +43,8 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow Ma-reussite to access your camera",
-          "microphonePermission": "Allow Ma-reussite  to access your microphone",
-          "recordAudioAndroid": true
+          "cameraPermission": "This app uses the camera to take profile pictures and to scan qr codes on student cards.",
+          "recordAudioAndroid": false
         }
       ]
     ]

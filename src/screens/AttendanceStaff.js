@@ -10,11 +10,14 @@ import {
   Pressable,
   Text,
   Image,
+  View,
 } from "native-base";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import HomeScreenBanner from "../components/HomeScreenBanner";
 import { useThemeContext } from "../hooks/ThemeContext";
-import { TouchableOpacity, StyleSheet } from "react-native";
+import { TouchableOpacity, StyleSheet, Vibration, Alert } from "react-native";
+import { browse, execute } from "../../http/http";
+import { useRoute } from "@react-navigation/native";
 
 const participants = [
   { id: "1", name: "Samir Tata (Enseignant)" },
@@ -34,22 +37,32 @@ const participants = [
   { id: "15", name: "Asad Babur" },
 ];
 const AttendanceStaff = () => {
-  // Set all participants to "absent" by default
-  const initialAttendance = participants.reduce((acc, participant) => {
-    acc[participant.id] = "absent";
-    return acc;
-  }, {});
 
+  const route = useRoute();
+  const session = route?.params?.session;
   const { isDarkMode } = useThemeContext();
-  const [attendance, setAttendance] = useState(initialAttendance);
+  const [attendance, setAttendance] = useState([]);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [facing, setFacing] = useState('back');
   const [permission, requestPermission] = useCameraPermissions();
-  const [cameraType, setCameraType] = useState("back");
+
+  useEffect(() => {    
+    const fetchAttendance = async () => {
+      const students = await browse('craft.attendance.line', [
+        'student_id', 'present', 'late', 'absent', 'excused'
+      ], [
+        ['session_id', '=', session.id]
+      ]);
+      setAttendance(students);      
+    }
+
+    if (!attendance?.length)
+      fetchAttendance();
+  }, [attendance]);
 
   useEffect(() => {
-    if (permission === null) {
+    if (!(permission?.granted))
       requestPermission();
-    }
   }, [permission]);
 
   const openCamera = () => {
@@ -60,26 +73,48 @@ const AttendanceStaff = () => {
     setIsCameraOpen(false);
   };
 
-  const handleBarCodeScanned = ({ data }) => {
-    console.log("QR code scanned: ", data);
-
-    // Check if the scanned data corresponds to a participant's ID
-    const participant = participants.find((p) => p.id === data);
-    if (participant) {
-      // Toggle status between "present" and "late"
-      setAttendance((prev) => ({
-        ...prev,
-        [data]: prev[data] === "absent" ? "present" : "late",
-      }));
-    } else {
-      console.log("Invalid QR code");
+  const submit_attendance = async (barcode) => {
+    try {
+      await execute('craft.attendance.line', 'create_from_barcode', [{
+        'session_id': session.id,
+        'barcode': barcode,
+      }]);
+      setAttendance([]);
+    } catch (error) {
+      console.error("Error saving attendance:", error);
     }
+  }
+
+  const handleBarCodeScanned = (event) => {
+    const barcode = event?.data;
+    if (!barcode)
+      return;
+    console.log("QR code scanned: ", barcode);
+
+    Vibration.vibrate(100);
+
+    if (/^(\d{17})$/.test(barcode)){
+      let student_id = parseInt(barcode.split('').filter((_, index) => index % 2 === 0).join(''));
+      if (attendance.map(item => item.student_id[0]).includes(student_id))
+        submit_attendance(barcode)
+      else
+        Alert.alert('Étudiant Inconnue', "Vous avez scanné l'identifiant d'un élève qui n'est pas inscrit dans ce groupe. Voulez-vous continuer ?", [
+          {
+            text: 'Annuler',
+            onPress: () => console.log('Canceled Scan'),
+            style: 'cancel',
+          },
+          {text: 'Continuer', onPress: () => submit_attendance(barcode)},
+        ]);
+    }
+    else
+      console.log(("Unknown Student ID"));
 
     closeCamera();
   };
 
   const toggleCameraType = () => {
-    setCameraType((prev) => (prev === "back" ? "front" : "back"));
+    setFacing(current => (current === 'back' ? 'front' : 'back'));
   };
 
   const renderParticipant = ({ item }) => (
@@ -122,24 +157,20 @@ const AttendanceStaff = () => {
                 : MA_REUSSITE_CUSTOM_COLORS.Black
             }
           >
-            {item?.name}
+            {item?.student_id[1]}
           </Text>
         </HStack>
         <Icon
           as={MaterialIcons}
           name={
-            attendance[item.id] === "present"
+            item.present || item.late
               ? "check-circle"
-              : attendance[item.id] === "absent"
-              ? "cancel"
-              : "access-time"
+              : "cancel"
           }
           color={
-            attendance[item.id] === "present"
+            item.present || item.late
               ? "green.500"
-              : attendance[item.id] === "absent"
-              ? "red.500"
-              : "yellow.500"
+              : "red.500"
           }
           size={6}
           mr={4}
@@ -171,46 +202,24 @@ const AttendanceStaff = () => {
           fontWeight="bold"
           fontSize="lg"
         >
-          Master DevOps M2
+          {session.class_id[1]}
+        </Text>
+        <Text
+          color={
+            isDarkMode
+              ? MA_REUSSITE_CUSTOM_COLORS.White
+              : MA_REUSSITE_CUSTOM_COLORS.Black
+          }
+          textAlign={"center"}
+          fontWeight="bold"
+          fontSize="lg"
+        >
+          {session.timing} à {session.classroom_id[1]}
         </Text>
       </Box>
 
-      <HStack
-        bg={
-          isDarkMode
-            ? MA_REUSSITE_CUSTOM_COLORS.Black
-            : MA_REUSSITE_CUSTOM_COLORS.White
-        }
-        p={4}
-        justifyContent="space-between"
-      >
-        <Text
-          color={
-            isDarkMode
-              ? MA_REUSSITE_CUSTOM_COLORS.White
-              : MA_REUSSITE_CUSTOM_COLORS.Black
-          }
-          fontWeight="bold"
-          flex={1}
-        >
-          Participants
-        </Text>
-        <Text
-          color={
-            isDarkMode
-              ? MA_REUSSITE_CUSTOM_COLORS.White
-              : MA_REUSSITE_CUSTOM_COLORS.Black
-          }
-          fontWeight="bold"
-          textAlign="right"
-          flex={0.3}
-        >
-          Attendance
-        </Text>
-      </HStack>
-
       <FlatList
-        data={participants}
+        data={attendance}
         keyExtractor={(item) => item.id}
         renderItem={renderParticipant}
         showsVerticalScrollIndicator={false}
@@ -242,18 +251,29 @@ const AttendanceStaff = () => {
           <CameraView
             style={styles.camera}
             barcodeScannerSettings={{
-              barcodeTypes: ["qr"],
+              barcodeTypes: [
+                'aztec',
+                'ean13',
+                'ean8',
+                'qr',
+                'pdf417',
+                'upc_e',
+                'datamatrix',
+                'code39',
+                'code93',
+                'itf14',
+                'codabar',
+                'code128',
+                'upc_a'
+              ],
             }}
-            onBarCodeScanned={handleBarCodeScanned}
-            type={cameraType}
+            onBarcodeScanned={handleBarCodeScanned}
+            facing={facing}
           >
             <Box style={styles.cameraOverlay}>
               <TouchableOpacity onPress={toggleCameraType}>
                 <Text style={styles.switchText}>Switch Camera</Text>
               </TouchableOpacity>
-              <Text style={styles.scanText}>Scan QR Code</Text>
-
-              {/* Close Button */}
               <TouchableOpacity
                 onPress={closeCamera}
                 style={styles.closeButton}
@@ -273,10 +293,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    bottom: 0
   },
   camera: {
     width: "100%",
