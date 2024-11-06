@@ -25,7 +25,7 @@ const AttendanceTable = ({ isDarkMode, subjectId, isFutureSessions }) => {
           : "craft.attendance.line";
 
         const data = await browse(model, fields, filters);
-        console.log("Fetched data:", data); // Log fetched data
+        console.log("Fetched data:", data);
 
         setAttendanceData(data);
       } catch (error) {
@@ -59,7 +59,7 @@ const AttendanceTable = ({ isDarkMode, subjectId, isFutureSessions }) => {
               : MA_REUSSITE_CUSTOM_COLORS.Black
           }
         >
-          {(isFutureSessions ? item.start : item.date).substring(0, 10)}
+          {(isFutureSessions ? item.start : item.date)?.substring(0, 10)}
         </Text>
       </VStack>
       <VStack flex={1} alignItems="center">
@@ -70,26 +70,11 @@ const AttendanceTable = ({ isDarkMode, subjectId, isFutureSessions }) => {
               : MA_REUSSITE_CUSTOM_COLORS.Black
           }
         >
-          {item.timing}
+          {item.timing || "N/A"}
         </Text>
       </VStack>
-      {!isFutureSessions ? (
-        <VStack flex={1} alignItems="center">
-          {/* <Text color={getStatusColor(item.status)}>{item.status}</Text> */}
-          {item.present ? (
-            <Text color={"green.500"}>Present(e)</Text>
-          ) : item.late ? (
-            <Text color={"orange.500"}>Retard(e)</Text>
-          ) : item.absent ? (
-            <Text color={"red.500"}>Absent(e)</Text>
-          ) : item.excused ? (
-            <Text color={"purple.100"}> Excusé (e)</Text>
-          ) : (
-            "N/A"
-          )}
-        </VStack>
-      ) : (
-        <VStack flex={1} alignItems="center">
+      <VStack flex={1} alignItems="center">
+        {isFutureSessions ? (
           <Text
             color={
               isDarkMode
@@ -97,10 +82,36 @@ const AttendanceTable = ({ isDarkMode, subjectId, isFutureSessions }) => {
                 : MA_REUSSITE_CUSTOM_COLORS.Black
             }
           >
-            • • • {/* Dots for future sessions */}
+            • • •
           </Text>
-        </VStack>
-      )}
+        ) : (
+          <Text
+            color={
+              item.present
+                ? "green.500"
+                : item.late
+                ? "orange.500"
+                : item.absent
+                ? "red.500"
+                : item.excused
+                ? "purple.100"
+                : isDarkMode
+                ? "gray.500"
+                : "gray.700"
+            }
+          >
+            {item.present
+              ? "Present(e)"
+              : item.late
+              ? "Retard(e)"
+              : item.absent
+              ? "Absent(e)"
+              : item.excused
+              ? "Excusé(e)"
+              : "N/A"}
+          </Text>
+        )}
+      </VStack>
     </HStack>
   );
 
@@ -167,12 +178,16 @@ const AttendanceTable = ({ isDarkMode, subjectId, isFutureSessions }) => {
           </Text>
         </Box>
       ) : (
-        <FlatList
-          data={attendanceData}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          showsVerticalScrollIndicator={false}
-        />
+        <Box flex={1}>
+          {" "}
+          {/* Ensure FlatList takes up available space */}
+          <FlatList
+            data={attendanceData}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            showsVerticalScrollIndicator={false}
+          />
+        </Box>
       )}
     </Box>
   );

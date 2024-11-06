@@ -38,6 +38,16 @@
       "eas": {
         "projectId": "4851c23f-ab7b-43da-8a23-655dd4c59f28"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Ma-reussite to access your camera",
+          "microphonePermission": "Allow Ma-reussite  to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ]
+    ]
   }
 }

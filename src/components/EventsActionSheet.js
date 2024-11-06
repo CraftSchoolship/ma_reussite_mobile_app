@@ -18,6 +18,7 @@ export const EventsActionSheet = ({
   selectedEvent,
   isOpen,
   onClose,
+  navigation,
 }) => {
   return (
     <Actionsheet isOpen={isOpen} onClose={onClose}>
@@ -132,8 +133,8 @@ export const EventsActionSheet = ({
                       w={"full"}
                       fontSize={"lg"}
                       onPress={() => {
-                        // TODO implement the routing to attendance screen here
-                        console.log("Hello world");
+                        onClose();
+                        navigation.navigate("AttendanceStaff");
                       }}
                     >
                       Présence

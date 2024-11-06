@@ -171,6 +171,7 @@ const HomeScreen = () => {
         onClose={() => {
           onClose();
         }}
+        navigation={navigation}
       />
     </BackgroundWrapper>
   );
