@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { CameraView, useCameraPermissions } from "expo-camera"; // Removed CameraType
-import { MaterialIcons } from "@expo/vector-icons";
+import { CameraView, useCameraPermissions } from "expo-camera";
+import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import {
   Avatar,
   Box,
@@ -10,7 +10,7 @@ import {
   Pressable,
   Text,
   Image,
-  View,
+  Button,
 } from "native-base";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import HomeScreenBanner from "../components/HomeScreenBanner";
@@ -19,50 +19,31 @@ import { TouchableOpacity, StyleSheet, Vibration, Alert } from "react-native";
 import { browse, execute } from "../../http/http";
 import { useRoute } from "@react-navigation/native";
 
-const participants = [
-  { id: "1", name: "Samir Tata (Enseignant)" },
-  { id: "2", name: "Mohamed Mohamed" },
-  { id: "3", name: "Khalil Galalem" },
-  { id: "4", name: "Berthonge Christ" },
-  { id: "5", name: "Nagil Glad" },
-  { id: "6", name: "Rayen Dhmaied" },
-  { id: "7", name: "Asad Babur" },
-  { id: "8", name: "Wael Mbarek" },
-  { id: "9", name: "Khadija Amri" },
-  { id: "10", name: "Ali Zaytoun" },
-  { id: "11", name: "Khalil Galalem" },
-  { id: "12", name: "Berthonge Christ" },
-  { id: "13", name: "Nagil Glad" },
-  { id: "14", name: "Rayen Dhmaied" },
-  { id: "15", name: "Asad Babur" },
-];
 const AttendanceStaff = () => {
-
   const route = useRoute();
   const session = route?.params?.session;
   const { isDarkMode } = useThemeContext();
   const [attendance, setAttendance] = useState([]);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const [facing, setFacing] = useState('back');
+  const [facing, setFacing] = useState("back");
   const [permission, requestPermission] = useCameraPermissions();
+  const [isManualEntry, setIsManualEntry] = useState(false); // State to toggle manual entry mode
 
-  useEffect(() => {    
+  useEffect(() => {
     const fetchAttendance = async () => {
-      const students = await browse('craft.attendance.line', [
-        'student_id', 'present', 'late', 'absent', 'excused'
-      ], [
-        ['session_id', '=', session.id]
-      ]);
-      setAttendance(students);      
-    }
+      const students = await browse(
+        "craft.attendance.line",
+        ["student_id", "present", "late", "absent", "excused"],
+        [["session_id", "=", session.id]]
+      );
+      setAttendance(students);
+    };
 
-    if (!attendance?.length)
-      fetchAttendance();
+    if (!attendance?.length) fetchAttendance();
   }, [attendance]);
 
   useEffect(() => {
-    if (!(permission?.granted))
-      requestPermission();
+    if (!permission?.granted) requestPermission();
   }, [permission]);
 
   const openCamera = () => {
@@ -75,109 +56,163 @@ const AttendanceStaff = () => {
 
   const submit_attendance = async (barcode) => {
     try {
-      await execute('craft.attendance.line', 'create_from_barcode', [{
-        'session_id': session.id,
-        'barcode': barcode,
-      }]);
+      await execute("craft.attendance.line", "create_from_barcode", [
+        {
+          session_id: session.id,
+          barcode: barcode,
+        },
+      ]);
       setAttendance([]);
     } catch (error) {
       console.error("Error saving attendance:", error);
     }
-  }
+  };
 
   const handleBarCodeScanned = (event) => {
     const barcode = event?.data;
-    if (!barcode)
-      return;
+    if (!barcode) return;
     console.log("QR code scanned: ", barcode);
 
     Vibration.vibrate(100);
 
-    if (/^(\d{17})$/.test(barcode)){
-      let student_id = parseInt(barcode.split('').filter((_, index) => index % 2 === 0).join(''));
-      if (attendance.map(item => item.student_id[0]).includes(student_id))
-        submit_attendance(barcode)
+    if (/^(\d{17})$/.test(barcode)) {
+      let student_id = parseInt(
+        barcode
+          .split("")
+          .filter((_, index) => index % 2 === 0)
+          .join("")
+      );
+      if (attendance.map((item) => item.student_id[0]).includes(student_id))
+        submit_attendance(barcode);
       else
-        Alert.alert('Étudiant Inconnue', "Vous avez scanné l'identifiant d'un élève qui n'est pas inscrit dans ce groupe. Voulez-vous continuer ?", [
-          {
-            text: 'Annuler',
-            onPress: () => console.log('Canceled Scan'),
-            style: 'cancel',
-          },
-          {text: 'Continuer', onPress: () => submit_attendance(barcode)},
-        ]);
-    }
-    else
-      console.log(("Unknown Student ID"));
+        Alert.alert(
+          "Étudiant Inconnue",
+          "Vous avez scanné l'identifiant d'un élève qui n'est pas inscrit dans ce groupe. Voulez-vous continuer ?",
+          [
+            {
+              text: "Annuler",
+              onPress: () => console.log("Canceled Scan"),
+              style: "cancel",
+            },
+            { text: "Continuer", onPress: () => submit_attendance(barcode) },
+          ]
+        );
+    } else console.log("Unknown Student ID");
 
     closeCamera();
   };
 
   const toggleCameraType = () => {
-    setFacing(current => (current === 'back' ? 'front' : 'back'));
+    setFacing((current) => (current === "back" ? "front" : "back"));
   };
 
-  const renderParticipant = ({ item }) => (
-    <Pressable>
-      <HStack
-        bg={
-          isDarkMode
-            ? MA_REUSSITE_CUSTOM_COLORS.DarkBackground
-            : MA_REUSSITE_CUSTOM_COLORS.White
-        }
-        borderColor={
-          isDarkMode
-            ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
-            : MA_REUSSITE_CUSTOM_COLORS.LightDivider
-        }
-        p={4}
-        shadow={4}
-        borderWidth={1}
-        justifyContent="space-between"
-      >
-        <HStack alignItems={"center"}>
-          <Avatar
-            size="sm"
-            mr={4}
-            bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
-            ml={4}
-          >
+  const handleAttendanceUpdate = (studentId, status) => {
+    // Update attendance state based on the selected status
+    setAttendance((prev) =>
+      prev.map((item) =>
+        item.student_id[0] === studentId ? { ...item, status } : item
+      )
+    );
+  };
+
+  const renderParticipant = ({ item }) => {
+    const handleSelectStatus = (status) => {
+      handleAttendanceUpdate(item.student_id[0], status);
+    };
+
+    return (
+      <Pressable>
+        <HStack
+          bg={
+            isDarkMode
+              ? MA_REUSSITE_CUSTOM_COLORS.DarkBackground
+              : MA_REUSSITE_CUSTOM_COLORS.White
+          }
+          borderColor={
+            isDarkMode
+              ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
+              : MA_REUSSITE_CUSTOM_COLORS.LightDivider
+          }
+          p={4}
+          shadow={4}
+          borderWidth={1}
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <HStack alignItems="center">
+            <Avatar
+              size="sm"
+              mr={4}
+              bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
+              ml={4}
+            >
+              <Icon as={MaterialIcons} name="person" size="lg" color="white" />
+            </Avatar>
+            <Text
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+            >
+              {item?.student_id[1]}
+            </Text>
+          </HStack>
+
+          {isManualEntry ? (
+            <HStack space={2}>
+              {["present", "absent", "late", "excused"].map((status) => (
+                <Pressable
+                  key={status}
+                  onPress={() => handleSelectStatus(status)}
+                >
+                  <Icon
+                    as={FontAwesome}
+                    name={
+                      status === "present"
+                        ? "check-circle"
+                        : status === "absent"
+                        ? "times-circle"
+                        : status === "late"
+                        ? "clock-o"
+                        : "exclamation-circle"
+                    }
+                    size="sm"
+                    color={
+                      status === "present"
+                        ? "green.500"
+                        : status === "absent"
+                        ? "red.500"
+                        : status === "late"
+                        ? "yellow.500"
+                        : "blue.500"
+                    }
+                    opacity={item.status === status ? 1 : 0.3}
+                  />
+                </Pressable>
+              ))}
+            </HStack>
+          ) : (
             <Icon
               as={MaterialIcons}
-              name="person"
-              size="lg"
-              color="white"
-              mx={"auto"}
+              name={
+                item.status === "present" || item.status === "late"
+                  ? "check-circle"
+                  : "cancel"
+              }
+              color={
+                item.status === "present" || item.status === "late"
+                  ? "green.500"
+                  : "red.500"
+              }
+              size={6}
+              mr={4}
             />
-          </Avatar>
-          <Text
-            color={
-              isDarkMode
-                ? MA_REUSSITE_CUSTOM_COLORS.White
-                : MA_REUSSITE_CUSTOM_COLORS.Black
-            }
-          >
-            {item?.student_id[1]}
-          </Text>
+          )}
         </HStack>
-        <Icon
-          as={MaterialIcons}
-          name={
-            item.present || item.late
-              ? "check-circle"
-              : "cancel"
-          }
-          color={
-            item.present || item.late
-              ? "green.500"
-              : "red.500"
-          }
-          size={6}
-          mr={4}
-        />
-      </HStack>
-    </Pressable>
-  );
+      </Pressable>
+    );
+  };
 
   return (
     <Box
@@ -218,6 +253,15 @@ const AttendanceStaff = () => {
         </Text>
       </Box>
 
+      {/* Manual Entry Button at the top */}
+      <Box alignItems="center" mb={4}>
+        <Button onPress={() => setIsManualEntry(!isManualEntry)}>
+          <Text style={{ color: "white" }}>
+            {isManualEntry ? "Manual Entry" : "QR Scanner"}
+          </Text>
+        </Button>
+      </Box>
+
       <FlatList
         data={attendance}
         keyExtractor={(item) => item.id}
@@ -237,6 +281,7 @@ const AttendanceStaff = () => {
             : MA_REUSSITE_CUSTOM_COLORS.LightBackground
         }
       >
+        {/* QR Camera Icon */}
         <Pressable onPress={openCamera}>
           <Image
             source={require("../../assets/images/scan.png")}
@@ -252,19 +297,19 @@ const AttendanceStaff = () => {
             style={styles.camera}
             barcodeScannerSettings={{
               barcodeTypes: [
-                'aztec',
-                'ean13',
-                'ean8',
-                'qr',
-                'pdf417',
-                'upc_e',
-                'datamatrix',
-                'code39',
-                'code93',
-                'itf14',
-                'codabar',
-                'code128',
-                'upc_a'
+                "aztec",
+                "ean13",
+                "ean8",
+                "qr",
+                "pdf417",
+                "upc_e",
+                "datamatrix",
+                "code39",
+                "code93",
+                "itf14",
+                "codabar",
+                "code128",
+                "upc_a",
               ],
             }}
             onBarcodeScanned={handleBarCodeScanned}
@@ -293,7 +338,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0
+    bottom: 0,
   },
   camera: {
     width: "100%",
@@ -303,7 +348,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "transparent",
   },
   switchText: {
     color: "white",
