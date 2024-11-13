@@ -72,7 +72,7 @@ const AttendanceStaff = () => {
           barcode: barcode,
         },
       ]);
-      setAttendance([]);
+      setAttendance(null);
 
       toast.show({
         render: () => (
@@ -112,7 +112,7 @@ const AttendanceStaff = () => {
         absent: status == 'absent',
         excused: status == 'excused'
       });
-      setAttendance([]);
+      setAttendance(null);
 
       toast.show({
         render: () => (

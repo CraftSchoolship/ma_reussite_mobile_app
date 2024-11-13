@@ -14,7 +14,7 @@ const AttendanceTable = ({ isDarkMode, subjectId, isFutureSessions }) => {
           ? [
               ["subject_id", "=", subjectId],
               ["start", ">=", new Date().toISOString()],
-              ["state", "=", 'confirmed'],
+              ["state", "=", "confirm"],
             ]
           : [["subject_id", "=", subjectId]];
         const fields = isFutureSessions

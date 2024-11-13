@@ -64,7 +64,7 @@ const HomeScreen = () => {
           ]
           [
             ["start", ">=", new Date().toISOString().substring(0,10)],
-            ["state", "=", 'confirmed']
+            ["state", "=", "confirm"]
           ]
         );
 
