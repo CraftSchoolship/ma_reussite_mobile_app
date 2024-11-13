@@ -11,23 +11,33 @@ import {
   Text,
   Image,
   Button,
+  VStack,
+  useToast,
 } from "native-base";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import HomeScreenBanner from "../components/HomeScreenBanner";
 import { useThemeContext } from "../hooks/ThemeContext";
-import { TouchableOpacity, StyleSheet, Vibration, Alert } from "react-native";
-import { browse, execute } from "../../http/http";
-import { useRoute } from "@react-navigation/native";
+import { TouchableOpacity, StyleSheet, Vibration, Alert, Modal, View } from "react-native";
+import { browse, execute, update } from "../../http/http";
+import { useIsFocused, useRoute } from "@react-navigation/native";
+import { ToastAlert } from "../components";
 
 const AttendanceStaff = () => {
   const route = useRoute();
   const session = route?.params?.session;
   const { isDarkMode } = useThemeContext();
-  const [attendance, setAttendance] = useState([]);
+  const [attendance, setAttendance] = useState(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [facing, setFacing] = useState("back");
   const [permission, requestPermission] = useCameraPermissions();
-  const [isManualEntry, setIsManualEntry] = useState(false); // State to toggle manual entry mode
+  const [manualEditAttendance, setManualEditAttendance] = useState(0);
+  const toast = useToast();
+
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused)
+      setAttendance(null);
+  },[isFocused]);
 
   useEffect(() => {
     const fetchAttendance = async () => {
@@ -39,7 +49,7 @@ const AttendanceStaff = () => {
       setAttendance(students);
     };
 
-    if (!attendance?.length) fetchAttendance();
+    if (!attendance) fetchAttendance();
   }, [attendance]);
 
   useEffect(() => {
@@ -63,8 +73,74 @@ const AttendanceStaff = () => {
         },
       ]);
       setAttendance([]);
+
+      toast.show({
+        render: () => (
+          <ToastAlert
+            title={"Succès"}
+            description={"Présence mise à jour avec succès"}
+            status={"success"}
+            isClosable={true}
+            variant={"left-accent"}
+            duration={5000}
+          />
+        ),
+      });
     } catch (error) {
-      console.error("Error saving attendance:", error);
+      let message = error.data.arguments[0];
+      toast.show({
+        render: () => (
+          <ToastAlert
+            title={"Erreur"}
+            description={message}
+            status={"danger"}
+            isClosable={true}
+            variant={"left-accent"}
+            duration={5000}
+          />
+        ),
+      });
+      console.error("Error saving attendance:", message);
+    }
+  };
+
+  const update_attendance = async (attendance_id, status) => {
+    try {
+      await update('craft.attendance.line', attendance_id, {
+        present: status == 'present',
+        late: status == 'late',
+        absent: status == 'absent',
+        excused: status == 'excused'
+      });
+      setAttendance([]);
+
+      toast.show({
+        render: () => (
+          <ToastAlert
+            title={"Succès"}
+            description={"Présence mise à jour avec succès"}
+            status={"success"}
+            isClosable={true}
+            variant={"left-accent"}
+            duration={5000}
+          />
+        ),
+      });
+    } catch (error) {
+      let message = error.data.arguments[0];
+      toast.show({
+        render: () => (
+          <ToastAlert
+            title={"Erreur"}
+            description={message}
+            status={"danger"}
+            isClosable={true}
+            variant={"left-accent"}
+            duration={5000}
+          />
+        ),
+      });
+      console.error("Error saving attendance:", message);
     }
   };
 
@@ -106,22 +182,10 @@ const AttendanceStaff = () => {
     setFacing((current) => (current === "back" ? "front" : "back"));
   };
 
-  const handleAttendanceUpdate = (studentId, status) => {
-    // Update attendance state based on the selected status
-    setAttendance((prev) =>
-      prev.map((item) =>
-        item.student_id[0] === studentId ? { ...item, status } : item
-      )
-    );
-  };
-
   const renderParticipant = ({ item }) => {
-    const handleSelectStatus = (status) => {
-      handleAttendanceUpdate(item.student_id[0], status);
-    };
 
     return (
-      <Pressable>
+      <Pressable onPress={() => setManualEditAttendance(item.id)}>
         <HStack
           bg={
             isDarkMode
@@ -159,56 +223,129 @@ const AttendanceStaff = () => {
             </Text>
           </HStack>
 
-          {isManualEntry ? (
-            <HStack space={2}>
-              {["present", "absent", "late", "excused"].map((status) => (
-                <Pressable
-                  key={status}
-                  onPress={() => handleSelectStatus(status)}
-                >
-                  <Icon
-                    as={FontAwesome}
-                    name={
-                      status === "present"
-                        ? "check-circle"
-                        : status === "absent"
-                        ? "times-circle"
-                        : status === "late"
-                        ? "clock-o"
-                        : "exclamation-circle"
-                    }
-                    size="sm"
-                    color={
-                      status === "present"
-                        ? "green.500"
-                        : status === "absent"
-                        ? "red.500"
-                        : status === "late"
-                        ? "yellow.500"
-                        : "blue.500"
-                    }
-                    opacity={item.status === status ? 1 : 0.3}
-                  />
-                </Pressable>
-              ))}
-            </HStack>
-          ) : (
+          <Pressable onPress={() => setManualEditAttendance(item.id)}>
             <Icon
-              as={MaterialIcons}
+              as={FontAwesome}
               name={
-                item.status === "present" || item.status === "late"
+                item.present
                   ? "check-circle"
-                  : "cancel"
+                  : item.excused
+                  ? "times-circle"
+                  : item.late
+                  ? "clock-o"
+                  : "exclamation-circle"
               }
               color={
-                item.status === "present" || item.status === "late"
+                item.present
                   ? "green.500"
-                  : "red.500"
+                  : item.excused
+                  ? "red.500"
+                  : item.late
+                  ? "orange.500"
+                  : "pink.500"
               }
               size={6}
               mr={4}
             />
-          )}
+            <Modal transparent={true} animationType="fade" visible={manualEditAttendance == item.id}>
+              <TouchableOpacity
+                style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
+                onPress={() => setManualEditAttendance(0)}
+              >
+                <View style={{ width: 280, padding: 20, backgroundColor: 'white', borderRadius: 8 }}>
+                  <VStack width={"full"}>
+                    <Text
+                      color={
+                        isDarkMode
+                          ? MA_REUSSITE_CUSTOM_COLORS.White
+                          : MA_REUSSITE_CUSTOM_COLORS.Black
+                      }
+                      mb={4}
+                      fontWeight={'bold'}
+                      fontSize={'lg'}
+                    >
+                      Marquer {item.student_id[1]}
+                    </Text>
+                    <FlatList
+                      data={['present', 'late', 'excused', 'absent']}
+                      renderItem={renderAttendanceMenu}
+                      showsVerticalScrollIndicator={false}
+                      contentContainerStyle={{ paddingBottom: 2 }}
+                    />
+                  </VStack>
+                </View>
+              </TouchableOpacity>
+            </Modal>
+          </Pressable>
+        </HStack>
+      </Pressable>
+    );
+  };
+
+  const renderAttendanceMenu = ({ item }) => {
+    const status = item
+
+    return (
+      <Pressable onPress={() => {update_attendance(manualEditAttendance, status); setManualEditAttendance(0)}}>
+        <HStack
+          bg={
+            isDarkMode
+              ? MA_REUSSITE_CUSTOM_COLORS.DarkBackground
+              : MA_REUSSITE_CUSTOM_COLORS.White
+          }
+          borderColor={
+            isDarkMode
+              ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
+              : MA_REUSSITE_CUSTOM_COLORS.LightDivider
+          }
+          p={4}
+          shadow={4}
+          borderWidth={1}
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <HStack alignItems="center">
+
+          <Icon
+              as={FontAwesome}
+              name={
+                status === "present"
+                  ? "check-circle"
+                  : status === "excused"
+                  ? "times-circle"
+                  : status === "late"
+                  ? "clock-o"
+                  : "exclamation-circle"
+              }
+              color={
+                status === "present"
+                  ? "green.500"
+                  : status === "excused"
+                  ? "red.500"
+                  : status === "late"
+                  ? "orange.500"
+                  : "pink.500"
+              }
+              size={6}
+              mr={4}
+            />
+            <Text
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+            >
+              {
+                status === "present"
+                  ? "Present(e)"
+                  : status === "absent"
+                  ? "Absent(e)"
+                  : status === "late"
+                  ? "En Retard"
+                  : "Excusé(e)"}
+            </Text>
+          </HStack>
         </HStack>
       </Pressable>
     );
@@ -225,7 +362,7 @@ const AttendanceStaff = () => {
       pt={8}
       flex={0.9}
     >
-      <HomeScreenBanner displayGoBackButton={true} previous={"Groups"} />
+      <HomeScreenBanner displayGoBackButton={true} previous={"Home"} />
       <Box pt={2} w={"100%"} paddingBottom={4} zIndex={2}>
         <Text
           color={
@@ -251,15 +388,6 @@ const AttendanceStaff = () => {
         >
           {session.timing} à {session.classroom_id[1]}
         </Text>
-      </Box>
-
-      {/* Manual Entry Button at the top */}
-      <Box alignItems="center" mb={4}>
-        <Button onPress={() => setIsManualEntry(!isManualEntry)}>
-          <Text style={{ color: "white" }}>
-            {isManualEntry ? "Manual Entry" : "QR Scanner"}
-          </Text>
-        </Button>
       </Box>
 
       <FlatList
