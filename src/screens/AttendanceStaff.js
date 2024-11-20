@@ -17,7 +17,14 @@ import {
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import HomeScreenBanner from "../components/HomeScreenBanner";
 import { useThemeContext } from "../hooks/ThemeContext";
-import { TouchableOpacity, StyleSheet, Vibration, Alert, Modal, View } from "react-native";
+import {
+  TouchableOpacity,
+  StyleSheet,
+  Vibration,
+  Alert,
+  Modal,
+  View,
+} from "react-native";
 import { browse, execute, update } from "../../http/http";
 import { useIsFocused, useRoute } from "@react-navigation/native";
 import { ToastAlert } from "../components";
@@ -35,9 +42,8 @@ const AttendanceStaff = () => {
 
   const isFocused = useIsFocused();
   useEffect(() => {
-    if (isFocused)
-      setAttendance(null);
-  },[isFocused]);
+    if (isFocused) setAttendance(null);
+  }, [isFocused]);
 
   useEffect(() => {
     const fetchAttendance = async () => {
@@ -106,11 +112,11 @@ const AttendanceStaff = () => {
 
   const update_attendance = async (attendance_id, status) => {
     try {
-      await update('craft.attendance.line', attendance_id, {
-        present: status == 'present',
-        late: status == 'late',
-        absent: status == 'absent',
-        excused: status == 'excused'
+      await update("craft.attendance.line", attendance_id, {
+        present: status == "present",
+        late: status == "late",
+        absent: status == "absent",
+        excused: status == "excused",
       });
       setAttendance(null);
 
@@ -183,7 +189,6 @@ const AttendanceStaff = () => {
   };
 
   const renderParticipant = ({ item }) => {
-
     return (
       <Pressable onPress={() => setManualEditAttendance(item.id)}>
         <HStack
@@ -247,12 +252,30 @@ const AttendanceStaff = () => {
               size={6}
               mr={4}
             />
-            <Modal transparent={true} animationType="fade" visible={manualEditAttendance == item.id}>
+            <Modal
+              transparent={true}
+              animationType="fade"
+              visible={manualEditAttendance == item.id}
+            >
               <TouchableOpacity
-                style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "rgba(0, 0, 0, 0.1)",
+                }}
                 onPress={() => setManualEditAttendance(0)}
               >
-                <View style={{ width: 280, padding: 20, backgroundColor: 'white', borderRadius: 8 }}>
+                <View
+                  style={{
+                    width: 280,
+                    padding: 20,
+                    backgroundColor: isDarkMode
+                      ? MA_REUSSITE_CUSTOM_COLORS.Black
+                      : MA_REUSSITE_CUSTOM_COLORS.White,
+                    borderRadius: 8,
+                  }}
+                >
                   <VStack width={"full"}>
                     <Text
                       color={
@@ -261,13 +284,13 @@ const AttendanceStaff = () => {
                           : MA_REUSSITE_CUSTOM_COLORS.Black
                       }
                       mb={4}
-                      fontWeight={'bold'}
-                      fontSize={'lg'}
+                      fontWeight={"bold"}
+                      fontSize={"lg"}
                     >
                       Marquer {item.student_id[1]}
                     </Text>
                     <FlatList
-                      data={['present', 'late', 'excused', 'absent']}
+                      data={["present", "late", "excused", "absent"]}
                       renderItem={renderAttendanceMenu}
                       showsVerticalScrollIndicator={false}
                       contentContainerStyle={{ paddingBottom: 2 }}
@@ -283,10 +306,15 @@ const AttendanceStaff = () => {
   };
 
   const renderAttendanceMenu = ({ item }) => {
-    const status = item
+    const status = item;
 
     return (
-      <Pressable onPress={() => {update_attendance(manualEditAttendance, status); setManualEditAttendance(0)}}>
+      <Pressable
+        onPress={() => {
+          update_attendance(manualEditAttendance, status);
+          setManualEditAttendance(0);
+        }}
+      >
         <HStack
           bg={
             isDarkMode
@@ -305,8 +333,7 @@ const AttendanceStaff = () => {
           alignItems="center"
         >
           <HStack alignItems="center">
-
-          <Icon
+            <Icon
               as={FontAwesome}
               name={
                 status === "present"
@@ -336,14 +363,13 @@ const AttendanceStaff = () => {
                   : MA_REUSSITE_CUSTOM_COLORS.Black
               }
             >
-              {
-                status === "present"
-                  ? "Present(e)"
-                  : status === "absent"
-                  ? "Absent(e)"
-                  : status === "late"
-                  ? "En Retard"
-                  : "Excusé(e)"}
+              {status === "present"
+                ? "Present(e)"
+                : status === "absent"
+                ? "Absent(e)"
+                : status === "late"
+                ? "En Retard"
+                : "Excusé(e)"}
             </Text>
           </HStack>
         </HStack>
