@@ -9,12 +9,11 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.craftschoolship.mareussite"
+      "bundleIdentifier": "com.craftschoolship.mareussite",
+      "associatedDomains": ["applinks:app.craftschoolship.com"]
     },
     "android": {
       "adaptiveIcon": {
@@ -23,8 +22,19 @@
       },
       "package": "com.craftschoolship.mareussite",
       "versionCode": 3,
-      "permissions": [
-        "com.google.android.gms.permission.AD_ID"
+      "permissions": ["com.google.android.gms.permission.AD_ID"],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "app.craftschoolship.com"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
       ]
     },
     "web": {

@@ -18,7 +18,7 @@ import { CustomButton, CustomInput } from "../components";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { loginValidationSchema } from "../validation/formValidation";
-import { microsoftSignIn } from "../../http/microsoft";
+import * as Linking from "expo-linking";
 
 const wrapProfileImageBase64 = (profileImage) => {
   if (!profileImage || typeof profileImage !== "string")
@@ -223,29 +223,36 @@ const LoginScreen = () => {
                 <Text style={{ width: 50, textAlign: "center" }}>or</Text>
                 <View style={{ flex: 1, height: 1, backgroundColor: "gray" }} />
               </View>
-              <Button
-                leftIcon={
-                  <Image
-                    source={require("../../assets/images/micro.png")}
-                    ml="2"
-                    resizeMode="contain"
-                    alt="Microsoft logo"
-                    size={30}
-                    marginRight={6}
-                    marginLeft={6}
-                  />
-                }
-                onPress={microsoftSignIn}
-                isDisabled={!isValid}
-                style={{ height: 48, borderRadius: 12, width: "100%" }}
-                bg={MA_REUSSITE_CUSTOM_COLORS.Primary}
-              >
-                {!loading ? (
-                  <Text color={"white"}>Continuer avec microsoft</Text>
-                ) : (
-                  <Spinner size="sm" color="white" />
-                )}
-              </Button>
+              {config.auth.providers
+                .filter(
+                  (provider) => provider.name.toLowerCase() == "microsoft"
+                )
+                .map((provider) => (
+                  <Button
+                    key={provider.url} // Add a unique key prop here
+                    leftIcon={
+                      <Image
+                        source={require("../../assets/images/micro.png")}
+                        ml="2"
+                        resizeMode="contain"
+                        alt="Microsoft logo"
+                        size={30}
+                        marginRight={6}
+                        marginLeft={6}
+                      />
+                    }
+                    onPress={() => Linking.openURL(provider.url)}
+                    isDisabled={!isValid}
+                    style={{ height: 48, borderRadius: 12, width: "100%" }}
+                    bg={MA_REUSSITE_CUSTOM_COLORS.Primary}
+                  >
+                    {!loading ? (
+                      <Text color={"white"}>Continuer avec microsoft</Text>
+                    ) : (
+                      <Spinner size="sm" color="white" />
+                    )}
+                  </Button>
+                ))}
             </VStack>
           )}
         </Formik>
