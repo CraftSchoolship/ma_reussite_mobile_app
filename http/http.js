@@ -2,58 +2,14 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import config from "../http/config";
 import { encode } from "../http/password_encoding";
-
-// const jsonRpcRequest = async (service, method, args) => {
-//   try {
-//     const response = await axios.post(
-//       "/jsonrpc",
-//       {
-//         jsonrpc: "2.0",
-//         method: "call",
-//         params: {
-//           service: service,
-//           method: method,
-//           args: [config.workspace.erp.database, ...args],
-//         },
-//         id: new Date().getTime(),
-//       },
-//       {
-//         baseURL: config.workspace.erp.url,
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//       }
-//     );
-//     console.log("RPC Response:", response.data);
-
-//     if ("error" in response.data) throw response.data.error;
-//     return response.data.result;
-//   } catch (error) {
-//     console.error("Remote Procedure Calling Failed", error);
-//     throw error;
-//   }
-// };
+import { decode as atob } from "base-64"; // Importing base-64 decode
 
 // Get the token
 export const getToken = async () => {
   const exp = await AsyncStorage.getItem("erp_token_expiration");
-  // TODO get current timestamp, then check if expiration is still far
-  // at least 5 minutes from now,
-  // if token expired, we should re-login
-  // if token is about to expire, we should regenerate it
-
-  // Example if token is expired
-  // await authenticateWithUsernameAndPassword(
-  //     await AsyncStorage.getItem("erp_username"),
-  //     await AsyncStorage.getItem("erp_password")
-  // );
-
-  // Example if token is about to expire
-  // await authenticateWithToken(
-  //     await AsyncStorage.getItem("erp_token")
-  // );
-
   const token = await AsyncStorage.getItem("erp_token");
+
+  // If the token is expired, you might want to re-login or refresh it
   return token;
 };
 
@@ -90,21 +46,44 @@ export const authenticate = async (
         },
       }
     );
+
     if ("error" in response.data) {
       console.error("Authentication Failed", response.data.error);
       return false;
     }
 
-    // save access token
-    config.erpToken = response.data.token;
-    payload = JSON.parse(atob(response.data.token.split(".")[1]));
-    await AsyncStorage.setItem("erp_token", response.data.token);
-    await AsyncStorage.setItem("erp_token_expiration", payload["exp"]);
-    await AsyncStorage.setItem("erp_user_id", payload["sub"]);
-    await AsyncStorage.setItem("erp_username", username);
-    await AsyncStorage.setItem("erp_password", encode(password));
+    // Save access token
+    const token = response.data.token;
+    console.log("Authentication Response:", response.data);
 
-    return true;
+    // Split the token into its three parts
+    const parts = token.split(".");
+    if (parts.length !== 3) {
+      console.error("Invalid token format", token);
+      return false;
+    }
+
+    try {
+      // Decode the payload (second part) of the token
+      const payload = JSON.parse(atob(parts[1])); // Decoding the payload part of the token
+      console.log("Decoded Payload:", payload);
+
+      // Save token and expiration to AsyncStorage
+      await AsyncStorage.setItem("erp_token", token);
+      await AsyncStorage.setItem(
+        "erp_token_expiration",
+        payload.exp.toString()
+      );
+      await AsyncStorage.setItem("erp_user_id", payload.sub.toString());
+      await AsyncStorage.setItem("erp_username", username);
+      await AsyncStorage.setItem("erp_password", encode(password));
+
+      // Token is valid
+      return true;
+    } catch (error) {
+      console.error("Failed to decode token payload:", error);
+      return false;
+    }
   } catch (error) {
     console.error("Authentication Failed", error);
     return false;
@@ -126,24 +105,6 @@ export const logout = async () => {
 };
 
 // Generic functions for CRUD operations
-// export const execute = async (model, method, args) =>
-//   jsonRpcRequest("object", "execute_kw", [
-//     config.uid,
-//     config.password,
-//     model,
-//     method,
-//     ...args,
-//   ]);
-
-// export const execute = async (model, method, args) =>
-//   jsonRpcRequest("object", "execute", [
-//     config.uid,
-//     config.pwd,
-//     model,
-//     method,
-//     ...args,
-//   ]);
-
 export const read = async (model, id, fields) => {
   try {
     const response = await axios.get(`/rest/models/${model}/${id}`, {
@@ -153,7 +114,7 @@ export const read = async (model, id, fields) => {
         Authorization: `Bearer ${await getToken()}`,
       },
       params: {
-        fields: fields.joint(","),
+        fields: fields.join(","),
       },
     });
     if ("error" in response.data) throw response.data.error;
