@@ -7,6 +7,7 @@ const App = () => {
   const fontsLoaded = useFonts({
     "Lato-Regular": require("./assets/fonts/Lato-Regular.ttf"),
     "Lato-Bold": require("./assets/fonts/Lato-Bold.ttf"),
+    "Lato-Bold": require("./assets/fonts/Lato-Bold.ttf"),
   });
 
   if (!fontsLoaded) {

@@ -13,6 +13,7 @@ import {
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import * as AuthSession from "expo-auth-session";
 
 import * as Linking from "expo-linking";
 import {
@@ -28,6 +29,7 @@ import { useThemeContext } from "../hooks/ThemeContext";
 import { Formik } from "formik";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { loginValidationSchema } from "../validation/formValidation";
+import { pt } from "date-fns/locale";
 
 const LoginScreen = () => {
   const [isLoadingLogin, setIsLoadingLogin] = useState(false);
@@ -141,7 +143,7 @@ const LoginScreen = () => {
 
       if (!user) {
         setError("Failed to fetch user data.");
-        console.error("User data fetch error:", userResponse);
+        console.error("User data fetch error:", user);
         return;
       }
 
@@ -182,16 +184,21 @@ const LoginScreen = () => {
     setError("");
 
     try {
-      const redirectUrl = Linking.createURL("/");
-      const authUrl = `${provider.url}?redirect_uri=${encodeURIComponent(
-        redirectUrl
-      )}`;
+      const redirectUrl = Linking.createURL("redirect", {
+        scheme: "mareussite",
+      });
 
-      const result = await Linking.openAuthSessionAsync(authUrl, redirectUrl);
+      console.log("Redirect URL:", redirectUrl);
 
-      if (result.type === "success" && result.url) {
-        const urlParams = new URLSearchParams(result.url.split("?")[1]);
-        const oauthToken = urlParams.get("token");
+      const authUrl = provider.url;
+
+      // Open the Microsoft login URL using Linking.openURL
+      await Linking.openURL(authUrl);
+
+      const result = await AuthSession.startAsync({ authUrl });
+
+      if (result.type === "success" && result.params) {
+        const oauthToken = result.params.token;
 
         if (!oauthToken) {
           setError("OAuth login failed. No token received.");
@@ -208,6 +215,7 @@ const LoginScreen = () => {
           return;
         }
 
+        // Proceed with fetching user details and navigating
         const token = await AsyncStorage.getItem("erp_token");
         const user_id = await AsyncStorage.getItem("erp_user_id");
 
@@ -237,13 +245,11 @@ const LoginScreen = () => {
           return;
         }
 
-        let profileImage = user[0]?.image_256 || null;
+        let profileImage = user?.image_256 || null;
         let connectedUser = {
-          ...user[0],
-          email: email,
-          password: password,
+          ...user,
           profileImage: wrapProfileImageBase64(profileImage),
-          role: user[0].craft_role,
+          role: user.craft_role,
         };
 
         await storeObject("connectedUser", connectedUser);
