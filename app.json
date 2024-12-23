@@ -29,8 +29,8 @@
           "autoVerify": true,
           "data": [
             {
-              "scheme": "https",
-              "host": "app.craftschoolship.com"
+              "scheme": "mareussite",
+              "host": "ma-reussite.com"
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]
@@ -45,6 +45,7 @@
         "projectId": "4851c23f-ab7b-43da-8a23-655dd4c59f28"
       }
     },
-    "scheme": "mareussite"
+    "scheme": "mareussite",
+    "platforms": ["ios", "android"]
   }
 }

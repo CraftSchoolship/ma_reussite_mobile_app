@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Box,
   Center,
@@ -29,7 +29,6 @@ import { useThemeContext } from "../hooks/ThemeContext";
 import { Formik } from "formik";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { loginValidationSchema } from "../validation/formValidation";
-import { pt } from "date-fns/locale";
 
 const LoginScreen = () => {
   const [isLoadingLogin, setIsLoadingLogin] = useState(false);
@@ -178,90 +177,114 @@ const LoginScreen = () => {
       setIsLoadingLogin(false);
     }
   };
+  useEffect(() => {
+    const handleRedirect = async (event) => {
+      const { url } = event;
+      console.log("Event received:", event);
+      const parsedUrl = Linking.parse(url);
+      console.log("Parsed URL:", parsedUrl);
+
+      const { queryParams, fragmentParams } = parsedUrl;
+      const token = queryParams.token || fragmentParams.access_token;
+
+      console.log("Extracted Token:", token);
+
+      if (token) {
+        const provider = config.auth.providers.find((provider) =>
+          url.includes(provider.url)
+        );
+        console.log("Provider found:", provider);
+
+        if (provider) {
+          await handleOAuthSuccess(token, provider.name);
+        } else {
+          setError("No matching provider found.");
+          console.error("No matching provider found.");
+        }
+      } else {
+        setError("Authentication failed. No token received.");
+        console.error("No token received from the redirect.");
+      }
+    };
+
+    const subscription = Linking.addEventListener("url", handleRedirect);
+    return () => subscription.remove();
+  }, []);
 
   const handleOAuthLogin = async (provider) => {
     setIsLoadingOAuth(true);
     setError("");
 
     try {
-      const redirectUrl = Linking.createURL("redirect", {
-        scheme: "mareussite",
-      });
-
-      console.log("Redirect URL:", redirectUrl);
-
       const authUrl = provider.url;
-
-      // Open the Microsoft login URL using Linking.openURL
       await Linking.openURL(authUrl);
-
-      const result = await AuthSession.startAsync({ authUrl });
-
-      if (result.type === "success" && result.params) {
-        const oauthToken = result.params.token;
-
-        if (!oauthToken) {
-          setError("OAuth login failed. No token received.");
-          return;
-        }
-
-        const isAuthenticated = await authenticateWithOAuth(
-          provider.name.toLowerCase(),
-          oauthToken
-        );
-
-        if (!isAuthenticated) {
-          setError("OAuth login failed. Please try again.");
-          return;
-        }
-
-        // Proceed with fetching user details and navigating
-        const token = await AsyncStorage.getItem("erp_token");
-        const user_id = await AsyncStorage.getItem("erp_user_id");
-
-        if (!token || !user_id) {
-          setError("Authentication failed. Please try again.");
-          return;
-        }
-
-        const user = await read(
-          "res.users",
-          [user_id],
-          [
-            "self",
-            "name",
-            "phone",
-            "login",
-            "street",
-            "craft_role",
-            "craft_parent_id",
-            "craft_student_id",
-            "image_256",
-          ]
-        );
-
-        if (!user || !user[0]) {
-          setError("Oops! Something went wrong.");
-          return;
-        }
-
-        let profileImage = user?.image_256 || null;
-        let connectedUser = {
-          ...user,
-          profileImage: wrapProfileImageBase64(profileImage),
-          role: user.craft_role,
-        };
-
-        await storeObject("connectedUser", connectedUser);
-        navigation.navigate("DrawerNavigator", { connectedUser });
-      } else {
-        setError("OAuth login canceled.");
-      }
     } catch (err) {
       console.error("OAuth Login Error:", err);
       setError("An error occurred. Please try again.");
     } finally {
       setIsLoadingOAuth(false);
+    }
+  };
+  const handleOAuthSuccess = async (token, providerName) => {
+    try {
+      console.log("OAuth Success Provider:", providerName);
+      console.log("Received Token:", token);
+
+      const isAuthenticated = await authenticateWithOAuth(providerName, token);
+
+      console.log("Authentication Result:", isAuthenticated);
+
+      if (!isAuthenticated) {
+        setError("OAuth login failed. Please try again.");
+        return;
+      }
+
+      const erpToken = await AsyncStorage.getItem("erp_token");
+      const user_id = await AsyncStorage.getItem("erp_user_id");
+
+      if (!erpToken || !user_id) {
+        setError("Authentication failed. Please try again.");
+        console.error("ERP token or user_id not found.");
+        return;
+      }
+
+      const user = await read(
+        "res.users",
+        [user_id],
+        [
+          "self",
+          "name",
+          "phone",
+          "login",
+          "street",
+          "craft_role",
+          "craft_parent_id",
+          "craft_student_id",
+          "image_256",
+        ]
+      );
+
+      if (!user || !user[0]) {
+        setError("Oops! Something went wrong.");
+        console.error("Failed to fetch user data:", user);
+        return;
+      }
+
+      const connectedUser = {
+        ...user,
+        profileImage: wrapProfileImageBase64(user.image_256 || null),
+        role: user.craft_role,
+      };
+
+      await storeObject("connectedUser", connectedUser);
+
+      // Navigate to the app's main screen
+      navigation.navigate("DrawerNavigator", { connectedUser });
+    } catch (err) {
+      console.error("OAuth Success Handling Error:", err);
+      setError(
+        "An error occurred while processing your login. Please try again."
+      );
     }
   };
 
