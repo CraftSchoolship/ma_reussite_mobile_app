@@ -6,16 +6,13 @@ import {
   View,
   VStack,
   HStack,
-  Button,
   Spinner,
   Divider,
 } from "native-base";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import * as AuthSession from "expo-auth-session";
 
-import * as Linking from "expo-linking";
 import {
   authenticateWithOAuth,
   authenticateWithUsernameAndPassword,
@@ -24,6 +21,7 @@ import {
 } from "../../http/http";
 import { storeObject, storeArray } from "../api/apiClient";
 import config from "../../http/config";
+import { WebView } from "react-native-webview";
 import { CustomButton, CustomInput } from "../components";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { Formik } from "formik";
@@ -32,6 +30,8 @@ import { loginValidationSchema } from "../validation/formValidation";
 
 const LoginScreen = () => {
   const [isLoadingLogin, setIsLoadingLogin] = useState(false);
+  const [isWebViewVisible, setIsWebViewVisible] = useState(false);
+  const [authUrl, setAuthUrl] = useState("");
   const [isLoadingOAuth, setIsLoadingOAuth] = useState(false);
   const [error, setError] = useState("");
   const input1Ref = useRef(null);
@@ -177,114 +177,59 @@ const LoginScreen = () => {
       setIsLoadingLogin(false);
     }
   };
-  useEffect(() => {
-    const handleRedirect = async (event) => {
-      const { url } = event;
-      console.log("Event received:", event);
-      const parsedUrl = Linking.parse(url);
-      console.log("Parsed URL:", parsedUrl);
 
-      const { queryParams, fragmentParams } = parsedUrl;
-      const token = queryParams.token || fragmentParams.access_token;
+  const handleOAuthLogin = (provider) => {
+    const authUrl = provider.url;
+    setAuthUrl(authUrl);
+    setIsWebViewVisible(true);
+  };
 
+  const handleWebViewNavigation = async (event) => {
+    const { url } = event;
+
+    if (url.startsWith("https://app.craftschoolship.com")) {
+      setIsWebViewVisible(false);
+      let temp_url = url.substring(31);
+      if (temp_url.startsWith("#") || temp_url.startsWith("/#")) {
+        temp_url = temp_url.replace("#", "?");
+      }
+      const parsedUrl = new URL("https://app.craftschoolship.com" + temp_url);
+      const token = parsedUrl.searchParams.get("access_token");
       console.log("Extracted Token:", token);
 
       if (token) {
-        const provider = config.auth.providers.find((provider) =>
-          url.includes(provider.url)
-        );
-        console.log("Provider found:", provider);
+        try {
+          const providerName = config.auth.providers[0].id;
+          const isAuthenticated = await authenticateWithOAuth(
+            providerName,
+            token
+          );
 
-        if (provider) {
-          await handleOAuthSuccess(token, provider.name);
-        } else {
-          setError("No matching provider found.");
-          console.error("No matching provider found.");
+          if (!isAuthenticated) {
+            setError("OAuth login failed. Please try again.");
+            return;
+          }
+
+          const erpToken = await AsyncStorage.getItem("erp_token");
+          const user_id = await AsyncStorage.getItem("erp_user_id");
+
+          if (!erpToken || !user_id) {
+            setError("Authentication failed. Please try again.");
+            console.error("ERP token or user_id not found.");
+            return;
+          }
+          console.log("user_id:", user_id);
+
+          navigation.navigate("DrawerNavigator", {
+            connectedUser: { user_id },
+          });
+        } catch (err) {
+          console.error("OAuth Handling Error:", err);
+          setError("An error occurred. Please try again.");
         }
       } else {
         setError("Authentication failed. No token received.");
-        console.error("No token received from the redirect.");
       }
-    };
-
-    const subscription = Linking.addEventListener("url", handleRedirect);
-    return () => subscription.remove();
-  }, []);
-
-  const handleOAuthLogin = async (provider) => {
-    setIsLoadingOAuth(true);
-    setError("");
-
-    try {
-      const authUrl = provider.url;
-      await Linking.openURL(authUrl);
-    } catch (err) {
-      console.error("OAuth Login Error:", err);
-      setError("An error occurred. Please try again.");
-    } finally {
-      setIsLoadingOAuth(false);
-    }
-  };
-  const handleOAuthSuccess = async (token, providerName) => {
-    try {
-      console.log("OAuth Success Provider:", providerName);
-      console.log("Received Token:", token);
-
-      const isAuthenticated = await authenticateWithOAuth(providerName, token);
-
-      console.log("Authentication Result:", isAuthenticated);
-
-      if (!isAuthenticated) {
-        setError("OAuth login failed. Please try again.");
-        return;
-      }
-
-      const erpToken = await AsyncStorage.getItem("erp_token");
-      const user_id = await AsyncStorage.getItem("erp_user_id");
-
-      if (!erpToken || !user_id) {
-        setError("Authentication failed. Please try again.");
-        console.error("ERP token or user_id not found.");
-        return;
-      }
-
-      const user = await read(
-        "res.users",
-        [user_id],
-        [
-          "self",
-          "name",
-          "phone",
-          "login",
-          "street",
-          "craft_role",
-          "craft_parent_id",
-          "craft_student_id",
-          "image_256",
-        ]
-      );
-
-      if (!user || !user[0]) {
-        setError("Oops! Something went wrong.");
-        console.error("Failed to fetch user data:", user);
-        return;
-      }
-
-      const connectedUser = {
-        ...user,
-        profileImage: wrapProfileImageBase64(user.image_256 || null),
-        role: user.craft_role,
-      };
-
-      await storeObject("connectedUser", connectedUser);
-
-      // Navigate to the app's main screen
-      navigation.navigate("DrawerNavigator", { connectedUser });
-    } catch (err) {
-      console.error("OAuth Success Handling Error:", err);
-      setError(
-        "An error occurred while processing your login. Please try again."
-      );
     }
   };
 
@@ -297,79 +242,86 @@ const LoginScreen = () => {
           : MA_REUSSITE_CUSTOM_COLORS.White
       }
     >
-      <Box style={{ padding: 24, marginTop: 35 }}>
-        <Center>
-          <Text
-            color={
-              isDarkMode
-                ? MA_REUSSITE_CUSTOM_COLORS.White
-                : MA_REUSSITE_CUSTOM_COLORS.Black
-            }
-            fontSize="2xl"
-            bold
-          >
-            S'identifier
-          </Text>
-        </Center>
-        <Formik
-          initialValues={{ email: "", password: "" }}
-          validationSchema={loginValidationSchema}
-          onSubmit={handleLogin}
-        >
-          {({ handleSubmit, isValid }) => (
-            <VStack space={4} marginTop={10}>
-              <CustomInput
-                label="Email"
-                name="email"
-                keyboardType="email-address"
-                inputRef={input1Ref}
-                onSubmitEditing={() => input2Ref.current.focus()}
-                clearButtonMode="always"
-              />
-              <CustomInput
-                label="Mot de passe"
-                name="password"
-                secureTextEntry
-                showPassword={showPassword}
-                setShowPassword={setShowPassword}
-                inputRef={input2Ref}
-                onSubmitEditing={handleSubmit}
-              />
-              <Text color={"danger.500"} textAlign={"center"} mt={3}>
-                {error}
-              </Text>
-              <CustomButton
-                onPress={handleSubmit}
-                title="Se connecter"
-                isDisabled={!isValid}
-                loading={isLoadingLogin}
-              />
-
-              <HStack alignItems="center" mt={6}>
-                <Divider flex={1} bg="gray.400" />
-                <Text mx={3} color="gray.400">
-                  ou
-                </Text>
-                <Divider flex={1} bg="gray.400" />
-              </HStack>
-
-              {config.auth.providers
-                .filter(
-                  (provider) => provider.name.toLowerCase() === "microsoft"
-                )
-                .map((provider) => (
-                  <CustomButton
-                    key={provider.url}
-                    onPress={() => handleOAuthLogin(provider)}
-                    title="Continuer avec Microsoft"
-                    loading={isLoadingOAuth}
-                  />
-                ))}
-            </VStack>
+      {isWebViewVisible ? (
+        <WebView
+          source={{ uri: authUrl }}
+          onNavigationStateChange={handleWebViewNavigation}
+          startInLoadingState
+          renderLoading={() => (
+            <Center flex={1}>
+              <Spinner size="lg" color={MA_REUSSITE_CUSTOM_COLORS.Primary} />
+            </Center>
           )}
-        </Formik>
-      </Box>
+        />
+      ) : (
+        <Box style={{ padding: 24, marginTop: 35 }}>
+          <Center>
+            <Text
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+              fontSize="2xl"
+              bold
+            >
+              S'identifier
+            </Text>
+          </Center>
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            validationSchema={loginValidationSchema}
+            onSubmit={handleLogin}
+          >
+            {({ handleSubmit, isValid }) => (
+              <VStack space={4} marginTop={10}>
+                <CustomInput
+                  label="Email"
+                  name="email"
+                  keyboardType="email-address"
+                />
+                <CustomInput
+                  label="Mot de passe"
+                  name="password"
+                  secureTextEntry
+                />
+                <Text color={"danger.500"} textAlign={"center"} mt={3}>
+                  {error}
+                </Text>
+                <CustomButton
+                  onPress={handleSubmit}
+                  title="Se connecter"
+                  isDisabled={!isValid}
+                  loading={isLoadingLogin}
+                />
+
+                <HStack alignItems="center" mt={6}>
+                  <Divider flex={1} bg="gray.400" />
+                  <Text mx={3} color="gray.400">
+                    ou
+                  </Text>
+                  <Divider flex={1} bg="gray.400" />
+                </HStack>
+
+                {config.auth.providers
+                  .filter(
+                    (provider) => provider.name.toLowerCase() === "microsoft"
+                  )
+                  .map((provider) => (
+                    <CustomButton
+                      key={provider.url}
+                      onPress={() => handleOAuthLogin(provider)}
+                      title="Continuer avec Microsoft"
+                      loading={isLoadingOAuth}
+                    />
+                  ))}
+              </VStack>
+            )}
+          </Formik>
+        </Box>
+      )}
     </View>
   );
 };
+
 export default LoginScreen;

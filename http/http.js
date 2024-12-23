@@ -25,7 +25,7 @@ export const authenticate = async (
   method,
   username = "",
   password = "",
-  token = "",
+  access_token = "",
   provider = 0
 ) => {
   try {
@@ -37,7 +37,7 @@ export const authenticate = async (
         username: username,
         password: password,
         provider: provider,
-        token: token,
+        token: access_token,
       },
       {
         baseURL: config.workspace.erp.url,
@@ -49,6 +49,8 @@ export const authenticate = async (
 
     if ("error" in response.data) {
       console.error("Authentication Failed", response.data.error);
+      console.log("Authentication Response:", response.data);
+
       return false;
     }
 
