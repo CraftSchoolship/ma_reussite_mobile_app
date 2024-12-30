@@ -11,11 +11,12 @@ const AttendanceTable = ({ isDarkMode, subjectId, isFutureSessions }) => {
     const fetchData = async () => {
       try {
         const filters = isFutureSessions
-          ? [
-              ["subject_id", "=", subjectId],
-              ["start", ">", new Date().toISOString()],
-            ]
-          : [["subject_id", "=", subjectId]];
+          ? {
+              subject_id: subjectId,
+              start_gt: new Date().toISOString(), // 'start' field with 'greater than or equal' filter
+            }
+          : { subject_id: subjectId };
+
         const fields = isFutureSessions
           ? ["start", "timing"]
           : ["date", "timing", "present", "absent", "excused", "late"];

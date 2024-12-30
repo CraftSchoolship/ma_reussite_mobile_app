@@ -9,11 +9,9 @@ import {
 } from "native-base";
 import React, { useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
-// import { browse } from "../../http/http";
 import { getObject } from "../api/apiClient";
 import { CalendarCard } from "../components";
 import BackgroundWrapper from "../components/BackgroundWrapper";
-import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import CalendarLocalConfig from "../utils/CalendarLocalConfig";
 import { formatOdooEvents } from "../utils/MarkedDatesFormatage";
 import { browse } from "../../http/http";
@@ -26,24 +24,21 @@ CalendarLocalConfig;
 const HomeScreen = () => {
   const navigation = useNavigation();
   const { isOpen, onOpen, onClose } = useDisclose();
-  const route = useRoute();
+  const [user, setUser] = useState({});
   const [user_id, setUserId] = useState(null);
-  const [partner_id, setPartnerId] = useState(null);
   const [events, setEvents] = useState(null);
   const [markedDate, setMarkedDate] = useState({});
-  const [todaysEvents, setTodaysEvents] = useState([]);
   const [today, setToday] = useState();
-  const [selectedDay, setSelectedDay] = useState("");
+  const [selectedEvent, setSelectedEvent] = useState({});
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
-  const [eventsByMonth, setEventsByMonth] = useState({});
   const { isDarkMode } = useThemeContext();
 
   useEffect(() => {
     const fetchConnectedUser = async () => {
       try {
         const connectedUser = await getObject("connectedUser");
+        setUser(connectedUser);
         setUserId(connectedUser.id);
-        setPartnerId(connectedUser.self[0]);
       } catch (error) {
         console.error("Error fetching connected user:", error);
       }
@@ -58,16 +53,22 @@ const HomeScreen = () => {
         const eventsData = await browse(
           "craft.session",
           [
+            "name",
             "classroom_id",
             "start",
             "stop",
             "subject_id",
             "teacher_id",
             "description",
-          ],
-          [] //[["partner_ids", "in", partner_id]]
+          ], // Fields array is correctly passed here
+          {
+            start_gte: new Date().toISOString().substring(0, 10),
+            state: "confirm", // Filters are correctly passed
+          }
         );
+
         setEvents(eventsData);
+        console.log("Events Data:", eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -76,37 +77,21 @@ const HomeScreen = () => {
     if (user_id) {
       fetchEvents();
     }
-  }, [partner_id]);
+  }, [user_id]);
 
   useEffect(() => {
     if (events) {
       const formatedOdooEvents = formatOdooEvents(events);
       setMarkedDate(formatedOdooEvents);
-
-      // Organize events by month
-      const eventsByMonth = {};
-      for (const [date, event] of Object.entries(formatedOdooEvents)) {
-        const [year, month] = date.split("-");
-        const monthKey = `${year}-${month}`;
-        if (!eventsByMonth[monthKey]) {
-          eventsByMonth[monthKey] = [];
-        }
-        eventsByMonth[monthKey].push(...event.dots);
-      }
-      setEventsByMonth(eventsByMonth);
     }
   }, [events]);
 
   useEffect(() => {
     const today = new Date();
-    const year = today.getFullYear();
-    const month = (today.getMonth() + 1).toString().padStart(2, "0");
     const day = today.getDate().toString().padStart(2, "0");
     const dayOfWeek = CalendarLocalConfig.dayNamesShort[today.getDay()];
 
-    const currentDay = `${year}-${month}-${day}`;
     setToday(`${dayOfWeek} ${day}`);
-    setTodaysEvents(markedDate[currentDay]?.dots || []);
   }, [markedDate]);
 
   return (
@@ -124,14 +109,14 @@ const HomeScreen = () => {
           key={isDarkMode ? "dark" : "light"}
           markingType={"multi-dot"}
           onDayPress={(day) => {
-            const currentDaySelected = new Date(day.timestamp).getDay();
-            setSelectedDay(
-              `${CalendarLocalConfig.dayNamesShort[currentDaySelected]} ${day.day}`
+            setSelectedDayEvents(markedDate[day.dateString]?.dots || []);
+            Object.values(markedDate).forEach(
+              (item) => (item.selected = false)
             );
-            if (markedDate[day.dateString] !== undefined) {
-              setSelectedDayEvents(markedDate[day.dateString].dots || []);
-            }
-            onOpen();
+            markedDate[day.dateString] = {
+              ...markedDate[day.dateString],
+              selected: true,
+            };
           }}
           monthFormat={"MMMM yyyy"}
           hideArrows={false}
@@ -150,34 +135,37 @@ const HomeScreen = () => {
         contentContainerStyle={{ paddingBottom: 120 }}
       >
         <VStack w={"full"} mb={"20%"} mt={4}>
-          {Object.entries(eventsByMonth).map(([monthKey, events], index) => (
-            <Box key={index}>
-              {events.map((event, eventIndex) => (
-                <CalendarCard
-                  key={eventIndex}
-                  tag={event.tag}
-                  date={event.date}
-                  time={event.time}
-                  subject={event.subject}
-                  teacher={event.teacher}
-                  classroom={event.classroom}
-                />
-              ))}
-            </Box>
-          ))}
+          <Box>
+            {selectedDayEvents.map((event, eventIndex) => (
+              <CalendarCard
+                name={event.name}
+                key={eventIndex}
+                tag={event.tag}
+                date={event.date}
+                time={event.time}
+                subject={event.subject}
+                teacher={event.teacher}
+                classroom={event.classroom}
+                onClick={() => {
+                  setSelectedEvent(event);
+                  onOpen();
+                }}
+              />
+            ))}
+          </Box>
         </VStack>
       </ScrollView>
 
       <EventsActionSheet
         isDarkMode={isDarkMode}
-        selectedDayEvents={selectedDayEvents}
-        setSelectedDayEvents={setSelectedDayEvents}
+        user={user}
+        selectedEvent={selectedEvent}
         today={today}
         isOpen={isOpen}
         onClose={() => {
-          setSelectedDayEvents([]);
           onClose();
         }}
+        navigation={navigation}
       />
     </BackgroundWrapper>
   );

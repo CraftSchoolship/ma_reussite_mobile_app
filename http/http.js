@@ -135,6 +135,21 @@ export const browse = async (
   page = 1,
   size = 999
 ) => {
+  const token = await getToken();
+  if (!token) {
+    console.error("Token not found or expired");
+    return;
+  }
+
+  console.log("Browse Request Details:", {
+    model,
+    fields,
+    filters,
+    order,
+    page,
+    size,
+  });
+
   try {
     const response = await axios.get(`/rest/models/${model}`, {
       baseURL: config.workspace.erp.url,
@@ -150,10 +165,15 @@ export const browse = async (
         ...filters,
       },
     });
+
     if ("error" in response.data) throw response.data.error;
     return response.data.content;
   } catch (error) {
-    console.error(error);
+    console.error("Browse API Error:", {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+    });
     throw error;
   }
 };

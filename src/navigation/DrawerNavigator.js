@@ -20,6 +20,8 @@ const DrawerNavigator = () => {
     const fetchUserData = async () => {
       try {
         const user = await getObject("connectedUser");
+        console.log("Connected User:", user);
+
         if (user) {
           setConnectedUser(user);
         }

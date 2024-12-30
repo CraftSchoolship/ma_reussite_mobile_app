@@ -74,7 +74,9 @@ const LoginScreen = () => {
       const fetchedChildren = await browse(
         "craft.parent.child.line",
         ["child_id"],
-        [["parent_id", "=", connectedUser.craft_parent_id[0]]]
+        {
+          parent_id: connectedUser.craft_parent_id[0],
+        }
       );
 
       const studentIds = fetchedChildren.map(
@@ -83,7 +85,9 @@ const LoginScreen = () => {
       const childrenList = await browse(
         "craft.student",
         ["id", "name", "contact_id", "image_256"],
-        [["id", "in", studentIds]]
+        {
+          id_in: studentIds.join(","),
+        }
       );
 
       childrenList.forEach(
@@ -168,7 +172,6 @@ const LoginScreen = () => {
         }
       }
 
-      // Navigate to the next screen upon successful login
       navigation.navigate("DrawerNavigator", { connectedUser });
     } catch (err) {
       console.error("Login Error:", err);
@@ -212,17 +215,46 @@ const LoginScreen = () => {
 
           const erpToken = await AsyncStorage.getItem("erp_token");
           const user_id = await AsyncStorage.getItem("erp_user_id");
+          console.log("SSO Token:", token);
+          console.log("SSO User ID:", user_id);
 
           if (!erpToken || !user_id) {
             setError("Authentication failed. Please try again.");
             console.error("ERP token or user_id not found.");
             return;
           }
-          console.log("user_id:", user_id);
 
-          navigation.navigate("DrawerNavigator", {
-            connectedUser: { user_id },
-          });
+          const user = await read(
+            "res.users",
+            [user_id],
+            [
+              "self",
+              "name",
+              "phone",
+              "login",
+              "street",
+              "craft_role",
+              "craft_parent_id",
+              "craft_student_id",
+              "image_256",
+            ]
+          );
+
+          if (!user) {
+            setError("Failed to fetch user data.");
+            return;
+          }
+
+          let profileImage = user.image_256 || null;
+          let connectedUser = {
+            ...user,
+            profileImage: wrapProfileImageBase64(profileImage),
+            role: user.craft_role,
+          };
+
+          await storeObject("connectedUser", connectedUser);
+
+          navigation.navigate("DrawerNavigator", { connectedUser });
         } catch (err) {
           console.error("OAuth Handling Error:", err);
           setError("An error occurred. Please try again.");
