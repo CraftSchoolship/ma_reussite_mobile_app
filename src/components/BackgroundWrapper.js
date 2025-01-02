@@ -18,7 +18,7 @@ const BackgroundWrapper = ({
   return (
     <View
       style={{
-        paddingTop: insets.top,
+        paddingTop: insets.top + 20,
         backgroundColor: isDarkMode
           ? MA_REUSSITE_CUSTOM_COLORS.Black
           : MA_REUSSITE_CUSTOM_COLORS.White,

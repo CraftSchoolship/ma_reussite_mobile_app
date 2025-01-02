@@ -140,7 +140,7 @@ const LoginScreen = () => {
           "craft_role",
           "craft_parent_id",
           "craft_student_id",
-          "image_256",
+          "avatar_128",
         ]
       );
 
@@ -150,7 +150,7 @@ const LoginScreen = () => {
         return;
       }
 
-      let profileImage = user.image_256 || null;
+      let profileImage = user.avatar_128 || null;
       let connectedUser = {
         ...user,
         email: email,
@@ -236,7 +236,7 @@ const LoginScreen = () => {
               "craft_role",
               "craft_parent_id",
               "craft_student_id",
-              "image_256",
+              "avatar_128",
             ]
           );
 
@@ -245,7 +245,7 @@ const LoginScreen = () => {
             return;
           }
 
-          let profileImage = user.image_256 || null;
+          let profileImage = user.avatar_128 || null;
           let connectedUser = {
             ...user,
             profileImage: wrapProfileImageBase64(profileImage),
