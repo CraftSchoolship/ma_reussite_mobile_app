@@ -22,6 +22,7 @@ import {
   authenticateWithOAuth,
 } from "../../http/http";
 import config from "../../http/config";
+import microsoftIcon from "../../assets/images/microsoft.png";
 
 const LoginScreen = () => {
   const [isLoading, setIsLoading] = useState({ login: false, oauth: false });
@@ -165,19 +166,22 @@ const LoginScreen = () => {
                   </Text>
                   <Divider flex={1} bg="gray.400" />
                 </HStack>
-
-                {config.auth.providers
-                  .filter(
-                    (provider) => provider.name.toLowerCase() === "microsoft"
-                  )
-                  .map((provider) => (
-                    <CustomButton
-                      key={provider.url}
-                      onPress={() => handleOAuthLogin(provider)}
-                      title="Continuer avec Microsoft"
-                      loading={isLoading.oauth}
-                    />
-                  ))}
+                <VStack mt={6}>
+                  {config.auth.providers
+                    .filter(
+                      (provider) => provider.name.toLowerCase() === "microsoft"
+                    )
+                    .map((provider) => (
+                      <CustomButton
+                        key={provider.url}
+                        onPress={() => handleOAuthLogin(provider)}
+                        title="Continuer avec Microsoft"
+                        loading={isLoading.oauth}
+                        style={{ backgroundColor: "black" }} // Override button color
+                        icon={microsoftIcon}
+                      />
+                    ))}
+                </VStack>
               </VStack>
             )}
           </Formik>
