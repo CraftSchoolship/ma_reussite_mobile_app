@@ -101,6 +101,7 @@ export const ProfileUserEdit = ({ isDarkMode, connectedUser }) => {
               label="Adresse"
               name="address"
               keyboardType="default"
+              isDarkMode={isDarkMode}
             />
             <CustomButton
               title="Confirmer"

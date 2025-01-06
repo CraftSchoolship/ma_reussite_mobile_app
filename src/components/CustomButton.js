@@ -9,16 +9,29 @@ const CustomButton = ({
   loading = true,
   style = {},
   icon,
+  isMicrosoftButton = false,
+  isDarkMode = false,
 }) => {
+  const buttonBgColor = isMicrosoftButton
+    ? isDarkMode
+      ? "white"
+      : "black"
+    : MA_REUSSITE_CUSTOM_COLORS.Primary;
+  const textColor = isMicrosoftButton
+    ? isDarkMode
+      ? "black"
+      : "white"
+    : "white";
+
   return (
     <Button
       onPress={onPress}
       isDisabled={isDisabled}
       style={{ height: 48, borderRadius: 12, ...style }}
-      bg={MA_REUSSITE_CUSTOM_COLORS.Primary}
+      bg={buttonBgColor}
     >
       {!loading ? (
-        <HStack alignItems="right" space={6}>
+        <HStack alignItems="center" space={6}>
           {icon && (
             <Image
               source={icon}
@@ -27,14 +40,15 @@ const CustomButton = ({
               resizeMode="contain"
             />
           )}
-          <Text color={"white"}>{title}</Text>
+          <Text color={textColor}>{title}</Text>
         </HStack>
       ) : (
         <HStack alignItems="center">
-          <Spinner size="sm" color="white" />
+          <Spinner size="sm" color={textColor} />
         </HStack>
       )}
     </Button>
   );
 };
+
 export default CustomButton;

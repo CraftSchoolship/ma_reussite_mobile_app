@@ -177,7 +177,8 @@ const LoginScreen = () => {
                         onPress={() => handleOAuthLogin(provider)}
                         title="Continuer avec Microsoft"
                         loading={isLoading.oauth}
-                        style={{ backgroundColor: "black" }} // Override button color
+                        isMicrosoftButton={true} // Set Microsoft button style
+                        isDarkMode={isDarkMode} // Pass dark mode status
                         icon={microsoftIcon}
                       />
                     ))}

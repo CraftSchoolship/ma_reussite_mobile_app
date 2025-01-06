@@ -2,7 +2,6 @@ import { storeObject, storeArray } from "../api/apiClient";
 import { browse } from "../../http/http";
 import config from "../../http/config";
 
-// Utility function to wrap profile image base64
 const wrapProfileImageBase64 = (profileImage) => {
   if (!profileImage || typeof profileImage !== "string")
     return `${config.baseUrl}/base/static/img/avatar.png`;
@@ -46,14 +45,12 @@ export const loadParentData = async (connectedUser) => {
       { id_in: studentIds.join(",") }
     );
 
-    // Wrap image data into base64
     childrenList.forEach(
       (child) => (child.image_256 = wrapProfileImageBase64(child.image_256))
     );
 
     const initialSelectedChild = childrenList.length ? childrenList[0] : null;
 
-    // Store children and selected child data
     await storeArray("children", childrenList);
     await storeObject("selectedChild", initialSelectedChild);
   } catch (error) {
