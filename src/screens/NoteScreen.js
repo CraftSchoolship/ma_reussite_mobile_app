@@ -19,93 +19,56 @@ import { BackgroundWrapper, CircularProgress } from "../components";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { Ionicons } from "@expo/vector-icons";
-
-const fakeNotesData = [
-  {
-    id: "1",
-    evaluation: "Evaluation Big Data",
-    score: 18,
-    maxScore: 20,
-    color: "green.500",
-  },
-  {
-    id: "2",
-    evaluation: "Evaluation AWS Cloud",
-    score: 16,
-    maxScore: 20,
-    color: "green.400",
-  },
-  {
-    id: "3",
-    evaluation: "Evaluation Java Avancé",
-    score: 5,
-    maxScore: 20,
-    color: "red.400",
-  },
-  {
-    id: "4",
-    evaluation: "Evaluation Machine Learning",
-    score: 9,
-    maxScore: 20,
-    color: "orange.400",
-  },
-  {
-    id: "5",
-    evaluation: "Evaluation Spring Boot",
-    score: 14,
-    maxScore: 20,
-    color: "green.400",
-  },
-  {
-    id: "6",
-    evaluation: "Evaluation SpringBoot",
-    score: 14,
-    maxScore: 20,
-    color: "green.400",
-  },
-  {
-    id: "7",
-    evaluation: "Evaluation SB",
-    score: 12,
-    maxScore: 20,
-    color: "green.400",
-  },
-  {
-    id: "8",
-    evaluation: "Evaluation Boot",
-    score: 13,
-    maxScore: 20,
-    color: "green.400",
-  },
-  {
-    id: "9",
-    evaluation: "Evaluation Spring",
-    score: 11,
-    maxScore: 20,
-    color: "green.400",
-  },
-];
+import { browse } from "../../http/http";
+import { getObject } from "../api/apiClient";
 
 const NoteScreen = () => {
-  const route = useRoute();
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
-  const [degrees, setDegrees] = useState("Master 1 Devops");
   const { isDarkMode } = useThemeContext();
+  const [grades, setGrades] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredData, setFilteredData] = useState(fakeNotesData);
+  const [filteredData, setFilteredData] = useState([]);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (query.trim() === "") {
-      setFilteredData(fakeNotesData);
+      setFilteredData(grades);
     } else {
-      const filtered = fakeNotesData.filter((item) =>
-        item.evaluation.toLowerCase().includes(query.toLowerCase())
+      const filtered = grades.filter((item) =>
+        item.subject_id[1].toLowerCase().includes(query.toLowerCase())
       );
       setFilteredData(filtered);
     }
   };
+  useEffect(() => {
+    const fetchGrades = async () => {
+      setLoading(true);
+      try {
+        const userId = await getObject("connectedUser");
+        console.log("User ID:", userId);
+        if (userId) {
+          const gradeData = await browse("craft.grade", [
+            "id",
+            "subject_id",
+            "criteria_id",
+            "value",
+            "level_id",
+            "class_id",
+          ]);
+
+          setGrades(gradeData);
+          setFilteredData(gradeData); // Initialize filtered data
+        }
+      } catch (error) {
+        console.error("Error fetching grades:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGrades();
+  }, []);
 
   return (
     <BackgroundWrapper navigation={navigation}>
@@ -151,7 +114,7 @@ const NoteScreen = () => {
                 fontSize={18}
                 fontWeight={"bold"}
               >
-                {degrees}
+                {grades.length > 0 ? grades[0].class_id[1] : "Pas de niveau"}
               </Text>
 
               <Input
@@ -238,9 +201,22 @@ const NoteScreen = () => {
           <FlatList
             flex={1}
             data={filteredData}
-            // scrollEnabled={true}
-            // contentContainerStyle={{ flexGrow: 1 }}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id.toString()}
+            ListEmptyComponent={
+              <Center flex={1} mt={10}>
+                <Text
+                  color={
+                    isDarkMode
+                      ? MA_REUSSITE_CUSTOM_COLORS.White
+                      : MA_REUSSITE_CUSTOM_COLORS.Black
+                  }
+                  fontSize={16}
+                  fontWeight={"bold"}
+                >
+                  Aucun résultat trouvé
+                </Text>
+              </Center>
+            }
             renderItem={({ item }) => (
               <Box
                 borderRadius={10}
@@ -248,32 +224,43 @@ const NoteScreen = () => {
                 p={4}
                 my={2}
                 mx={4}
-                flexDirection="row"
-                alignItems="center"
                 bg={
                   isDarkMode
                     ? MA_REUSSITE_CUSTOM_COLORS.Black
                     : MA_REUSSITE_CUSTOM_COLORS.White
                 }
               >
-                <CircularProgress
-                  isDarkMode={isDarkMode}
-                  progress={item.score}
-                  note={true}
-                />
-                <Box ml={4}>
-                  <Text
-                    color={
-                      isDarkMode
-                        ? MA_REUSSITE_CUSTOM_COLORS.White
-                        : MA_REUSSITE_CUSTOM_COLORS.Black
-                    }
-                    fontSize={16}
-                    fontWeight={"bold"}
-                  >
-                    {item.evaluation}
-                  </Text>
-                </Box>
+                <HStack alignItems="center">
+                  <CircularProgress
+                    progress={item.value}
+                    note={true}
+                    isDarkMode={isDarkMode}
+                  />
+                  <Box ml={4} flex={1}>
+                    <Text
+                      color={
+                        isDarkMode
+                          ? MA_REUSSITE_CUSTOM_COLORS.White
+                          : MA_REUSSITE_CUSTOM_COLORS.Black
+                      }
+                      fontSize={16}
+                      fontWeight={"bold"}
+                    >
+                      {item.subject_id[1]}
+                    </Text>
+                    <Text
+                      color={
+                        isDarkMode
+                          ? MA_REUSSITE_CUSTOM_COLORS.White
+                          : MA_REUSSITE_CUSTOM_COLORS.Black
+                      }
+                      fontSize={14}
+                      ml={4}
+                    >
+                      {item.criteria_id[1]}
+                    </Text>
+                  </Box>
+                </HStack>
               </Box>
             )}
           />
@@ -284,41 +271,3 @@ const NoteScreen = () => {
 };
 
 export default NoteScreen;
-
-/* -------------------------------------------------------------------------- */
-/*                                  VERSION_2                                 */
-/* -------------------------------------------------------------------------- */
-
-// import { useNavigation } from "@react-navigation/native";
-// import { Box, Center, Image } from "native-base";
-// import React from "react";
-// import { BackgroundWrapper } from "../components";
-
-// const NoteScreen = () => {
-//   const navigation = useNavigation();
-
-//   return (
-//     <Box flex={1} bg="white">
-//       <BackgroundWrapper navigation={navigation}>
-//         <Center
-//           minH={"80%"}
-//           //  bgColor={"amber.400"}
-//         >
-//           <Image
-//             // bgColor={"blue.300"}
-//             size="sm"
-//             w={"90%"}
-//             resizeMode="contain"
-//             minH={"70%"}
-//             p={2}
-//             // m={"auto"}
-//             source={require("../../assets/images/coming_soon.png")}
-//             alt="Alternate Text"
-//           />
-//         </Center>
-//       </BackgroundWrapper>
-//     </Box>
-//   );
-// };
-
-// export default NoteScreen;
