@@ -15,7 +15,7 @@ import { useThemeContext } from "../hooks/ThemeContext";
 import { Formik } from "formik";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { loginValidationSchema } from "../validation/formValidation";
-import { CustomButton, CustomInput } from "../components";
+import { CustomButton, CustomInput, LoginScreenBanner } from "../components";
 import { authenticate } from "../utils/authLogic";
 import {
   authenticateWithUsernameAndPassword,

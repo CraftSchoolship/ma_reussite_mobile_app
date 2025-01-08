@@ -6,6 +6,7 @@
     "owner": "craftschoolship",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "newArchEnabled": true,
     "updates": {
       "fallbackToCacheTimeout": 0
     },
