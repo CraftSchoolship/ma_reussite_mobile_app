@@ -10,6 +10,7 @@ import { ProfileScreen } from "../screens";
 import AttendanceStaff from "../screens/AttendanceStaff";
 import SessionsScreen from "../screens/SessionsScreen";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { loadParentData, getCurrencies } from "../utils/ParentLogic";
 
 const Drawer = createDrawerNavigator();
 
@@ -21,6 +22,8 @@ const DrawerNavigator = () => {
     const fetchUserData = async () => {
       try {
         const user = await getObject("connectedUser");
+        console.log("Connected User:", user);
+
         if (user) {
           setConnectedUser(user);
         }
@@ -35,9 +38,11 @@ const DrawerNavigator = () => {
   useEffect(() => {
     const fetchChildrenData = async () => {
       if (connectedUser?.role === "parent") {
-        // Fetch children data for parents
         try {
-          // Logic to fetch children data if necessary
+          await getCurrencies();
+          if (connectedUser?.craft_parent_id) {
+            await loadParentData(connectedUser);
+          }
         } catch (error) {
           console.error("Error fetching children data:", error);
         }

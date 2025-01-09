@@ -50,7 +50,7 @@ const AttendanceStaff = () => {
       const students = await browse(
         "craft.attendance.line",
         ["student_id", "present", "late", "absent", "excused"],
-        [["session_id", "=", session.id]]
+        { session_id: session.id }
       );
       setAttendance(students);
     };
@@ -113,10 +113,10 @@ const AttendanceStaff = () => {
   const update_attendance = async (attendance_id, status) => {
     try {
       await update("craft.attendance.line", attendance_id, {
-        present: status == "present",
-        late: status == "late",
-        absent: status == "absent",
-        excused: status == "excused",
+        present: status === "present",
+        late: status === "late",
+        absent: status === "absent",
+        excused: status === "excused",
       });
       setAttendance(null);
 
@@ -400,7 +400,7 @@ const AttendanceStaff = () => {
           fontWeight="bold"
           fontSize="lg"
         >
-          {session.class_id[1]}
+          {session.class_id}
         </Text>
         <Text
           color={

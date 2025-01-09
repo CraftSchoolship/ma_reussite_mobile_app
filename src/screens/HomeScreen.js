@@ -9,7 +9,6 @@ import {
 } from "native-base";
 import React, { useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
-// import { browse } from "../../http/http";
 import { getObject } from "../api/apiClient";
 import { CalendarCard } from "../components";
 import BackgroundWrapper from "../components/BackgroundWrapper";
@@ -61,14 +60,15 @@ const HomeScreen = () => {
             "subject_id",
             "teacher_id",
             "description",
-          ]
-          [
-            ["start", ">=", new Date().toISOString().substring(0,10)],
-            ["state", "=", "confirm"]
-          ]
+          ],
+          {
+            // start_gt: new Date().toISOString().substring(0, 10),
+            state: "confirm",
+          }
         );
 
         setEvents(eventsData);
+        console.log("Events Data:", eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);
       }

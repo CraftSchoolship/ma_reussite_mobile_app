@@ -24,7 +24,8 @@ const GroupScreen = ({ navigation }) => {
     const fetchGroups = async () => {
       setLoading(true);
       try {
-        const userId = await getObject("user_id");
+        const userId = await getObject("connectedUser");
+        console.log("User ID:", userId);
         if (userId) {
           const groupsData = await browse(
             "craft.class",
@@ -56,8 +57,11 @@ const GroupScreen = ({ navigation }) => {
       const students = await browse(
         "craft.group.student.line",
         ["student_id"],
-        [["class_id", "=", group.id]]
+        {
+          class_id: group.id,
+        }
       );
+      console.log("Students:", students);
 
       const studentNames = students.map((student) => student.student_id[1]);
 

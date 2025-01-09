@@ -10,7 +10,15 @@ const CircularProgress = ({
   note = false,
   isDarkMode,
 }) => {
-  const fillProgress = note ? Math.round((progress * 100) / 20) : progress;
+  const getProgressColor = (value) => {
+    if (value <= 10) return "red";
+    if (value > 10 && value <= 15) return "yellow";
+    if (value > 15 && value <= 20) return "green";
+    return MA_REUSSITE_CUSTOM_COLORS.Secondary;
+  };
+
+  // Calculate fill progress
+  const fillProgress = note ? (progress / 20) * 100 : progress;
 
   return (
     <Box alignItems={"center"} justifyContent={"center"}>
@@ -18,7 +26,11 @@ const CircularProgress = ({
         size={size}
         width={width}
         fill={fillProgress}
-        tintColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
+        tintColor={
+          note
+            ? getProgressColor(progress)
+            : MA_REUSSITE_CUSTOM_COLORS.Secondary
+        }
         backgroundColor="#CED3DE"
         rotation={0}
         duration={3000}
@@ -34,7 +46,7 @@ const CircularProgress = ({
             fontSize={"lg"}
             fontWeight={"bold"}
           >
-            {note ? `${progress}` : `${progress}%`}
+            {note ? progress : `${progress}%`}
           </Text>
         )}
       </AnimatedCircularProgress>

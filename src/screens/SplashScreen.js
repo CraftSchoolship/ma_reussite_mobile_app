@@ -23,22 +23,39 @@ export default function SplashScreen() {
         const PolicyIntegrityKey = response.data.privacy.sha256;
 
         // Retrieve stored policy agreement key
-        const AgreedPrivacyPolicyIntegrityKey = await AsyncStorage.getItem("AgreedPrivacyPolicyIntegrityKey");
+        const AgreedPrivacyPolicyIntegrityKey = await AsyncStorage.getItem(
+          "AgreedPrivacyPolicyIntegrityKey"
+        );
 
+        // Retrieve token and expiration from storage
+        const token = await AsyncStorage.getItem("erp_token");
+        const tokenExpiration = await AsyncStorage.getItem(
+          "erp_token_expiration"
+        );
         const user_id = await AsyncStorage.getItem("user_id");
+
+        // Check token validity
+        const isTokenValid =
+          token &&
+          tokenExpiration &&
+          new Date().getTime() / 1000 < parseInt(tokenExpiration, 10);
+
         if (user_id) {
           config.uid = parseInt(user_id);
           config.pwd = decode(await AsyncStorage.getItem("password"));
         }
 
         if (AgreedPrivacyPolicyIntegrityKey === PolicyIntegrityKey) {
-          if (user_id) {
+          if (isTokenValid) {
             navigation.navigate("DrawerNavigator");
           } else {
             navigation.navigate("Login");
           }
         } else {
-          navigation.navigate("Policy", { PolicyIntegrityKey, skipLogin: user_id });
+          navigation.navigate("Policy", {
+            PolicyIntegrityKey,
+            skipLogin: user_id,
+          });
         }
       } catch (error) {
         console.error("Error during splash screen navigation:", error);
