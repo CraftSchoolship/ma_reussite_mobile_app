@@ -13,7 +13,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.craftschoolship.mareussite",
+      "bundleIdentifier": "com.craftschoolship.mobile",
       "associatedDomains": ["applinks:app.craftschoolship.com"]
     },
     "android": {
@@ -21,7 +21,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.craftschoolship.mareussite",
+      "package": "com.craftschoolship.mobile",
       "versionCode": 3,
       "permissions": ["com.google.android.gms.permission.AD_ID"],
       "intentFilters": [

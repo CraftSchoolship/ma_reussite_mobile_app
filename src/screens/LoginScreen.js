@@ -23,7 +23,14 @@ import {
 } from "../../http/http";
 import config from "../../http/config";
 import microsoftIcon from "../../assets/images/microsoft.png";
+import * as Linking from "expo-linking";
 
+if (config.debug) {
+  config.auth.providers = config.auth.providers.map((provider) => {
+    provider.url = provider.url.replace("#", "/#");
+    return provider;
+  });
+}
 const LoginScreen = () => {
   const [isLoading, setIsLoading] = useState({ login: false, oauth: false });
   const [isWebViewVisible, setIsWebViewVisible] = useState(false);
@@ -54,46 +61,31 @@ const LoginScreen = () => {
     setIsLoading((prev) => ({ ...prev, login: false }));
   };
 
-  const handleOAuthLogin = (provider) => {
-    setAuthUrl(provider.url);
-    setIsWebViewVisible(true);
-  };
+  const handleOAuthLogin = async (provider) => {
+    try {
+      setIsLoading(true);
+      const subscription = Linking.addEventListener('url', async ({ url }) => {
+        const parsedUrl = new URL(url);
+        const token = parsedUrl.searchParams.get("access_token");
+        const provider = JSON.parse(parsedUrl.searchParams.get("state"))["p"];
 
-  const handleWebViewNavigation = async (event) => {
-    const { url } = event;
-
-    if (url.startsWith("https://app.craftschoolship.com")) {
-      setIsWebViewVisible(false);
-      let tempUrl = url.substring(31);
-      tempUrl =
-        tempUrl.startsWith("#") || tempUrl.startsWith("/#")
-          ? tempUrl.replace("#", "?")
-          : tempUrl;
-
-      const parsedUrl = new URL("https://app.craftschoolship.com" + tempUrl);
-      const token = parsedUrl.searchParams.get("access_token");
-
-      if (token) {
-        setIsLoading((prev) => ({ ...prev, oauth: true }));
-        const {
-          success,
-          connectedUser,
-          error: authError,
-        } = await authenticate(
-          authenticateWithOAuth,
-          config.auth.providers[0].id,
-          token
-        );
-
+        const success = await authenticateWithOAuth(provider, token);
+        // we gonna potential authenticate to moodle and mattermost too here
         if (success) {
           navigation.navigate("DrawerNavigator", { connectedUser });
-        } else {
-          setError(authError);
+          subscription.remove();
         }
-        setIsLoading((prev) => ({ ...prev, oauth: false }));
-      } else {
-        setError("Authentication failed. No token received.");
-      }
+      });
+      await Linking.openURL(provider.url);
+    } catch (error) {
+      toast.show({
+        title: "Error",
+        description: error.message || "An error occurred during login",
+        status: "error",
+        placement: "top",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 

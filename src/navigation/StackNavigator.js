@@ -8,12 +8,24 @@ import {
 } from "../screens";
 import DrawerNavigator from "./DrawerNavigator";
 import { LoginScreenBanner } from "../components";
+import * as Linking from 'expo-linking';
+
+
+const prefix = Linking.createURL('/');
 
 const Stack = createStackNavigator();
 
 export const StackNavigator = () => {
+   const linking = {
+      prefixes: [prefix, 'https://app.craftschoolship.com'],
+      config: {
+        screens: {
+          Login: '/sso',
+        },
+      }
+    };
   return (
-    <Stack.Navigator initialRouteName="Splash">
+    <Stack.Navigator initialRouteName="Splash" linking={linking}>
       <Stack.Screen
         options={{ headerShown: false }}
         name="Splash"

@@ -66,7 +66,7 @@ const ProfileScreen = () => {
 
       // Mettre à jour l'utilisateur dans Odoo
       const response = await update("res.users", connectedUser.id, {
-        image_1920: imageBase64,
+        avatar_128: imageBase64,
       });
 
       if (response) {
