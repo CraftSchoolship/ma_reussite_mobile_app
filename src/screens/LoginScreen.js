@@ -24,6 +24,7 @@ import {
 import config from "../../http/config";
 import microsoftIcon from "../../assets/images/microsoft.png";
 import * as Linking from "expo-linking";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 if (config.debug) {
   config.auth.providers = config.auth.providers.map((provider) => {
@@ -63,31 +64,59 @@ const LoginScreen = () => {
 
   const handleOAuthLogin = async (provider) => {
     try {
-      setIsLoading(true);
-      const subscription = Linking.addEventListener('url', async ({ url }) => {
-        const parsedUrl = new URL(url);
-        const token = parsedUrl.searchParams.get("access_token");
-        const provider = JSON.parse(parsedUrl.searchParams.get("state"))["p"];
+      setIsLoading((prev) => ({ ...prev, oauth: true }));
 
-        const success = await authenticateWithOAuth(provider, token);
-        // we gonna potential authenticate to moodle and mattermost too here
-        if (success) {
-          navigation.navigate("DrawerNavigator", { connectedUser });
-          subscription.remove();
+  const handleUrlChange = async ({ url }) => {
+    if (!url) return;
+    console.log("Redirected URL:", url);
+    if (url.startsWith("exp://127.0.0.1:8081/--/")) {
+      let tempUrl = url.substring(24);
+      tempUrl = tempUrl.startsWith("?expo#") || tempUrl.startsWith("?expo?") ? "?" + tempUrl.substring(6) : tempUrl;
+      url = "https://app.craftschoolship.com/" + tempUrl;
+    }
+
+    if (url.startsWith("https://app.craftschoolship.com/")) {
+      let tempUrl = url.substring(31);
+      tempUrl = tempUrl.startsWith("#") || tempUrl.startsWith("/#") ? tempUrl.replace("#", "?") : tempUrl;
+
+      const parsedUrl = new URL("https://app.craftschoolship.com/" + tempUrl);
+      const token = parsedUrl.searchParams.get("access_token");
+      const provider = JSON.parse(parsedUrl.searchParams.get("state"))["p"];
+      console.log("Extracted provider: ", provider);
+      console.log("Extracted token: ", token);
+
+      if (token) {
+        await AsyncStorage.setItem("erp_token", token);
+        const { success, connectedUser } = await authenticate(authenticateWithOAuth, provider, token);
+
+      if (success) {
+        navigation.navigate("DrawerNavigator", { connectedUser });
+        } else {
+          setError("Authentication failed.");
         }
-      });
-      await Linking.openURL(provider.url);
-    } catch (error) {
-      toast.show({
-        title: "Error",
-        description: error.message || "An error occurred during login",
-        status: "error",
-        placement: "top",
-      });
-    } finally {
-      setIsLoading(false);
+        setIsLoading((prev) => ({ ...prev, oauth: false }));
+      } else {
+        setError("Authentication token not found in redirect URL.");
+      }
     }
   };
+  const subscription = Linking.addEventListener("url", handleUrlChange);
+
+  Linking.openURL(provider.url);
+
+  return () => subscription.remove();
+} catch (error) {
+  toast.show({
+    title: "Error",
+    description: error.message || "An error occurred during login",
+    status: "error",
+    placement: "top",
+  });
+} finally {
+  setIsLoading(false);
+}
+};
+
 
   return (
     <View

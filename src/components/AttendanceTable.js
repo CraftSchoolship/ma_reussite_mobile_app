@@ -26,7 +26,6 @@ const AttendanceTable = ({ isDarkMode, subjectId, isFutureSessions }) => {
           : "craft.attendance.line";
 
         const data = await browse(model, fields, filters);
-        console.log("Fetched data:", data); // Log fetched data
 
         setAttendanceData(data);
       } catch (error) {

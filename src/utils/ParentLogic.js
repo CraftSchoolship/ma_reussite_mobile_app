@@ -15,7 +15,6 @@ const wrapProfileImageBase64 = (profileImage) => {
   if (profileImage.startsWith("PHN2Zy") || profileImage.startsWith("PD94bWwg"))
     return `data:image/svg+xml;base64,${profileImage}`;
 
-  console.log("Unknown image type");
   return `${config.baseUrl}/base/static/img/avatar.png`;
 };
 
