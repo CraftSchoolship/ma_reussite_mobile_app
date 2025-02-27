@@ -15,7 +15,7 @@ import { useThemeContext } from "../hooks/ThemeContext";
 import { Formik } from "formik";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { loginValidationSchema } from "../validation/formValidation";
-import { CustomButton, CustomInput, LoginScreenBanner } from "../components";
+import { CustomButton, CustomInput } from "../components";
 import { authenticate } from "../utils/authLogic";
 import {
   authenticateWithUsernameAndPassword,
@@ -26,12 +26,6 @@ import microsoftIcon from "../../assets/images/microsoft.png";
 import * as Linking from "expo-linking";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-if (config.debug) {
-  config.auth.providers = config.auth.providers.map((provider) => {
-    provider.url = provider.url.replace("#", "/#");
-    return provider;
-  });
-}
 const LoginScreen = () => {
   const [isLoading, setIsLoading] = useState({ login: false, oauth: false });
   const [isWebViewVisible, setIsWebViewVisible] = useState(false);
@@ -80,6 +74,9 @@ const LoginScreen = () => {
       tempUrl = tempUrl.startsWith("#") || tempUrl.startsWith("/#") ? tempUrl.replace("#", "?") : tempUrl;
 
       const parsedUrl = new URL("https://app.craftschoolship.com/" + tempUrl);
+
+      if (!config.debug)
+      parsedUrl = new URL("https://app.craftschoolship.com/oauth.html" + tempUrl);
       const token = parsedUrl.searchParams.get("access_token");
       const provider = JSON.parse(parsedUrl.searchParams.get("state"))["p"];
       console.log("Extracted provider: ", provider);
