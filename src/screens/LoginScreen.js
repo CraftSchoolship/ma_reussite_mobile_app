@@ -1,15 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Center,
-  Text,
-  View,
-  VStack,
-  HStack,
-  Spinner,
-  Divider,
-} from "native-base";
-import { WebView } from "react-native-webview";
+import { Box, Center, Text, View, VStack, HStack, Spinner, Divider } from "native-base";
 import { useNavigation } from "@react-navigation/native";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { Formik } from "formik";
@@ -17,25 +7,24 @@ import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { loginValidationSchema } from "../validation/formValidation";
 import { CustomButton, CustomInput } from "../components";
 import { authenticate } from "../utils/authLogic";
-import {
-  authenticateWithUsernameAndPassword,
-  authenticateWithOAuth,
-} from "../../http/http";
+import { authenticateWithUsernameAndPassword, authenticateWithOAuth } from "../../http/http";
 import config from "../../http/config";
 import microsoftIcon from "../../assets/images/microsoft.png";
 import * as Linking from "expo-linking";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginScreen = () => {
-  const [isLoading, setIsLoading] = useState({ login: false, oauth: false });
-  const [isWebViewVisible, setIsWebViewVisible] = useState(false);
-  const [authUrl, setAuthUrl] = useState("");
   const [error, setError] = useState("");
   const navigation = useNavigation();
   const { isDarkMode } = useThemeContext();
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
+  const [isOAuthLoading, setIsOAuthLoading] = useState(false);
+
 
   const handleLogin = async (values) => {
-    setIsLoading((prev) => ({ ...prev, login: true }));
+    setIsLoginLoading(true); // Set only login loading
+    setIsOAuthLoading(false);
     setError("");
 
     const {
@@ -53,12 +42,13 @@ const LoginScreen = () => {
     } else {
       setError(authError);
     }
-    setIsLoading((prev) => ({ ...prev, login: false }));
+    setIsLoginLoading(false); // Reset only login loading
   };
 
   const handleOAuthLogin = async (provider) => {
     try {
-      setIsLoading((prev) => ({ ...prev, oauth: true }));
+      setIsOAuthLoading(true); // Set only OAuth loading
+      setIsLoginLoading(false);
 
   const handleUrlChange = async ({ url }) => {
     if (!url) return;
@@ -73,7 +63,7 @@ const LoginScreen = () => {
       let tempUrl = url.substring(31);
       tempUrl = tempUrl.startsWith("#") || tempUrl.startsWith("/#") ? tempUrl.replace("#", "?") : tempUrl;
 
-      const parsedUrl = new URL("https://app.craftschoolship.com/" + tempUrl);
+      let parsedUrl = new URL("https://app.craftschoolship.com/" + tempUrl);
 
       if (!config.debug)
       parsedUrl = new URL("https://app.craftschoolship.com/oauth.html" + tempUrl);
@@ -91,15 +81,16 @@ const LoginScreen = () => {
         } else {
           setError("Authentication failed.");
         }
-        setIsLoading((prev) => ({ ...prev, oauth: false }));
       } else {
         setError("Authentication token not found in redirect URL.");
       }
     }
+    setIsOAuthLoading(false); // Reset only OAuth loading
+
   };
   const subscription = Linking.addEventListener("url", handleUrlChange);
 
-  Linking.openURL(provider.url);
+  await Linking.openURL(provider.url);
 
   return () => subscription.remove();
 } catch (error) {
@@ -110,7 +101,7 @@ const LoginScreen = () => {
     placement: "top",
   });
 } finally {
-  setIsLoading(false);
+  setIsOAuthLoading(false); // Ensure only OAuth loading is reset
 }
 };
 
@@ -124,18 +115,6 @@ const LoginScreen = () => {
           : MA_REUSSITE_CUSTOM_COLORS.White
       }
     >
-      {isWebViewVisible ? (
-        <WebView
-          source={{ uri: authUrl }}
-          onNavigationStateChange={handleWebViewNavigation}
-          startInLoadingState
-          renderLoading={() => (
-            <Center flex={1}>
-              <Spinner size="lg" color={MA_REUSSITE_CUSTOM_COLORS.Primary} />
-            </Center>
-          )}
-        />
-      ) : (
         <Box style={{ padding: 24, marginTop: 35 }}>
           <Center>
             <Text
@@ -166,6 +145,8 @@ const LoginScreen = () => {
                   label="Mot de passe"
                   name="password"
                   secureTextEntry
+                  showPassword={showPassword}
+                  setShowPassword={setShowPassword}
                 />
                 <Text color={"danger.500"} textAlign={"center"} mt={3}>
                   {error}
@@ -174,8 +155,8 @@ const LoginScreen = () => {
                   onPress={handleSubmit}
                   title="Se connecter"
                   isDisabled={!isValid}
-                  loading={isLoading.login}
-                />
+                  loading={isLoginLoading} // Only login loading
+                  />
 
                 <HStack alignItems="center" mt={6}>
                   <Divider flex={1} bg="gray.400" />
@@ -194,9 +175,9 @@ const LoginScreen = () => {
                         key={provider.url}
                         onPress={() => handleOAuthLogin(provider)}
                         title="Continuer avec Microsoft"
-                        loading={isLoading.oauth}
-                        isMicrosoftButton={true} // Set Microsoft button style
-                        isDarkMode={isDarkMode} // Pass dark mode status
+                        loading={isOAuthLoading} // Only OAuth loading
+                        isMicrosoftButton={true}
+                        isDarkMode={isDarkMode}
                         icon={microsoftIcon}
                       />
                     ))}
@@ -205,7 +186,6 @@ const LoginScreen = () => {
             )}
           </Formik>
         </Box>
-      )}
     </View>
   );
 };
