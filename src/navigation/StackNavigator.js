@@ -18,11 +18,6 @@ const Stack = createStackNavigator();
 export const StackNavigator = () => {
    const linking = {
       prefixes: [prefix, 'https://app.craftschoolship.com'],
-      config: {
-        screens: {
-          Login: '/sso',
-        },
-      }
     };
   return (
     <Stack.Navigator initialRouteName="Splash" linking={linking}>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Center, Text, View, VStack, HStack, Spinner, Divider } from "native-base";
+import { Box, Center, Text, View, VStack, HStack, Spinner, Divider, Toast } from "native-base";
 import { useNavigation } from "@react-navigation/native";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { Formik } from "formik";
@@ -11,7 +11,6 @@ import { authenticateWithUsernameAndPassword, authenticateWithOAuth } from "../.
 import config from "../../http/config";
 import microsoftIcon from "../../assets/images/microsoft.png";
 import * as Linking from "expo-linking";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginScreen = () => {
   const [error, setError] = useState("");
@@ -44,66 +43,47 @@ const LoginScreen = () => {
     }
     setIsLoginLoading(false); // Reset only login loading
   };
-
-  const handleOAuthLogin = async (provider) => {
-    try {
-      setIsOAuthLoading(true); // Set only OAuth loading
-      setIsLoginLoading(false);
-
-  const handleUrlChange = async ({ url }) => {
-    if (!url) return;
-    console.log("Redirected URL:", url);
-    if (url.startsWith("exp://127.0.0.1:8081/--/")) {
-      let tempUrl = url.substring(24);
-      tempUrl = tempUrl.startsWith("?expo#") || tempUrl.startsWith("?expo?") ? "?" + tempUrl.substring(6) : tempUrl;
-      url = "https://app.craftschoolship.com/" + tempUrl;
+  const handleOAuthLogin = async () => {
+     const provider=config.auth.providers[0];
+     if (config.debug) {
+        provider.url = provider.url.replace("mareusite%3A%2F%2F", "exp%3A%2F%2F127.0.0.1%3A8081%2F--%2F");
     }
+     try {
+      setIsOAuthLoading(true); // Reset only OAuth loading
+      const subscription = Linking.addEventListener('url', async ({ url }) => {
 
-    if (url.startsWith("https://app.craftschoolship.com/")) {
-      let tempUrl = url.substring(31);
-      tempUrl = tempUrl.startsWith("#") || tempUrl.startsWith("/#") ? tempUrl.replace("#", "?") : tempUrl;
+          var l = new URL(url);
+          var s = l.search;
+          var q = l.hash.substring(1);
+          var r = '/sso' + l.search;
+          if(q.length !== 0) {
+              r += s ? (s === '?' ? '' : '&') : '?';
+              r += q;
+          }
 
-      let parsedUrl = new URL("https://app.craftschoolship.com/" + tempUrl);
+          const parsedUrl = new URL('http://example.com' + r); // the domain name does not matter here
+          const token = parsedUrl.searchParams.get("access_token");
 
-      if (!config.debug)
-      parsedUrl = new URL("https://app.craftschoolship.com/oauth.html" + tempUrl);
-      const token = parsedUrl.searchParams.get("access_token");
-      const provider = JSON.parse(parsedUrl.searchParams.get("state"))["p"];
-      console.log("Extracted provider: ", provider);
-      console.log("Extracted token: ", token);
+          const { success, connectedUser } = await authenticate(authenticateWithOAuth, provider.id, token);
+          // we gonna potential authenticate to moodle and mattermost too here
+          if (success) {
+            navigation.navigate("DrawerNavigator", { connectedUser });
+            subscription.remove();
 
-      if (token) {
-        await AsyncStorage.setItem("erp_token", token);
-        const { success, connectedUser } = await authenticate(authenticateWithOAuth, provider, token);
-
-      if (success) {
-        navigation.navigate("DrawerNavigator", { connectedUser });
-        } else {
-          setError("Authentication failed.");
-        }
-      } else {
-        setError("Authentication token not found in redirect URL.");
+          }
+        });
+        await Linking.openURL(provider.url);
+      } catch (error) {
+        Toast.show({
+          title: "Error",
+          description: error.message || "An error occurred during login",
+          status: "error",
+          placement: "top",
+        });
+      } finally {
+        setIsOAuthLoading(false); // Reset only OAuth loading
       }
-    }
-    setIsOAuthLoading(false); // Reset only OAuth loading
-
   };
-  const subscription = Linking.addEventListener("url", handleUrlChange);
-
-  await Linking.openURL(provider.url);
-
-  return () => subscription.remove();
-} catch (error) {
-  toast.show({
-    title: "Error",
-    description: error.message || "An error occurred during login",
-    status: "error",
-    placement: "top",
-  });
-} finally {
-  setIsOAuthLoading(false); // Ensure only OAuth loading is reset
-}
-};
 
 
   return (
@@ -166,21 +146,14 @@ const LoginScreen = () => {
                   <Divider flex={1} bg="gray.400" />
                 </HStack>
                 <VStack mt={6}>
-                  {config.auth.providers
-                    .filter(
-                      (provider) => provider.name.toLowerCase() === "microsoft"
-                    )
-                    .map((provider) => (
-                      <CustomButton
-                        key={provider.url}
-                        onPress={() => handleOAuthLogin(provider)}
-                        title="Continuer avec Microsoft"
-                        loading={isOAuthLoading} // Only OAuth loading
-                        isMicrosoftButton={true}
-                        isDarkMode={isDarkMode}
-                        icon={microsoftIcon}
-                      />
-                    ))}
+                <CustomButton
+                  onPress={() => handleOAuthLogin()}
+                  title="Continuer avec Microsoft"
+                  loading={isOAuthLoading} // Only OAuth loading
+                  isMicrosoftButton={true}
+                  isDarkMode={isDarkMode}
+                  icon={microsoftIcon}
+                 />
                 </VStack>
               </VStack>
             )}

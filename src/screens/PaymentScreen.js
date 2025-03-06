@@ -543,7 +543,11 @@ const PaymentScreen = () => {
                 <Box>
                   <Text
                     mt="30%"
-                    color={MA_REUSSITE_CUSTOM_COLORS.Black}
+                    color={
+                      isDarkMode
+                        ? MA_REUSSITE_CUSTOM_COLORS.White
+                        : MA_REUSSITE_CUSTOM_COLORS.Black
+                    }
                     textAlign="center"
                     fontSize="2xl"
                     fontWeight="bold"
