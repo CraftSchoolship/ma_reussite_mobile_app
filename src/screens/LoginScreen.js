@@ -21,6 +21,12 @@ const LoginScreen = () => {
   const [isOAuthLoading, setIsOAuthLoading] = useState(false);
 
 
+  console.log(config.debug);
+  const provider=config.auth.providers[0];
+  if (config.debug) {
+    provider.url = provider.url.replace("mareussite%3A%2F%2F", "exp%3A%2F%2F127.0.0.1%3A8081%2F--%2F");
+  }
+
   const handleLogin = async (values) => {
     setIsLoginLoading(true); // Set only login loading
     setIsOAuthLoading(false);
@@ -44,10 +50,7 @@ const LoginScreen = () => {
     setIsLoginLoading(false); // Reset only login loading
   };
   const handleOAuthLogin = async () => {
-     const provider=config.auth.providers[0];
-     if (config.debug) {
-        provider.url = provider.url.replace("mareussite%3A%2F%2F", "exp%3A%2F%2F127.0.0.1%3A8081%2F--%2F");
-    }
+    console.log(provider.url);
      try {
       setIsOAuthLoading(true); // Reset only OAuth loading
       const subscription = Linking.addEventListener('url', async ({ url }) => {
