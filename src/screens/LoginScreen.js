@@ -46,7 +46,7 @@ const LoginScreen = () => {
   const handleOAuthLogin = async () => {
      const provider=config.auth.providers[0];
      if (config.debug) {
-        provider.url = provider.url.replace("mareusite%3A%2F%2F", "exp%3A%2F%2F127.0.0.1%3A8081%2F--%2F");
+        provider.url = provider.url.replace("mareussite%3A%2F%2F", "exp%3A%2F%2F127.0.0.1%3A8081%2F--%2F");
     }
      try {
       setIsOAuthLoading(true); // Reset only OAuth loading
