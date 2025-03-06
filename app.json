@@ -2,7 +2,9 @@
   "expo": {
     "name": "ma-reussite",
     "slug": "ma-reussite",
-    "version": "1.0.2",
+    "version": "1.0.3",
+    "scheme": "mareussite",
+    "platforms": ["ios", "android"],
     "owner": "craftschoolship",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,30 +15,16 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.craftschoolship.mobile",
-      "associatedDomains": ["applinks:app.craftschoolship.com"]
+      "bundleIdentifier": "com.craftschoolship.mareussite"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.craftschoolship.mobile",
+      "package": "com.craftschoolship.mareussite",
       "versionCode": 3,
-      "permissions": ["com.google.android.gms.permission.AD_ID"],
-      "intentFilters": [
-        {
-          "action": "VIEW",
-          "autoVerify": true,
-          "data": [
-            {
-              "scheme": "https",
-              "host": "app.craftschoolship.com"
-            }
-          ],
-          "category": ["BROWSABLE", "DEFAULT"]
-        }
-      ]
+      "permissions": ["com.google.android.gms.permission.AD_ID"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -45,8 +33,6 @@
       "eas": {
         "projectId": "4851c23f-ab7b-43da-8a23-655dd4c59f28"
       }
-    },
-    "scheme": "https",
-    "platforms": ["ios", "android"]
+    }
   }
 }
