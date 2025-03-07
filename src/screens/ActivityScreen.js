@@ -1,4 +1,4 @@
-import { Box, IconButton, ScrollView, Text, VStack } from "native-base";
+import { Box, IconButton, ScrollView, Text, VStack, Center } from "native-base";
 import React, { useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -14,41 +14,41 @@ const NotificationScreen = () => {
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [selectedNotificationId, setSelectedNotificationId] = useState(null);
   const [notificationList, updateNotificationList] = useState([
-    {
-      id: 1,
-      title: "Mise à jour de l'horaire du Cours Big Data",
-      description:
-        "L’horaire de votre cours de Big Data a été mis à jour, la nouvelle session se déroulera le 03/06/24 à partir de 16h et non pas le 02/06/24.",
-      time: "3:00 PM",
-      unread: true,
-      redirectTo: "Groups",
-    },
-    {
-      id: 2,
-      title: "Changement d'enseignant du Cours Big Data",
-      description:
-        "Notez que pour votre séance de Big Data, un nouvel enseignant a été attribué.",
-      time: "10:00 AM",
-      unread: true,
-      redirectTo: "Groups",
-    },
-    {
-      id: 3,
-      title: "Facturation du Mois de Mars",
-      description:
-        "Vous avez effectué la totalité du paiement du mois de Mars.",
-      time: "03/06/24",
-      unread: false,
-      redirectTo: "Payment",
-    },
-    {
-      id: 4,
-      title: "Mise à jour de l'horaire du Cours Big Data",
-      description: "L'horaire de votre cours de Big Data a été mis à jour.",
-      time: "10/05/24",
-      unread: false,
-      redirectTo: "Groups",
-    },
+    // {
+    //   id: 1,
+    //   title: "Mise à jour de l'horaire du Cours Big Data",
+    //   description:
+    //     "L’horaire de votre cours de Big Data a été mis à jour, la nouvelle session se déroulera le 03/06/24 à partir de 16h et non pas le 02/06/24.",
+    //   time: "3:00 PM",
+    //   unread: true,
+    //   redirectTo: "Groups",
+    // },
+    // {
+    //   id: 2,
+    //   title: "Changement d'enseignant du Cours Big Data",
+    //   description:
+    //     "Notez que pour votre séance de Big Data, un nouvel enseignant a été attribué.",
+    //   time: "10:00 AM",
+    //   unread: true,
+    //   redirectTo: "Groups",
+    // },
+    // {
+    //   id: 3,
+    //   title: "Facturation du Mois de Mars",
+    //   description:
+    //     "Vous avez effectué la totalité du paiement du mois de Mars.",
+    //   time: "03/06/24",
+    //   unread: false,
+    //   redirectTo: "Payment",
+    // },
+    // {
+    //   id: 4,
+    //   title: "Mise à jour de l'horaire du Cours Big Data",
+    //   description: "L'horaire de votre cours de Big Data a été mis à jour.",
+    //   time: "10/05/24",
+    //   unread: false,
+    //   redirectTo: "Groups",
+    // },
   ]);
 
   return (
@@ -110,6 +110,20 @@ const NotificationScreen = () => {
               notification={notificationList[selectedNotificationId - 1]}
               index={selectedNotificationId}
             />
+          ) : notificationList.length === 0 ? (
+            <Center flex={1} mt={10}>
+                <Text
+                  color={
+                    isDarkMode
+                      ? MA_REUSSITE_CUSTOM_COLORS.White
+                      : MA_REUSSITE_CUSTOM_COLORS.Black
+                  }
+                  fontSize={16}
+                  fontWeight={"bold"}
+                >
+                  Aucun résultat trouvé
+                </Text>
+              </Center>
           ) : (
             notificationList.map((notification, index) => (
               <NotificationCard
@@ -127,5 +141,6 @@ const NotificationScreen = () => {
     </BackgroundWrapper>
   );
 };
+
 
 export default NotificationScreen;

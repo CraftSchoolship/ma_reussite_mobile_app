@@ -541,19 +541,19 @@ const PaymentScreen = () => {
                 ))
               ) : (
                 <Box>
+                <Center flex={1} mt={10}>
                   <Text
-                    mt="30%"
                     color={
                       isDarkMode
                         ? MA_REUSSITE_CUSTOM_COLORS.White
                         : MA_REUSSITE_CUSTOM_COLORS.Black
                     }
-                    textAlign="center"
-                    fontSize="2xl"
-                    fontWeight="bold"
+                    fontSize={16}
+                    fontWeight={"bold"}
                   >
-                    Pas de paiement
+                    Aucun résultat trouvé
                   </Text>
+              </Center>
                 </Box>
               )}
             </VStack>
