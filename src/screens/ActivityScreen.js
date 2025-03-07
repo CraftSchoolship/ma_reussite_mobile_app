@@ -134,7 +134,20 @@ const NotificationScreen = () => {
                 setIsNotificationOpen={setNotificationOpen}
                 setNotifications={updateNotificationList}
               />
-            ))
+            )) :
+            (<Text
+              mt={"30%"}
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+              textAlign={"center"}
+              fontSize={"2xl"}
+              fontWeight={"bold"}
+            >
+              Pas de notifications
+            </Text>)
           )}
         </VStack>
       </ScrollView>

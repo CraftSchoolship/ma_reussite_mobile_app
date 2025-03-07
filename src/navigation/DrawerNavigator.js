@@ -7,6 +7,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Icon, IconButton } from "native-base";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { ProfileScreen } from "../screens";
+import AttendanceStaff from "../screens/AttendanceStaff";
 import SessionsScreen from "../screens/SessionsScreen";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { loadParentData, getCurrencies } from "../utils/ParentLogic";
@@ -121,6 +122,14 @@ const DrawerNavigator = () => {
         }}
         name="Session"
         component={SessionsScreen}
+      />
+      <Drawer.Screen
+        options={{
+          headerBackTitleVisible: false,
+          headerShown: false,
+        }}
+        name="AttendanceStaff"
+        component={AttendanceStaff}
       />
     </Drawer.Navigator>
   );

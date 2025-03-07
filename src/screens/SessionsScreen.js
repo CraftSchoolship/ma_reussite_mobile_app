@@ -134,25 +134,19 @@ const SessionsScreen = () => {
                 <Tab.Screen
                   key="Présences-Initial"
                   name="Présences"
-                  children={() => (
-                    <>
-                      {isLoading ? (
-                        <Box
-                          flex={1}
-                          justifyContent="center"
-                          alignItems="center"
-                        >
-                          <Spinner color={isDarkMode ? "white" : "black"} />
-                        </Box>
-                      ) : (
-                        <AttendanceTable
-                          isDarkMode={isDarkMode}
-                          subjectId={subjectId}
-                          isFutureSessions={false}
-                        />
-                      )}
-                    </>
-                  )}
+                  children={() =>
+                    isLoading ? (
+                      <Box flex={1} justifyContent="center" alignItems="center">
+                        <Spinner color={isDarkMode ? "white" : "black"} />
+                      </Box>
+                    ) : (
+                      <AttendanceTable
+                        isDarkMode={isDarkMode}
+                        subjectId={subjectId}
+                        isFutureSessions={false}
+                      />
+                    )
+                  }
                 />
               </>
             ) : (
@@ -160,48 +154,36 @@ const SessionsScreen = () => {
                 <Tab.Screen
                   key="Présences-Future"
                   name="Présences"
-                  children={() => (
-                    <>
-                      {isLoading ? (
-                        <Box
-                          flex={1}
-                          justifyContent="center"
-                          alignItems="center"
-                        >
-                          <Spinner color={isDarkMode ? "white" : "black"} />
-                        </Box>
-                      ) : (
-                        <AttendanceTable
-                          isDarkMode={isDarkMode}
-                          subjectId={subjectId}
-                          isFutureSessions={false}
-                        />
-                      )}
-                    </>
-                  )}
+                  children={() =>
+                    isLoading ? (
+                      <Box flex={1} justifyContent="center" alignItems="center">
+                        <Spinner color={isDarkMode ? "white" : "black"} />
+                      </Box>
+                    ) : (
+                      <AttendanceTable
+                        isDarkMode={isDarkMode}
+                        subjectId={subjectId}
+                        isFutureSessions={false}
+                      />
+                    )
+                  }
                 />
                 <Tab.Screen
                   key="Sessions-futures"
                   name="Sessions futures"
-                  children={() => (
-                    <>
-                      {isLoading ? (
-                        <Box
-                          flex={1}
-                          justifyContent="center"
-                          alignItems="center"
-                        >
-                          <Spinner color={isDarkMode ? "white" : "black"} />
-                        </Box>
-                      ) : (
-                        <AttendanceTable
-                          isDarkMode={isDarkMode}
-                          subjectId={subjectId}
-                          isFutureSessions={true}
-                        />
-                      )}
-                    </>
-                  )}
+                  children={() =>
+                    isLoading ? (
+                      <Box flex={1} justifyContent="center" alignItems="center">
+                        <Spinner color={isDarkMode ? "white" : "black"} />
+                      </Box>
+                    ) : (
+                      <AttendanceTable
+                        isDarkMode={isDarkMode}
+                        subjectId={subjectId}
+                        isFutureSessions={true}
+                      />
+                    )
+                  }
                 />
               </>
             )}

@@ -2,7 +2,7 @@
   "expo": {
     "name": "ma-reussite",
     "slug": "ma-reussite",
-    "version": "1.0.3",
+    "version": "1.0.6",
     "scheme": "mareussite",
     "platforms": ["ios", "android"],
     "owner": "craftschoolship",
@@ -15,7 +15,11 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.craftschoolship.mareussite"
+      "bundleIdentifier": "com.craftschoolship.mareussite",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "This app uses the photo library to allow you to choose and upload a profile picture.",
+        "NSCameraUsageDescription": "This app uses the camera to take profile pictures and to scan qr codes on student cards."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -23,8 +27,10 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.craftschoolship.mareussite",
-      "versionCode": 3,
-      "permissions": ["com.google.android.gms.permission.AD_ID"]
+      "versionCode": 7,
+      "permissions": [
+        "com.google.android.gms.permission.AD_ID"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,6 +39,15 @@
       "eas": {
         "projectId": "4851c23f-ab7b-43da-8a23-655dd4c59f28"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "This app uses the camera to take profile pictures and to scan qr codes on student cards.",
+          "recordAudioAndroid": false
+        }
+      ]
+    ]
   }
 }

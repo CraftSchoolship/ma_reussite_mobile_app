@@ -30,12 +30,21 @@ const PaymentCardPlus = ({ isDarkMode, paymentDetails }) => {
                 : MA_REUSSITE_CUSTOM_COLORS.Black
             }
             fontSize="lg"
-            fontWeight="bold"
           >
-            {`${paymentDetails.name} : ${paymentDetails.amount} ${paymentDetails.currency_symbol}`}
+            {`Ref : ${paymentDetails.name}`}
           </Text>
           <Text
-            fontSize="md"
+            color={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.White
+                : MA_REUSSITE_CUSTOM_COLORS.Black
+            }
+            fontSize="lg"
+          >
+            {`Montant : ${paymentDetails.amount} ${paymentDetails.currency_symbol}`}
+          </Text>
+          <Text
+            fontSize="lg"
             color={
               isDarkMode
                 ? MA_REUSSITE_CUSTOM_COLORS.LightTextCalendarCard
@@ -44,17 +53,31 @@ const PaymentCardPlus = ({ isDarkMode, paymentDetails }) => {
           >
             {`Date: ${paymentDetails.date}`}
           </Text>
-          <Text
-            color={
-              isDarkMode
-                ? MA_REUSSITE_CUSTOM_COLORS.White
-                : MA_REUSSITE_CUSTOM_COLORS.Black
-            }
-            mt={1}
-            fontSize="md"
-          >
-            Status: {statusPayment.text}
-          </Text>
+          <HStack>
+            <Text
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+              mt={1}
+              fontSize="lg"
+            >
+              Status:
+            </Text>
+            <Box
+              alignSelf="flex-end"
+              bg={statusPayment.color}
+              px={4}
+              py={0.5}
+              ml={2}
+              rounded="xl"
+            >
+              <Text color={MA_REUSSITE_CUSTOM_COLORS.White}>
+                {statusPayment.text}
+              </Text>
+            </Box>
+          </HStack>
         </VStack>
       </HStack>
     </Box>
@@ -62,32 +85,3 @@ const PaymentCardPlus = ({ isDarkMode, paymentDetails }) => {
 };
 
 export default PaymentCardPlus;
-
-
-
-{
-  /* <Box alignItems="flex-end" mt={2}>
-<Box
-  alignSelf="flex-end"
-  bg={statusPayment.color}
-  px={4}
-  py={0.5}
-  rounded="xl"
->
-  <Text color={MA_REUSSITE_CUSTOM_COLORS.White}>
-    {statusPayment.text}
-  </Text>
-</Box>
-<Text
-  color={
-    isDarkMode
-      ? MA_REUSSITE_CUSTOM_COLORS.White
-      : MA_REUSSITE_CUSTOM_COLORS.Black
-  }
-  mt={1}
-  fontSize="md"
->
-  Status: {statusPayment.text}
-</Text>
-</Box> */
-}

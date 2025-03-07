@@ -20,7 +20,6 @@ const LoginScreen = () => {
   const [isLoginLoading, setIsLoginLoading] = useState(false);
   const [isOAuthLoading, setIsOAuthLoading] = useState(false);
 
-
   console.log(config.debug);
   const provider=config.auth.providers[0];
   if (config.debug) {
@@ -140,7 +139,6 @@ const LoginScreen = () => {
                   isDisabled={!isValid}
                   loading={isLoginLoading} // Only login loading
                   />
-
                 <HStack alignItems="center" mt={6}>
                   <Divider flex={1} bg="gray.400" />
                   <Text mx={3} color="gray.400">
