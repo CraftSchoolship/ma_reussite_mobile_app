@@ -134,7 +134,7 @@ const NotificationScreen = () => {
                 setIsNotificationOpen={setNotificationOpen}
                 setNotifications={updateNotificationList}
               />
-            )) :
+            ))
             (<Text
               mt={"30%"}
               color={
