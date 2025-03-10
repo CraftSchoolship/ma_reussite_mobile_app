@@ -10,7 +10,7 @@ import { authenticate } from "../utils/authLogic";
 import { authenticateWithUsernameAndPassword, authenticateWithOAuth } from "../../http/http";
 import config from "../../http/config";
 import microsoftIcon from "../../assets/images/microsoft.png";
-import * as Linking from "expo-linking";
+import * as WebBrowser from 'expo-web-browser';
 
 const LoginScreen = () => {
   const [error, setError] = useState("");
@@ -52,7 +52,7 @@ const LoginScreen = () => {
     console.log(provider.url);
      try {
       setIsOAuthLoading(true); // Reset only OAuth loading
-      const subscription = Linking.addEventListener('url', async ({ url }) => {
+      const handleRedirect = async ({ url }) => {
 
           var l = new URL(url);
           var s = l.search;
@@ -70,11 +70,13 @@ const LoginScreen = () => {
           // we gonna potential authenticate to moodle and mattermost too here
           if (success) {
             navigation.navigate("DrawerNavigator", { connectedUser });
-            subscription.remove();
-
           }
-        });
-        await Linking.openURL(provider.url);
+        }
+        let result = await WebBrowser.openAuthSessionAsync(provider.url, new URL(provider.url).searchParams.get('redirect_uri'),);
+        console.log(result);
+        if (result.type == 'success')
+          await handleRedirect(result);
+
       } catch (error) {
         Toast.show({
           title: "Error",
