@@ -59,11 +59,11 @@ const HomeScreen = () => {
             "stop",
             "subject_id",
             "teacher_id",
-            "description",
-          ],
+            "state",
+          ], // Fields array is correctly passed here
           {
-            // start_gt: new Date().toISOString().substring(0, 10),
-            state: "confirm",
+            start_gte: new Date().toISOString().substring(0, 10),
+            state: "confirm", // Filters are correctly passed
           }
         );
 

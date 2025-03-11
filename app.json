@@ -3,15 +3,16 @@
     "name": "ma-reussite",
     "slug": "ma-reussite",
     "version": "1.0.6",
+    "scheme": "mareussite",
+    "platforms": ["ios", "android"],
     "owner": "craftschoolship",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "newArchEnabled": true,
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.craftschoolship.mareussite",

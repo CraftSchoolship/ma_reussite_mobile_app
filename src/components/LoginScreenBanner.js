@@ -24,7 +24,6 @@ function LoginScreenBanner() {
           w={"full"}
           backgroundColor={MA_REUSSITE_CUSTOM_COLORS.Primary}
           resizeMode="contain"
-          padding={10}
           source={require("../../assets/images/ma_reussite_login_screen.png")}
           alt="Alternate Text"
         />

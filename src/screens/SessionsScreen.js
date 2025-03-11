@@ -122,6 +122,7 @@ const SessionsScreen = () => {
             {visibleTab === "initial" ? (
               <>
                 <Tab.Screen
+                  key="Participants"
                   name="Participants"
                   children={() => (
                     <ParticipantList
@@ -131,6 +132,7 @@ const SessionsScreen = () => {
                   )}
                 />
                 <Tab.Screen
+                  key="Présences-Initial"
                   name="Présences"
                   children={() =>
                     isLoading ? (
@@ -150,6 +152,7 @@ const SessionsScreen = () => {
             ) : (
               <>
                 <Tab.Screen
+                  key="Présences-Future"
                   name="Présences"
                   children={() =>
                     isLoading ? (
@@ -166,6 +169,7 @@ const SessionsScreen = () => {
                   }
                 />
                 <Tab.Screen
+                  key="Sessions-futures"
                   name="Sessions futures"
                   children={() =>
                     isLoading ? (
