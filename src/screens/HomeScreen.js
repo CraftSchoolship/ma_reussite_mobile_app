@@ -62,8 +62,8 @@ const HomeScreen = () => {
             "state",
           ], // Fields array is correctly passed here
           {
-            start_gte: new Date().toISOString().substring(0, 10),
-            state: "confirm", // Filters are correctly passed
+            // start_gte: new Date().toISOString().substring(0, 10),
+            // state: "confirm", // Filters are correctly passed
           }
         );
 
@@ -109,7 +109,7 @@ const HomeScreen = () => {
           key={isDarkMode ? "dark" : "light"}
           markingType={"multi-dot"}
           onDayPress={(day) => {
-            setSelectedDayEvents(markedDate[day.dateString]?.dots || []);
+            setSelectedDayEvents(markedDate[day.dateString]?.events || []);
             Object.values(markedDate).forEach(
               (item) => (item.selected = false)
             );
