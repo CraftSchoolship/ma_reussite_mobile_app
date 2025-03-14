@@ -70,14 +70,65 @@ const AttendanceStaff = () => {
     setIsCameraOpen(false);
   };
 
+  // const submit_attendance = async (barcode) => {
+  //   try {
+  //     await execute("craft.attendance.line", "create_from_barcode", [
+  //       {
+  //         session_id: session.id,
+  //         barcode: barcode,
+  //       },
+  //     ]);
+  //     setAttendance(null);
+
+  //     toast.show({
+  //       render: () => (
+  //         <ToastAlert
+  //           title={"Succès"}
+  //           description={"Présence mise à jour avec succès"}
+  //           status={"success"}
+  //           isClosable={true}
+  //           variant={"left-accent"}
+  //           duration={5000}
+  //         />
+  //       ),
+  //     });
+  //   } catch (error) {
+  //     let message = error.data.arguments[0];
+  //     toast.show({
+  //       render: () => (
+  //         <ToastAlert
+  //           title={"Erreur"}
+  //           description={message}
+  //           status={"danger"}
+  //           isClosable={true}
+  //           variant={"left-accent"}
+  //           duration={5000}
+  //         />
+  //       ),
+  //     });
+  //     console.error("Error saving attendance:", message);
+  //   }
+  // }; 
+
   const submit_attendance = async (barcode) => {
+    let student_id = parseInt(barcode.split("").filter((_, index) => index % 2 === 0).join(""));
     try {
-      await execute("craft.attendance.line", "create_from_barcode", [
-        {
+      let attendance_line = await browse("craft.attendance.line", ["id", "present", "late", "absent", "excused"], { session_id: session.id, student_id: student_id });
+      if (attendance_line.length > 0) {
+        let status = attendance_line[0];
+        if (!status.present) {
+          await update("craft.attendance.line", status.id, { present: true, late: false, absent: false, excused: false });
+        }
+      }else {
+        await create ("craft.attendance.line", {
           session_id: session.id,
-          barcode: barcode,
-        },
-      ]);
+          student_id: student_id,
+          present: true,
+          late: false,
+          absent: false,
+          excused: false,
+        });
+      }
       setAttendance(null);
 
       toast.show({

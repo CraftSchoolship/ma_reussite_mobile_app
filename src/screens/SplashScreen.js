@@ -1,15 +1,15 @@
 import React, { useEffect, useRef } from "react";
 import { View, Animated, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import config from "../../http/config";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 import axios from "axios";
 import { decode } from "../../http/password_encoding";
+import { useAuth } from "../utils/AuthContext";
 
 export default function SplashScreen() {
-  const navigation = useNavigation();
+  const navigation = useAuth();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
 

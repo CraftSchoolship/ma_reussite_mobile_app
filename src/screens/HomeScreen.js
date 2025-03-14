@@ -1,4 +1,3 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   Actionsheet,
   Box,
@@ -18,11 +17,12 @@ import { browse } from "../../http/http";
 import { useThemeContext } from "../hooks/ThemeContext";
 import CalendarTheme from "../utils/CalendarTheme";
 import { EventsActionSheet } from "../components/EventsActionSheet";
+import { useAuth } from "../utils/AuthContext";
 
 CalendarLocalConfig;
 
 const HomeScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useAuth();
   const { isOpen, onOpen, onClose } = useDisclose();
   const [user, setUser] = useState({});
   const [user_id, setUserId] = useState(null);

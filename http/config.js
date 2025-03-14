@@ -2,7 +2,7 @@ const config = {
   baseUrl: "https://ma-reussite.com",
   database: "bitnami_odoo",
   passwordEncodingKey: "craftschoolship",
-  debug: false,
+  debug: true,
   auth: {
     providers: [
       {

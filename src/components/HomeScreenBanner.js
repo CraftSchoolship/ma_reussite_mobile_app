@@ -17,10 +17,12 @@ import { getObject } from "../api/apiClient";
 import { useAppContext } from "../hooks/AppProvider";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useThemeContext } from "../hooks/ThemeContext";
+import { useAuth } from "../utils/AuthContext";
 
 const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
   const route = useRoute();
-  const navigation = useNavigation();
+  const navigation = useAuth();
+  const drawer = useNavigation();
   const [connectedUser, setConnectedUser] = useState({});
   const [loading, setLoading] = useState(true);
   const [account, setAccount] = useState();
@@ -92,7 +94,7 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
             }
             alt="Alternate Text"
           />
-          <Pressable m={"auto"} onPress={() => navigation.openDrawer()}>
+          <Pressable m={"auto"} onPress={() => drawer.openDrawer()}>
             {loading ? (
               <Avatar size="md" source={{ uri: null }} />
             ) : (
@@ -122,7 +124,7 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
                   _pressed={{
                     bg: "primary.600:alpha.20",
                   }}
-                  onPress={() => navigation.openDrawer()}
+                  onPress={() => drawer.openDrawer()}
                 />
               </Avatar>
             )}

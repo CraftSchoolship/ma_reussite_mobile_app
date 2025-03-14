@@ -1,6 +1,5 @@
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { useNavigation } from "@react-navigation/native";
 import {
   Avatar,
   Box,
@@ -25,7 +24,6 @@ import { logout } from "../../http/http";
 const CustomDrawerContent = ({ connectedUser, ...props }) => {
   const [childrenList, setChildrenList] = useState([]);
   const [selectedChild, setSelectedChild] = useState(null);
-  const navigation = useNavigation();
   const { isDarkMode, toggleDarkMode } = useThemeContext();
 
   useEffect(() => {

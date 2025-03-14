@@ -3,11 +3,11 @@ import { Box, Button, HStack, Icon, Text, VStack } from "native-base";
 import React from "react";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
-import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../utils/AuthContext";
 
 export const NotificationDetail = ({ notification, index }) => {
   const { isDarkMode } = useThemeContext();
-  const navigation = useNavigation();
+  const navigation = useAuth();
 
   return (
     <Box alignItems={"center"}>

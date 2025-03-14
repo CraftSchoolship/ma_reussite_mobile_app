@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Box, Center, Text, View, VStack, HStack, Spinner, Divider, Toast } from "native-base";
-import { useNavigation } from "@react-navigation/native";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { Formik } from "formik";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
@@ -11,10 +10,11 @@ import { authenticateWithUsernameAndPassword, authenticateWithOAuth } from "../.
 import config from "../../http/config";
 import microsoftIcon from "../../assets/images/microsoft.png";
 import * as WebBrowser from 'expo-web-browser';
+import { useAuth } from "../utils/AuthContext";
 
 const LoginScreen = () => {
   const [error, setError] = useState("");
-  const navigation = useNavigation();
+  const navigation = useAuth();
   const { isDarkMode } = useThemeContext();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoginLoading, setIsLoginLoading] = useState(false);

@@ -1,5 +1,4 @@
 // import { MaterialIcons } from "@expo/vector-icons";
-// import { useNavigation } from "@react-navigation/native";
 // import {
 //   Actionsheet,
 //   Box,
@@ -102,7 +101,6 @@
 // ];
 
 // const PaymentScreen = () => {
-//   const navigation = useNavigation();
 //   const { isOpen, onOpen, onClose } = useDisclose();
 //   const [sortOrder, setSortOrder] = useState("recent");
 //   const [sortedPayments, setSortedPayments] = useState(payments);
@@ -336,7 +334,6 @@
 
 // export default PaymentScreen;
 import { MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import {
   Actionsheet,
   Box,
@@ -358,9 +355,10 @@ import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { browse } from "../../http/http";
 import { getObject } from "../api/apiClient";
+import { useAuth } from "../utils/AuthContext";
 
 const PaymentScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useAuth();
   const { isOpen, onOpen, onClose } = useDisclose();
   const [sortOrder, setSortOrder] = useState("recent");
   const [sortedPayments, setSortedPayments] = useState([]);

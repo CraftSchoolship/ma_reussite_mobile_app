@@ -2,7 +2,6 @@
 /*                                  VERSION_1                                 */
 /* -------------------------------------------------------------------------- */
 
-import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   Box,
   Center,
@@ -21,9 +20,10 @@ import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { Ionicons } from "@expo/vector-icons";
 import { browse } from "../../http/http";
 import { getObject } from "../api/apiClient";
+import { useAuth } from "../utils/AuthContext";
 
 const NoteScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useAuth();
   const [loading, setLoading] = useState(false);
   const { isDarkMode } = useThemeContext();
   const [grades, setGrades] = useState([]);

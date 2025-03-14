@@ -1,5 +1,5 @@
 import { FontAwesome5, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import {
@@ -27,7 +27,6 @@ import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const ProfileScreen = () => {
   const route = useRoute();
-  const navigation = useNavigation();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclose();
   const [connectedUser, setConnectedUser] = useState({
@@ -66,7 +65,7 @@ const ProfileScreen = () => {
 
       // Mettre à jour l'utilisateur dans Odoo
       const response = await update("res.users", connectedUser.id, {
-        avatar_128: imageBase64,
+        image_1920: imageBase64,
       });
 
       if (response) {
