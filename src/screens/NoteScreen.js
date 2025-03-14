@@ -46,7 +46,6 @@ const NoteScreen = () => {
       setLoading(true);
       try {
         const userId = await getObject("connectedUser");
-        console.log("User ID:", userId);
         if (userId) {
           const gradeData = await browse("craft.grade", [
             "id",

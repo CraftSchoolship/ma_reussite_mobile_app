@@ -70,13 +70,13 @@ const formatOdooEvents = (events) => {
       };
 
       if (!markedDates[dateKey]) {
-        markedDates[dateKey] = { dots: [] };
+        markedDates[dateKey] = { dots: [eventDetails] ,events: [] };
       }
 
-      markedDates[dateKey].dots.push(eventDetails);
+      // markedDates[dateKey].dots.push(eventDetails);
+      markedDates[dateKey].events.push(eventDetails);
     });
   });
-
   return markedDates;
 };
 

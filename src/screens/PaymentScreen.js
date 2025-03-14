@@ -370,6 +370,9 @@ const PaymentScreen = () => {
 
   // Compare payment dates for sorting
   const compareDates = (a, b) => {
+    if (!a.date || !b.date) {
+      return 0;
+    }
     const [dayA, monthA, yearA] = a.date.split("/");
     const [dayB, monthB, yearB] = b.date.split("/");
     const dateA = new Date(yearA, monthA - 1, dayA);
@@ -380,9 +383,8 @@ const PaymentScreen = () => {
   useEffect(() => {
     const fetchPayments = async () => {
       setLoading(true);
-
       try {
-        const userId = await getObject("user_id");
+        const userId = await getObject("connectedUser");
         if (userId) {
           const paymentsData = await browse(
             "craft.tuition.invoice",
@@ -407,7 +409,6 @@ const PaymentScreen = () => {
         setLoading(false);
       }
     };
-
     fetchPayments();
   }, [sortOrder]);
 
