@@ -25,7 +25,7 @@ import {
   Modal,
   View,
 } from "react-native";
-import { browse, execute, update } from "../../http/http";
+import { browse, create, update } from "../../http/http";
 import { useIsFocused, useRoute } from "@react-navigation/native";
 import { ToastAlert } from "../components";
 
@@ -70,46 +70,6 @@ const AttendanceStaff = () => {
     setIsCameraOpen(false);
   };
 
-  // const submit_attendance = async (barcode) => {
-  //   try {
-  //     await execute("craft.attendance.line", "create_from_barcode", [
-  //       {
-  //         session_id: session.id,
-  //         barcode: barcode,
-  //       },
-  //     ]);
-  //     setAttendance(null);
-
-  //     toast.show({
-  //       render: () => (
-  //         <ToastAlert
-  //           title={"Succès"}
-  //           description={"Présence mise à jour avec succès"}
-  //           status={"success"}
-  //           isClosable={true}
-  //           variant={"left-accent"}
-  //           duration={5000}
-  //         />
-  //       ),
-  //     });
-  //   } catch (error) {
-  //     let message = error.data.arguments[0];
-  //     toast.show({
-  //       render: () => (
-  //         <ToastAlert
-  //           title={"Erreur"}
-  //           description={message}
-  //           status={"danger"}
-  //           isClosable={true}
-  //           variant={"left-accent"}
-  //           duration={5000}
-  //         />
-  //       ),
-  //     });
-  //     console.error("Error saving attendance:", message);
-  //   }
-  // }; 
-
   const submit_attendance = async (barcode) => {
     let student_id = parseInt(barcode.split("").filter((_, index) => index % 2 === 0).join(""));
     try {
@@ -144,7 +104,7 @@ const AttendanceStaff = () => {
         ),
       });
     } catch (error) {
-      let message = error.data.arguments[0];
+      let message = error.message;
       toast.show({
         render: () => (
           <ToastAlert
