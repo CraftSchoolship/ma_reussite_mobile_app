@@ -19,11 +19,12 @@ import {
 } from "native-base";
 import React, { useEffect, useState } from "react";
 import { Alert } from "react-native";
-import { getObject, storeObject } from "../api/apiClient";
+import { storeObject } from "../api/apiClient";
 import { update } from "../../http/http";
 import { ProfileUserEdit, ProfileUserInfo, ToastAlert } from "../components";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { getUserInfo } from "../utils/authLogic";
 
 const ProfileScreen = () => {
   const route = useRoute();
@@ -51,7 +52,7 @@ const ProfileScreen = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const user = await getObject("connectedUser");
+      const user = await getUserInfo();
       setConnectedUser(user);
       setLoading(false);
     };

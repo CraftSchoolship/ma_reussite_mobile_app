@@ -13,7 +13,7 @@ import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { TouchableOpacity } from "react-native";
 import { browse } from "../../http/http";
-import { getObject } from "../api/apiClient";
+import { getUserInfo } from "../utils/authLogic";
 
 const GroupScreen = ({ navigation }) => {
   const [groups, setGroups] = useState([]);
@@ -24,7 +24,7 @@ const GroupScreen = ({ navigation }) => {
     const fetchGroups = async () => {
       setLoading(true);
       try {
-        const userId = await getObject("connectedUser");
+        const userId = await getUserInfo();
         console.log("User ID:", userId);
         if (userId) {
           const groupsData = await browse(

@@ -31,32 +31,31 @@ export const authenticate = async (auth, ...args) => {
   if (!token || !user_id)
     return { success: false, error: "Invalid token or user ID." };
 
-  const user = await read(
-    "res.users",
-    [user_id],
-    [
-      "self",
-      "name",
-      "phone",
-      "login",
-      "street",
-      "craft_role",
-      "craft_parent_id",
-      "craft_student_id",
-      "avatar_128",
-    ]
-  );
+  return { success: true, user_id };
+};
 
-  if (!user) return { success: false, error: "User data not found." };
+export const getUserInfo = async () => {
+  const user_id = await AsyncStorage.getItem("erp_user_id");
 
-  const profileImage = user.avatar_128 || null;
-  const connectedUser = {
+  if (!user_id) return null;
+
+  const user = await read("res.users", [user_id], [
+    "self",
+    "name",
+    "phone",
+    "login",
+    "street",
+    "craft_role",
+    "craft_parent_id",
+    "craft_student_id",
+    "avatar_128",
+  ]);
+
+  if (!user) return null;
+
+  return {
     ...user,
-    profileImage: wrapProfileImageBase64(profileImage),
+    profileImage: wrapProfileImageBase64(user.avatar_128),
     role: user.craft_role,
   };
-
-  await storeObject("connectedUser", connectedUser);
-
-  return { success: true, connectedUser };
-};
+  };

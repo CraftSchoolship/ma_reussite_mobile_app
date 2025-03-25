@@ -357,7 +357,7 @@ import { BackgroundWrapper, PaymentCard, PaymentCardPlus } from "../components";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { browse } from "../../http/http";
-import { getObject } from "../api/apiClient";
+import { getUserInfo } from "../utils/authLogic";
 
 const PaymentScreen = () => {
   const navigation = useNavigation();
@@ -384,7 +384,7 @@ const PaymentScreen = () => {
     const fetchPayments = async () => {
       setLoading(true);
       try {
-        const userId = await getObject("connectedUser");
+        const userId = await getUserInfo();
         if (userId) {
           const paymentsData = await browse(
             "craft.tuition.invoice",

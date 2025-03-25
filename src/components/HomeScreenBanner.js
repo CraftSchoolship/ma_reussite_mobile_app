@@ -1,54 +1,38 @@
-import { MaterialIcons } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import {
-  Avatar,
-  Box,
-  Center,
-  HStack,
-  Icon,
-  IconButton,
-  Image,
-  Pressable,
-  Text,
-  VStack,
-} from "native-base";
 import React, { useEffect, useState } from "react";
-import { getObject } from "../api/apiClient";
+import { Box, HStack, Avatar, Text, Image, Pressable, VStack, IconButton , Icon} from "native-base";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import { useAppContext } from "../hooks/AppProvider";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useThemeContext } from "../hooks/ThemeContext";
+import { getUserInfo } from "../utils/authLogic";
+import { loadParentData } from "../utils/ParentLogic";
 
 const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
-  const route = useRoute();
   const navigation = useNavigation();
   const [connectedUser, setConnectedUser] = useState({});
   const [loading, setLoading] = useState(true);
-  const [account, setAccount] = useState();
   const { selectedChild, setSelectedChild } = useAppContext();
   const { isDarkMode } = useThemeContext();
 
   useEffect(() => {
     const fetchUser = async () => {
-      const user = await getObject("connectedUser");
+      const user = await getUserInfo();
       setConnectedUser(user);
-      if (connectedUser?.role === "parent") {
-        const storedSelectedChild = await getObject("selectedChild");
+      if (user?.role === "parent") {
+        const { selectedChild: storedSelectedChild } = await loadParentData(user);
         setSelectedChild(storedSelectedChild);
       }
       setLoading(false);
     };
     fetchUser();
-  }, [connectedUser]);
+  }, [setSelectedChild]);
 
   useEffect(() => {
-    if (connectedUser?.role === "parent" && selectedChild?.self) {
-      setAccount(
-        <Text color={"white"} fontWeight={"medium"}>
-          {selectedChild?.self[1]}
-        </Text>
-      );
+    if (selectedChild?.name) {
+      console.log("Selected child name updated:", selectedChild.name)
     }
-  }, [connectedUser?.role, selectedChild]);
+  }, [selectedChild]);
 
   return (
     <Box
@@ -128,7 +112,7 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
             )}
           </Pressable>
         </HStack>
-        {connectedUser?.role === "parent" && selectedChild?.self && (
+        {connectedUser?.role === "parent" && selectedChild?.name && (
           <Box
             alignSelf={"baseline"}
             ml={8}
@@ -138,7 +122,7 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
             borderRadius={"sm"}
             bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
           >
-            {account}
+            {selectedChild.name}
           </Box>
         )}
       </VStack>
