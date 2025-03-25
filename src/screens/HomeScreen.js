@@ -60,15 +60,15 @@ const HomeScreen = () => {
             "subject_id",
             "teacher_id",
             "state",
-          ], // Fields array is correctly passed here
+          ],
           {
             // start_gte: new Date().toISOString().substring(0, 10),
-            // state: "confirm", // Filters are correctly passed
+            state: "confirm",
           }
         );
 
         setEvents(eventsData);
-        console.log("Events Data:", eventsData);
+        // console.log("Events Data:", eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
