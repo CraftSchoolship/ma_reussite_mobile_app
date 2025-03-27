@@ -19,7 +19,7 @@ import IconNotes from "../../assets/images/notes.png";
 import { Image } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CustomTabBarButton from "../components/CustomTabBarButton";
-import { getObject } from "../api/apiClient";
+import { getUserInfo } from "../utils/authLogic";
 
 const Tab = createBottomTabNavigator();
 
@@ -32,9 +32,7 @@ export const TabNavigator = () => {
   useEffect(() => {
     const fetchConnectedUser = async () => {
       try {
-        const storedUser = await getObject("connectedUser");
-        // console.log("storedUser...", storedUser);
-
+        const storedUser = await getUserInfo();
         setConnectedUser(storedUser);
       } catch (error) {}
     };

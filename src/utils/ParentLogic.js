@@ -1,4 +1,3 @@
-import { storeObject, storeArray } from "../api/apiClient";
 import { browse } from "../../http/http";
 import config from "../../http/config";
 
@@ -18,17 +17,15 @@ const wrapProfileImageBase64 = (profileImage) => {
   return `${config.baseUrl}/base/static/img/avatar.png`;
 };
 
-// Fetch currencies
 export const getCurrencies = async () => {
   try {
-    const currencies = await browse("res.currency", ["id", "symbol"]);
-    await storeObject("currencies", currencies);
+    return await browse("res.currency", ["id", "symbol"]);
   } catch (error) {
     console.error("Error fetching currencies:", error);
+    return [];
   }
 };
 
-// Fetch parent data and their children
 export const loadParentData = async (connectedUser) => {
   try {
     const fetchedChildren = await browse(
@@ -38,6 +35,8 @@ export const loadParentData = async (connectedUser) => {
     );
 
     const studentIds = fetchedChildren.map((child) => child.child_id[0]);
+    if (studentIds.length === 0) return { childrenList: [], selectedChild: null };
+
     const childrenList = await browse(
       "craft.student",
       ["id", "name", "contact_id", "image_256"],
@@ -50,9 +49,9 @@ export const loadParentData = async (connectedUser) => {
 
     const initialSelectedChild = childrenList.length ? childrenList[0] : null;
 
-    await storeArray("children", childrenList);
-    await storeObject("selectedChild", initialSelectedChild);
+    return { childrenList, selectedChild: initialSelectedChild };
   } catch (error) {
     console.error("Error fetching parent data:", error);
+    return { childrenList: [], selectedChild: null };
   }
 };

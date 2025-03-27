@@ -8,7 +8,6 @@ import {
 } from "native-base";
 import React, { useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
-import { getObject } from "../api/apiClient";
 import { CalendarCard } from "../components";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import CalendarLocalConfig from "../utils/CalendarLocalConfig";
@@ -18,6 +17,7 @@ import { useThemeContext } from "../hooks/ThemeContext";
 import CalendarTheme from "../utils/CalendarTheme";
 import { EventsActionSheet } from "../components/EventsActionSheet";
 import { useAuth } from "../utils/AuthContext";
+import { getUserInfo } from "../utils/authLogic";
 
 CalendarLocalConfig;
 
@@ -36,7 +36,7 @@ const HomeScreen = () => {
   useEffect(() => {
     const fetchConnectedUser = async () => {
       try {
-        const connectedUser = await getObject("connectedUser");
+        const connectedUser = await getUserInfo();
         setUser(connectedUser);
         setUserId(connectedUser.id);
       } catch (error) {

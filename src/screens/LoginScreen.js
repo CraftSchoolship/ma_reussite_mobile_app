@@ -11,6 +11,7 @@ import config from "../../http/config";
 import microsoftIcon from "../../assets/images/microsoft.png";
 import * as WebBrowser from 'expo-web-browser';
 import { useAuth } from "../utils/AuthContext";
+import { getUserInfo } from "../utils/authLogic";
 
 const LoginScreen = () => {
   const [error, setError] = useState("");
@@ -27,31 +28,31 @@ const LoginScreen = () => {
   }
 
   const handleLogin = async (values) => {
-    setIsLoginLoading(true); // Set only login loading
+    setIsLoginLoading(true);
     setIsOAuthLoading(false);
     setError("");
-
-    const {
-      success,
-      connectedUser,
-      error: authError,
-    } = await authenticate(
+    const { success, error: authError } = await authenticate(
       authenticateWithUsernameAndPassword,
       values.email,
       values.password
     );
-
     if (success) {
-      navigation.navigate("DrawerNavigator", { connectedUser });
+      const connectedUser = await getUserInfo();
+      if (connectedUser) {
+        navigation.navigate("DrawerNavigator", { connectedUser });
+      } else {
+        setError("Failed to fetch user info.");
+      }
     } else {
       setError(authError);
     }
-    setIsLoginLoading(false); // Reset only login loading
+    setIsLoginLoading(false);
   };
+
   const handleOAuthLogin = async () => {
     console.log(provider.url);
      try {
-      setIsOAuthLoading(true); // Reset only OAuth loading
+      setIsOAuthLoading(true);
       const handleRedirect = async ({ url }) => {
 
           var l = new URL(url);
@@ -66,10 +67,14 @@ const LoginScreen = () => {
           const parsedUrl = new URL('http://example.com' + r); // the domain name does not matter here
           const token = parsedUrl.searchParams.get("access_token");
 
-          const { success, connectedUser } = await authenticate(authenticateWithOAuth, provider.id, token);
-          // we gonna potential authenticate to moodle and mattermost too here
+          const { success } = await authenticate(authenticateWithOAuth, provider.id, token);
           if (success) {
-            navigation.navigate("DrawerNavigator", { connectedUser });
+            const connectedUser = await getUserInfo();
+            if (connectedUser) {
+              navigation.navigate("DrawerNavigator", { connectedUser });
+            } else {
+              setError("Failed to fetch user info.");
+            }
           }
         }
         let result = await WebBrowser.openAuthSessionAsync(provider.url, new URL(provider.url).searchParams.get('redirect_uri'),);
@@ -85,7 +90,7 @@ const LoginScreen = () => {
           placement: "top",
         });
       } finally {
-        setIsOAuthLoading(false); // Reset only OAuth loading
+        setIsOAuthLoading(false);
       }
   };
 

@@ -19,7 +19,7 @@ import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { Ionicons } from "@expo/vector-icons";
 import { browse } from "../../http/http";
-import { getObject } from "../api/apiClient";
+import { getUserInfo } from "../utils/authLogic";
 import { useAuth } from "../utils/AuthContext";
 
 const NoteScreen = () => {
@@ -45,7 +45,7 @@ const NoteScreen = () => {
     const fetchGrades = async () => {
       setLoading(true);
       try {
-        const userId = await getObject("connectedUser");
+        const userId = await getUserInfo();
         if (userId) {
           const gradeData = await browse("craft.grade", [
             "id",

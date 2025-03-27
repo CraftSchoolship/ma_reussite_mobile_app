@@ -9,21 +9,39 @@ import {
 } from "react-native";
 import { Button, Text } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import RenderHtml from "react-native-render-html";
 import config from "../../http/config";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { WebView } from 'react-native-webview';
+import { useAuth } from "../utils/AuthContext";
 
-const PolicyScreen = ({ route, navigation }) => {
+const PolicyScreen = () => {
   const [policy, setPolicy] = useState(null);
   const [loading, setLoading] = useState(true);
-  const contentWidth = Dimensions.get("window").width;
-  const { PolicyIntegrityKey, skipLogin } = route.params;
-
   const insets = useSafeAreaInsets(); // Get the safe area insets
+  const navigation = useAuth()
 
   useEffect(() => {
-    fetchPolicy();
+    const fetchPolicy = async () => {
+      try {
+        // Check if the policy was already agreed to
+        const AgreedPrivacyPolicyIntegrityKey = await AsyncStorage.getItem("AgreedPrivacyPolicyIntegrityKey");
+
+        if (AgreedPrivacyPolicyIntegrityKey === config.privacy.sha256) {
+          navigation.navigate("DrawerNavigator");
+          return;
+        }
+
+        // Fetch the privacy policy
+        setPolicy(config.privacy.url);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching policy:", error);
+      }
+    };
+
+    if (!policy)
+      fetchPolicy();
   }, []);
 
   const fetchPolicy = async () => {
@@ -45,18 +63,13 @@ const PolicyScreen = ({ route, navigation }) => {
     try {
       await AsyncStorage.setItem(
         "AgreedPrivacyPolicyIntegrityKey",
-        PolicyIntegrityKey
+        config.privacy.sha256
       );
       // const storedPolicy = await AsyncStorage.getItem(
       //   "AgreedPrivacyPolicyIntegrityKey"
       // );
       // console.log("Stored Policy Agreement:", storedPolicy);
-
-      if (skipLogin) {
-        navigation.navigate("DrawerNavigator");
-      } else {
-        navigation.navigate("Login");
-      }
+      navigation.navigate("DrawerNavigator");
     } catch (error) {
       console.error("Error saving policy agreement:", error);
     }
@@ -67,16 +80,13 @@ const PolicyScreen = ({ route, navigation }) => {
   }
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <ScrollView contentContainerStyle={styles.scrollView}>
         {policy ? (
-          <RenderHtml contentWidth={contentWidth} source={{ html: policy }} />
+         <WebView style={styles.container} source={{ uri: policy }} javaScriptEnabled={false} />
         ) : (
           <View>
             <Text>Failed to load policy.</Text>
           </View>
         )}
-      </ScrollView>
-
       <View style={styles.buttonContainer}>
         <Button
           onPress={agreePolicy}

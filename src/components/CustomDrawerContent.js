@@ -20,6 +20,7 @@ import { getObject, storeObject } from "../api/apiClient";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { logout } from "../../http/http";
+import { loadParentData } from "../utils/ParentLogic";
 
 const CustomDrawerContent = ({ connectedUser, ...props }) => {
   const [childrenList, setChildrenList] = useState([]);
@@ -30,20 +31,17 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
     const fetchUserData = async () => {
       try {
         if (connectedUser.role === "parent") {
-          const children = await getObject("children");
-          if (children) setChildrenList(children);
-
-          const storedChild = await getObject("selectedChild");
-          if (storedChild) setSelectedChild(storedChild);
+          const { childrenList, selectedChild } = await loadParentData(connectedUser);
+          setChildrenList(childrenList);
+          setSelectedChild(selectedChild);
         }
       } catch (error) {
         console.error("Error fetching connectedUser data:", error);
       }
     };
 
-    if (childrenList?.length < 1) fetchUserData();
-  }, [childrenList]);
-
+    if (childrenList.length < 1) fetchUserData();
+  }, [connectedUser]);
   return (
     <>
       <DrawerContentScrollView {...props}>

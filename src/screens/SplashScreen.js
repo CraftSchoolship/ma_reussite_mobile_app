@@ -1,15 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import { View, Animated, StyleSheet } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import config from "../../http/config";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
-
 import axios from "axios";
-import { decode } from "../../http/password_encoding";
-import { useAuth } from "../utils/AuthContext";
+import { useNavigation } from "@react-navigation/native";
 
 export default function SplashScreen() {
-  const navigation = useAuth();
+  const navigation = useNavigation();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -20,46 +17,19 @@ export default function SplashScreen() {
       try {
         const response = await axios.get(config.baseUrl + "/mobile/app/info");
         if ("error" in response.data) throw response.data.error;
-        const PolicyIntegrityKey = response.data.privacy.sha256;
 
-        // Retrieve stored policy agreement key
-        const AgreedPrivacyPolicyIntegrityKey = await AsyncStorage.getItem(
-          "AgreedPrivacyPolicyIntegrityKey"
-        );
+        //Update the config
+        let workspace = response.data.workspace;
+        workspace.erp.database = atob(workspace.erp.database);
+        config.workspace = workspace;
+        config.privacy = response.data.privacy;
+        // config.auth = response.data.auth;
 
-        // Retrieve token and expiration from storage
-        const token = await AsyncStorage.getItem("erp_token");
-        const tokenExpiration = await AsyncStorage.getItem(
-          "erp_token_expiration"
-        );
-        const user_id = await AsyncStorage.getItem("user_id");
+        navigation.navigate("Policy");
+      }
 
-        // Check token validity
-        const isTokenValid =
-          token &&
-          tokenExpiration &&
-          new Date().getTime() / 1000 < parseInt(tokenExpiration, 10);
-
-        if (user_id) {
-          config.uid = parseInt(user_id);
-          config.pwd = decode(await AsyncStorage.getItem("password"));
-        }
-
-        if (AgreedPrivacyPolicyIntegrityKey === PolicyIntegrityKey) {
-          if (isTokenValid) {
-            navigation.navigate("DrawerNavigator");
-          } else {
-            navigation.navigate("Login");
-          }
-        } else {
-          navigation.navigate("Policy", {
-            PolicyIntegrityKey,
-            skipLogin: user_id,
-          });
-        }
-      } catch (error) {
+      catch (error) {
         console.error("Error during splash screen navigation:", error);
-        navigation.navigate("Login");
       }
     };
 

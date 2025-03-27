@@ -2,7 +2,7 @@ const config = {
   baseUrl: "https://ma-reussite.com",
   database: "bitnami_odoo",
   passwordEncodingKey: "craftschoolship",
-  debug: false,
+  debug: true,
   auth: {
     providers: [
       {
@@ -12,11 +12,11 @@ const config = {
       },
     ],
   },
-  workspace: {
-    erp: {
-      url: "https://ma-reussite.com",
-      database: "bitnami_odoo",
-    },
-  },
+  // workspace: {
+  //   erp: {
+  //     url: "https://ma-reussite.com",
+  //     database: "bitnami_odoo",
+  //   },
+  // },
 };
 export default config;
