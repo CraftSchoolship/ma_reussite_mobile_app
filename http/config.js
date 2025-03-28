@@ -12,11 +12,10 @@ const config = {
       },
     ],
   },
-  // workspace: {
-  //   erp: {
-  //     url: "https://ma-reussite.com",
-  //     database: "bitnami_odoo",
-  //   },
-  // },
+  workspace: {
+    erp: {
+      url: "https://ma-reussite.com",
+    },
+  },
 };
 export default config;

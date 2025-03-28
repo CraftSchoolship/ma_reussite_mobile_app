@@ -77,7 +77,6 @@ export const TabNavigator = () => {
   };
 
   return (
-    <AppProvider>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: () => {
@@ -143,6 +142,5 @@ export const TabNavigator = () => {
           }}
         />
     </Tab.Navigator>
-  </AppProvider>
   );
 };

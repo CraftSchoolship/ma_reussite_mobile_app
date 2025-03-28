@@ -6,13 +6,43 @@ import { decode as atob } from "base-64"; // Importing base-64 decode
 
 // Get the token
 export const getToken = async () => {
-  const exp = await AsyncStorage.getItem("erp_token_expiration");
-  const token = await AsyncStorage.getItem("erp_token");
+  if (!config.workspace.erp.token) {
+    config.workspace.erp.token = await AsyncStorage.getItem("erp_token");
 
-  // If the token is expired, you might want to re-login or refresh it
+    if (!config.workspace.erp.token)
+      return undefined;
+
+    let base64 = config.workspace.erp.token.split('.')[1];
+    let payload = JSON.parse(atob(base64 + "=".repeat((4 - (base64.length % 4)) % 4 )));
+    config.workspace.erp.uid = payload['sub'];
+    config.workspace.erp.tokenExpirationTimestamp = payload['exp'];
+  }
+
+  const token = config.workspace.erp.token;
+  const expirationDate = new Date(parseInt(config.workspace.erp.tokenExpirationTimestamp, 10) * 1000);
+  const currentDate = new Date();
+
+  const timeDifference = expirationDate - currentDate;
+  const tenMinutesInMilliseconds = 10 * 60 * 1000;
+
+  if (currentDate > expirationDate) {
+    config.workspace.erp.token = undefined
+    config.workspace.erp.uid = undefined
+    await AsyncStorage.removeItem("erp_token");
+    return undefined
+  }
+
+  if (timeDifference < tenMinutesInMilliseconds) {
+    let success = await authenticateWithToken(token);
+    config.workspace.erp.token = undefined; // required to force refresh token, do NOT delete this line
+    if (success)
+      return await getToken();
+    else
+      return undefined
+  }
+
   return token;
 };
-
 // Authentication function
 export const authenticateWithUsernameAndPassword = async (username, password) =>
   authenticate("credentials", username, password, "", 0);
@@ -76,7 +106,9 @@ export const authenticate = async (
         "erp_token_expiration",
         payload.exp.toString()
       );
+
       await AsyncStorage.setItem("erp_user_id", payload.sub.toString());
+      //Check on it later
       await AsyncStorage.setItem("erp_username", username);
       await AsyncStorage.setItem("erp_password", encode(password));
 

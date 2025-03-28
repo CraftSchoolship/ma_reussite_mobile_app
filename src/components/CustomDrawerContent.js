@@ -21,10 +21,11 @@ import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { logout } from "../../http/http";
 import { loadParentData } from "../utils/ParentLogic";
+import { useAppContext } from "../hooks/AppProvider";
 
 const CustomDrawerContent = ({ connectedUser, ...props }) => {
   const [childrenList, setChildrenList] = useState([]);
-  const [selectedChild, setSelectedChild] = useState(null);
+  const {selectedChild, setSelectedChild} = useAppContext();
   const { isDarkMode, toggleDarkMode } = useThemeContext();
 
   useEffect(() => {

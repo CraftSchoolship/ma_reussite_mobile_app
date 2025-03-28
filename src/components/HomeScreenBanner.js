@@ -7,7 +7,6 @@ import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { useAuth } from "../utils/AuthContext";
 import { getUserInfo } from "../utils/authLogic";
-import { loadParentData } from "../utils/ParentLogic";
 
 
 const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
@@ -22,14 +21,10 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
     const fetchUser = async () => {
       const user = await getUserInfo();
       setConnectedUser(user);
-      if (user?.role === "parent") {
-        const { selectedChild: storedSelectedChild } = await loadParentData(user);
-        setSelectedChild(storedSelectedChild);
-      }
       setLoading(false);
     };
     fetchUser();
-  }, [setSelectedChild]);
+  }, []);
 
   useEffect(() => {
     if (selectedChild?.name) {
