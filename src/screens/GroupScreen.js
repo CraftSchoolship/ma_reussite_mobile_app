@@ -25,7 +25,6 @@ const GroupScreen = ({ navigation }) => {
       setLoading(true);
       try {
         const userId = await getUserInfo();
-        console.log("User ID:", userId);
         if (userId) {
           const groupsData = await browse(
             "craft.class",

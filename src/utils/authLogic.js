@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { read } from "../../http/http";
-import { storeObject } from "../api/apiClient";
 import config from "../../http/config";
 
 const wrapProfileImageBase64 = (profileImage) => {
@@ -14,7 +13,7 @@ const wrapProfileImageBase64 = (profileImage) => {
     return `data:image/jpeg;base64,${profileImage}`;
 
   if (profileImage.startsWith("PHN2Zy") || profileImage.startsWith("PD94bWwg"))
-    return `data:image/svg+xml;base64,${profileImage}`;
+    return `${config.baseUrl}/base/static/img/avatar.png`;
 
   return `${config.baseUrl}/base/static/img/avatar.png`;
 };

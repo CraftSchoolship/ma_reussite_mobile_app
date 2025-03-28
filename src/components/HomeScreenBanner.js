@@ -28,7 +28,6 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
 
   useEffect(() => {
     if (selectedChild?.name) {
-      console.log("Selected child name updated:", selectedChild.name)
     }
   }, [selectedChild]);
 

@@ -2,7 +2,6 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import React, { useEffect, useState } from "react";
 import { TabNavigator } from "./TabNavigator";
 import CustomDrawerContent from "../components/CustomDrawerContent";
-import { getObject } from "../api/apiClient";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Icon, IconButton } from "native-base";
 import { useThemeContext } from "../hooks/ThemeContext";

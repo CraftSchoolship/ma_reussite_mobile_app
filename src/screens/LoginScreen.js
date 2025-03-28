@@ -21,7 +21,6 @@ const LoginScreen = () => {
   const [isLoginLoading, setIsLoginLoading] = useState(false);
   const [isOAuthLoading, setIsOAuthLoading] = useState(false);
 
-  console.log(config.debug);
   const provider=config.auth.providers[0];
   if (config.debug) {
     provider.url = provider.url.replace("mareussite%3A%2F%2F", "exp%3A%2F%2F127.0.0.1%3A8081%2F--%2F");
@@ -50,7 +49,6 @@ const LoginScreen = () => {
   };
 
   const handleOAuthLogin = async () => {
-    console.log(provider.url);
      try {
       setIsOAuthLoading(true);
       const handleRedirect = async ({ url }) => {

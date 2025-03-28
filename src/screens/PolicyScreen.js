@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import {
-  ScrollView,
   StyleSheet,
   ActivityIndicator,
-  Dimensions,
   View,
-  TouchableOpacity,
 } from "react-native";
 import { Button, Text } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";

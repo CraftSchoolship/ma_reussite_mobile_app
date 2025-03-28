@@ -36,8 +36,6 @@ export const ProfileUserEdit = ({ isDarkMode, connectedUser }) => {
         street: values.address,
       });
 
-      console.log("API Response:", response);
-
       if (response) {
         const updatedUser = {
           ...connectedUser,

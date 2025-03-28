@@ -1,8 +1,6 @@
 import {
-  Actionsheet,
   Box,
   ScrollView,
-  Text,
   VStack,
   useDisclose,
 } from "native-base";

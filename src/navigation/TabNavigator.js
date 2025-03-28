@@ -10,7 +10,6 @@ import {
   PaymentScreen,
 } from "../screens";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
-import AppProvider from "../hooks/AppProvider";
 import IconHome from "../../assets/images/home.png";
 import IconPayment from "../../assets/images/payment.png";
 import IconNotifications from "../../assets/images/notifications.png";

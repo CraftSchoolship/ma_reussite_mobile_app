@@ -16,7 +16,7 @@ import {
   VStack,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import { getObject, storeObject } from "../api/apiClient";
+import { storeObject } from "../api/apiClient";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { logout } from "../../http/http";
