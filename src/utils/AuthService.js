@@ -27,7 +27,6 @@ export const getUserInfo = async () => {
     if (profileImage.startsWith("PHN2Zy") || profileImage.startsWith("PD94bWwg"))
       return config.workspace.erp.url + "/base/static/img/avatar.png";
 
-    console.log("Unknown image type");
     return config.workspace.erp.url + "/base/static/img/avatar.png";
   };
 

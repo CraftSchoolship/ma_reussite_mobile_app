@@ -24,22 +24,34 @@ const GroupScreen = ({ navigation }) => {
     const fetchGroups = async () => {
       setLoading(true);
       try {
-        const userId = await getUserInfo();
-        if (userId) {
-          const groupsData = await browse(
-            "craft.class",
-            [
-              "name",
-              "student_ids",
-              "level_id",
-              "hourly_volume_progress",
-              "subject_id",
-            ],
-            []
-          );
+        const user = await getUserInfo();
 
-          setGroups(groupsData);
-        }
+        if (!user )
+          return;
+
+        const role = user.craft_role;
+
+        const lines = await browse(
+          "craft.group.student.line",
+          ["class_id"],
+          {
+            student_id: user.craft_student_id[0],
+          }
+        );
+
+        const groupsData = await browse(
+          "craft.class",
+          [
+            "name",
+            "student_ids",
+            "level_id",
+            "hourly_volume_progress",
+            "subject_id",
+          ],
+          { id_in : lines.map((line) => line.class_id[0]).join(",") }
+        );
+        setGroups(groupsData);
+
       } catch (error) {
         console.error("Error fetching groups:", error);
       } finally {
