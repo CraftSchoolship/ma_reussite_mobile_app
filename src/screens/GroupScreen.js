@@ -20,48 +20,110 @@ const GroupScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const { isDarkMode } = useThemeContext();
 
-  useEffect(() => {
-    const fetchGroups = async () => {
-      setLoading(true);
-      try {
-        const user = await getUserInfo();
+    useEffect(() => {
+      const fetchGroups = async () => {
+        setLoading(true);
+        try {
+          const user = await getUserInfo();
 
-        if (!user )
-          return;
+          if (!user )
+            return;
 
-        const role = user.craft_role;
+          const role = user.craft_role;
+          let groupsData = [];
 
-        const lines = await browse(
-          "craft.group.student.line",
-          ["class_id"],
-          {
-            student_id: user.craft_student_id[0],
-          }
-        );
+          if (role =="student"){
+            const lines = await browse(
+            "craft.group.student.line",
+            ["class_id"],
+            {
+              student_id: user.craft_student_id[0],
+            }
+          );
 
-        const groupsData = await browse(
-          "craft.class",
-          [
-            "name",
-            "student_ids",
-            "level_id",
-            "hourly_volume_progress",
-            "subject_id",
-          ],
-          { id_in : lines.map((line) => line.class_id[0]).join(",") }
-        );
-        setGroups(groupsData);
+          groupsData = await browse(
+            "craft.class",
+            [
+              "name",
+              "student_ids",
+              "level_id",
+              "hourly_volume_progress",
+              "subject_id",
+            ],
+            { id_in : lines.map((line) => line.class_id[0]).join(",") }
+          );
+          } else if (role == "teacher") {
+            const teacherData = await browse(
+              "craft.teacher",
+              ["id"],
+              { user_id: user.id }
+            );
 
-      } catch (error) {
-        console.error("Error fetching groups:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+            const teacherId = teacherData[0].id;
 
-    fetchGroups();
-  }, []);
+            groupsData = await browse(
+              "craft.class",
+              [
+                "name",
+                "student_ids",
+                "level_id",
+                "hourly_volume_progress",
+                "subject_id",
+                "teacher_id"
+              ],
+              { teacher_id: teacherId }
+            );
+            }else if (role === "parent") {
+              // Get parent record with children
+              const parentData = await browse(
+                "craft.parent",
+                ["id"],
+                { user_id: user.id }
+              );
 
+              if (!parentData || parentData.length === 0) {
+                return;
+              }
+              // Get children records
+              const childLines = await browse(
+                "craft.parent.child.line",
+                ["child_id"],
+                { parent_id: parentData[0].id }
+              );
+
+              const allClassLines = await browse(
+                "craft.group.student.line",
+                ["class_id"],
+                { student_id_in:  childLines.map(line => line.child_id[0]).join(",") }
+              );
+
+              groupsData = await browse(
+                "craft.class",
+                [
+                "name",
+                "student_ids",
+                "level_id",
+                "hourly_volume_progress",
+                "subject_id",
+                "teacher_id"
+                ],
+                { id_in: allClassLines.map(line => line.class_id[0]).join(",") }
+              );
+            }
+            else {
+              console.error("Unknown or missing role:", role);
+              return;
+            }
+          setGroups(groupsData);
+
+        } catch (error) {
+          console.error("Error fetching groups:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+          fetchGroups();
+      }, []);
   // Fetch students when a group is selected
   const handleGroupPress = async (group) => {
     try {

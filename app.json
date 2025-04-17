@@ -47,6 +47,12 @@
           "cameraPermission": "This app uses the camera to take profile pictures and to scan qr codes on student cards.",
           "recordAudioAndroid": false
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png"
+        }
       ]
     ]
   }

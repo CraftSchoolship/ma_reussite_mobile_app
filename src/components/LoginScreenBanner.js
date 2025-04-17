@@ -12,7 +12,7 @@ function LoginScreenBanner() {
     <>
       <Box
         style={{
-          paddingTop: insets.top,
+          paddingTop: insets.top ,
           backgroundColor: isDarkMode
             ? MA_REUSSITE_CUSTOM_COLORS.Black
             : MA_REUSSITE_CUSTOM_COLORS.White,
