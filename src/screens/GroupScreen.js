@@ -3,7 +3,6 @@ import {
   Center,
   HStack,
   ScrollView,
-  Spinner,
   Text,
   VStack,
 } from "native-base";
@@ -14,6 +13,8 @@ import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { TouchableOpacity } from "react-native";
 import { browse } from "../../http/http";
 import { getUserInfo } from "../utils/authLogic";
+import {ActivityIndicator} from 'react-native';
+
 
 const GroupScreen = ({ navigation }) => {
   const [groups, setGroups] = useState([]);
@@ -165,10 +166,10 @@ const GroupScreen = ({ navigation }) => {
             {groups.length > 0 ? groups[0].level_id[1] : "Pas de niveau"}
           </Text>
         </Box>
-        {loading ? (
-          <Center h={"70%"} w={"90%"} mx={"auto"}>
-            <Spinner size="xl" />
-          </Center>
+          {loading ? (
+            <Center h={"70%"} w={"90%"} mx={"auto"}>
+             <ActivityIndicator size="large" color="#0000ff" />
+            </Center>
         ) : (
           <ScrollView
             h={"80%"}

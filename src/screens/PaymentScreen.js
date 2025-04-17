@@ -356,6 +356,7 @@ import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { browse } from "../../http/http";
 import { getUserInfo } from "../utils/authLogic";
 import { useAuth } from "../utils/AuthContext";
+import { ActivityIndicator } from "react-native";
 
 const PaymentScreen = () => {
   const navigation = useAuth();
@@ -512,7 +513,7 @@ const PaymentScreen = () => {
 
         {loading ? (
           <Center h="70%" w="90%" mx="auto">
-            <Spinner size="xl" />
+             <ActivityIndicator size="large" color="#0000ff" />
           </Center>
         ) : (
           <ScrollView

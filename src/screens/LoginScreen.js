@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Center, Text, View, VStack, HStack, Spinner, Divider, Toast } from "native-base";
+import { Box, Center, Text, View, VStack, HStack, Divider, Toast } from "native-base";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { Formik } from "formik";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";

@@ -6,7 +6,6 @@ import {
   Box,
   Center,
   HStack,
-  Spinner,
   Text,
   FlatList,
   Input,
@@ -21,6 +20,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { browse } from "../../http/http";
 import { getUserInfo } from "../utils/authLogic";
 import { useAuth } from "../utils/AuthContext";
+import { ActivityIndicator } from "react-native";
 
 const NoteScreen = () => {
   const navigation = useAuth();
@@ -73,7 +73,7 @@ const NoteScreen = () => {
     <BackgroundWrapper navigation={navigation}>
       {loading ? (
         <Center h={"70%"} w={"90%"} mx={"auto"}>
-          <Spinner size="xl" />
+          <ActivityIndicator size="large" color="#0000ff" />
         </Center>
       ) : (
         <VStack
