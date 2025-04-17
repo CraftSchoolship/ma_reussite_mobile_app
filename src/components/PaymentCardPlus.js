@@ -1,83 +1,83 @@
 import { Box, HStack, Text, VStack } from "native-base";
-import React, { useEffect, useState } from "react";
-import { getObject } from "../api/apiClient";
+import React from "react";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
-const PaymentCardPlus = ({ paymentDetails, occupation = "student" }) => {
+const PaymentCardPlus = ({ isDarkMode, paymentDetails }) => {
   const statusPayment =
     paymentDetails.state !== "not_paid"
-      ? { color: "success.600", text: "Payé" }
-      : { color: "danger.600", text: "Non Payé" };
-
-  const [taxName, setTaxName] = useState();
-
-  useEffect(() => {
-    const getTaxes = async () => {
-      try {
-        const taxes = await getObject("taxes");
-        taxes.forEach((tax) => {
-          if (tax.id === paymentDetails.tax_ids[0]) {
-            setTaxName(tax.name);
-          }
-        });
-      } catch (error) {
-        console.error("Error fetching role:", error);
-      }
-    };
-    if (paymentDetails) getTaxes();
-  }, [paymentDetails]);
+      ? { color: MA_REUSSITE_CUSTOM_COLORS.Success, text: "Confirmé" }
+      : paymentDetails.deposit > 0
+      ? { color: MA_REUSSITE_CUSTOM_COLORS.Secondary, text: "En Attente" }
+      : { color: MA_REUSSITE_CUSTOM_COLORS.Danger, text: "En Attente" };
 
   return (
-    <Box borderRadius={10} overflow={"hidden"}>
+    <Box borderRadius={10} overflow={"hidden"} mx={3} my={1}>
       <HStack
         justifyContent="space-between"
         alignItems="center"
-        bg="white"
+        bg={
+          isDarkMode
+            ? MA_REUSSITE_CUSTOM_COLORS.Black
+            : MA_REUSSITE_CUSTOM_COLORS.White
+        }
         p={4}
       >
-        <VStack w={"100%"}>
-          <VStack w={"100%"}>
-            <Text color={"black"} mb={2} fontSize="lg" fontWeight="bold">
-              {paymentDetails.display_name}
+        <VStack w="100%">
+          <Text
+            color={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.White
+                : MA_REUSSITE_CUSTOM_COLORS.Black
+            }
+            fontSize="lg"
+          >
+            {`Ref : ${paymentDetails.name}`}
+          </Text>
+          <Text
+            color={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.White
+                : MA_REUSSITE_CUSTOM_COLORS.Black
+            }
+            fontSize="lg"
+          >
+            {`Montant : ${paymentDetails.amount} ${paymentDetails.currency_symbol}`}
+          </Text>
+          <Text
+            fontSize="lg"
+            color={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.LightTextCalendarCard
+                : MA_REUSSITE_CUSTOM_COLORS.Black
+            }
+          >
+            {`Date: ${paymentDetails.date}`}
+          </Text>
+          <HStack>
+            <Text
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+              mt={1}
+              fontSize="lg"
+            >
+              Status:
             </Text>
-            <Text color={"black"} mb={2}>
-              {`Référence : ${paymentDetails.name}`}
-            </Text>
-            <Text color={"black"} mb={2}>
-              {occupation === "student" ? "Etudiant(e) : " : "Professeur(e) : "}
-              {paymentDetails.user_id[1]}
-            </Text>
-            {/* {taxName && (
-              <>
-                <Text color={"black"} mb={2}>
-                  {`HT : ${paymentDetails.price_subtotal} ${paymentDetails.currency_sybol}`}
-                </Text>
-                <Text color={"black"} mb={2}>
-                  {`Taxe : ${taxName}`}
-                </Text>
-              </>
-            )} */}
-            <Text fontSize={"lg"} mb={2} color="black">
-              {occupation === "student" ? "Somme TTC : " : "Salaire : "}
-              {`${paymentDetails.amount} ${paymentDetails.currency_sybol}`}
-            </Text>
-            {paymentDetails.state === "not_paid" && (
-              <Text color={"black"} mb={2}>
-                {`Date d'échéance : ${paymentDetails.date.split("-")[2]} ${
-                  paymentDetails.product_id[1]
-                } ${paymentDetails.date.split("-")[0]}`}
-              </Text>
-            )}
             <Box
+              alignSelf="flex-end"
               bg={statusPayment.color}
               px={4}
-              mr={"auto"}
               py={0.5}
-              mb={2}
+              ml={2}
               rounded="xl"
             >
-              <Text color={"white"}>{statusPayment.text}</Text>
+              <Text color={MA_REUSSITE_CUSTOM_COLORS.White}>
+                {statusPayment.text}
+              </Text>
             </Box>
-          </VStack>
+          </HStack>
         </VStack>
       </HStack>
     </Box>

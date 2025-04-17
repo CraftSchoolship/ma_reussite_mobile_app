@@ -25,7 +25,6 @@ import { logout } from "../../http/http";
 const CustomDrawerContent = ({ connectedUser, ...props }) => {
   const [childrenList, setChildrenList] = useState([]);
   const [selectedChild, setSelectedChild] = useState(null);
-  // const [isDarkMode, setIsDarkMode] = useState(false);
   const navigation = useNavigation();
   const { isDarkMode, toggleDarkMode } = useThemeContext();
 
@@ -50,10 +49,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
   return (
     <>
       <DrawerContentScrollView {...props}>
-        <VStack
-          key={isDarkMode ? "dark" : "light"}
-          // bg={"black"}
-        >
+        <VStack key={isDarkMode ? "dark" : "light"}>
           <HStack px={4} py={2} justifyContent={"space-between"}>
             <Text
               color={
@@ -89,7 +85,6 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                 ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
                 : MA_REUSSITE_CUSTOM_COLORS.LightDivider
             }
-            // bgColor={"gray.800"}
             h={1}
             mb={2}
           />
@@ -243,8 +238,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                         size="sm"
                         mr={2}
                         source={{
-                          uri:
-                            `${child.image_256}` || null,
+                          uri: `${child.image_256}` || null,
                         }}
                         bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
                       >
@@ -268,11 +262,14 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                           }}
                         />
                       </Avatar>
-                      <Text color={
+                      <Text
+                        color={
                           isDarkMode
                             ? MA_REUSSITE_CUSTOM_COLORS.White
                             : MA_REUSSITE_CUSTOM_COLORS.Black
-                        } fontSize={"md"}>
+                        }
+                        fontSize={"md"}
+                      >
                         {child.contact_id[1]}
                       </Text>
                     </HStack>

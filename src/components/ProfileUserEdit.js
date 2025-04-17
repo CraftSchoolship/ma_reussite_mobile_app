@@ -10,7 +10,7 @@ import { update } from "../../http/http";
 
 export const ProfileUserEdit = ({ isDarkMode, connectedUser }) => {
   const toast = useToast();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [initialValues, setInitialValues] = useState({
     name: "",
     phone: "",
@@ -28,7 +28,7 @@ export const ProfileUserEdit = ({ isDarkMode, connectedUser }) => {
   }, [connectedUser]);
 
   const handleSubmit = async (values) => {
-    setIsLoading(false);
+    setIsLoading(true);
     try {
       const response = await update("res.users", connectedUser.id, {
         name: values.name,
@@ -72,7 +72,7 @@ export const ProfileUserEdit = ({ isDarkMode, connectedUser }) => {
         isClosable: true,
       });
     } finally {
-      setIsLoading(true);
+      setIsLoading(false);
     }
   };
 
@@ -101,6 +101,7 @@ export const ProfileUserEdit = ({ isDarkMode, connectedUser }) => {
               label="Adresse"
               name="address"
               keyboardType="default"
+              isDarkMode={isDarkMode}
             />
             <CustomButton
               title="Confirmer"

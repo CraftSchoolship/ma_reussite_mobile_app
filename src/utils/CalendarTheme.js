@@ -3,7 +3,7 @@ import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 const CalendarTheme = (isDarkMode) => ({
   selectedDayBackgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
   todayTextColor: MA_REUSSITE_CUSTOM_COLORS.White,
-  todayBackgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
+  todayBackgroundColor: MA_REUSSITE_CUSTOM_COLORS.Secondary,
   arrowColor: isDarkMode
     ? MA_REUSSITE_CUSTOM_COLORS.White
     : MA_REUSSITE_CUSTOM_COLORS.Primary,

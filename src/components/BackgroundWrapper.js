@@ -18,15 +18,23 @@ const BackgroundWrapper = ({
   return (
     <View
       style={{
-        paddingTop: insets.top,
+        paddingTop: insets.top + 20,
+        backgroundColor: isDarkMode
+          ? MA_REUSSITE_CUSTOM_COLORS.Black
+          : MA_REUSSITE_CUSTOM_COLORS.White,
       }}
     >
       {isDarkMode ? (
         <StatusBar barStyle={"light-content"} backgroundColor={"black"} />
       ) : (
-        <StatusBar barStyle={"dark-content"} />
+        <StatusBar barStyle={"dark-content"} backgroundColor={"white"} />
       )}
-      {isLoginScreen ? null : <HomeScreenBanner navigation={navigation} />}
+      {isLoginScreen ? null : (
+        <HomeScreenBanner
+          navigation={navigation}
+          selectedChild={selectedChild}
+        />
+      )}
       <ImageBackground
         style={{
           minHeight: "100%",

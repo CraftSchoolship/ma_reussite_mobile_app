@@ -1,148 +1,271 @@
-// import { useNavigation, useRoute } from "@react-navigation/native";
-// import { Box, Center, HStack, Spinner, Text } from "native-base";
-// import React, { useEffect, useState } from "react";
-// import { BackgroundWrapper, CircularProgress } from "../../components";
-// import config from "../../api/config";
-// import { jsonrpcRequest } from "../../api/apiClient";
-
-// const NoteScreen = () => {
-//   const route = useRoute();
-//   const navigation = useNavigation();
-//   const [uid, setUid] = useState(null);
-//   const [password, setPassword] = useState(null);
-//   const [self, setSelfId] = useState(null);
-//   const [note, setNote] = useState();
-//   const [course, setCourse] = useState();
-//   const [institute, setInstitute] = useState();
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const connectedUser = route?.params;
-//     const { uid, email, password, self } = connectedUser;
-//     setUid(uid);
-//     setPassword(password);
-//     setSelfId(self[0]);
-//   }, [route]);
-
-//   useEffect(() => {
-//     const fetchNote = async () => {
-//       try {
-//         const noteData = await jsonrpcRequest(
-//           uid,
-//           config.password,
-//           config.model.craftStudent,
-//           // [[["partner_id", "=", self]]],
-//           [],
-//           // ["prev_result", "prev_course_id", "prev_institute_id"]
-//           []
-//         );
-//         setNote(noteData[0].prev_result);
-//         setCourse(noteData[0].prev_course_id);
-//         setInstitute(noteData[0].prev_institute_id);
-//       } catch (error) {
-//         console.error("Error fetching notes:", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//     if (uid && password && self) {
-//       fetchNote();
-//     }
-//   }, [uid, password, self]);
-
-//   return (
-//     <Box flex={1} bg={"white"}>
-//       <BackgroundWrapper navigation={navigation}>
-//         {loading ? (
-//           <Center h={"70%"} w={"90%"} mx={"auto"}>
-//             <Spinner size="xl" />
-//           </Center>
-//         ) : (
-//           <>
-//             <HStack p={4} alignItems={"baseline"}>
-//               <Text color={"black"} fontSize={14}>
-//                 Institut:
-//               </Text>
-//               <Text color={"black"} fontSize={18} fontWeight={"bold"}>
-//                 {institute}
-//               </Text>
-//             </HStack>
-//             <HStack p={4} alignItems={"baseline"}>
-//               <Text color={"black"} fontSize={14}>
-//                 Filière:
-//               </Text>
-//               <Text color={"black"} fontSize={18} fontWeight={"bold"}>
-//                 {course}
-//               </Text>
-//             </HStack>
-//             <Box justifyContent={"center"} alignItems={"center"}>
-//               {note ? (
-//                 <>
-//                   <Text color={"black"} fontSize={18} fontWeight={"bold"} p={4}>
-//                     Moyenne Annuelle :
-//                   </Text>
-//                   <CircularProgress
-//                     progress={note}
-//                     width={20}
-//                     size={150}
-//                     note={true}
-//                   />
-//                 </>
-//               ) : (
-//                 <Box>
-//                   <Text
-//                     mt={"30%"}
-//                     color={"black"}
-//                     textAlign={"center"}
-//                     fontSize={"2xl"}
-//                     fontWeight={"bold"}
-//                   >
-//                     Pas de note
-//                   </Text>
-//                 </Box>
-//               )}
-//             </Box>
-//           </>
-//         )}
-//       </BackgroundWrapper>
-//     </Box>
-//   );
-// };
-
-// export default NoteScreen;
-
 /* -------------------------------------------------------------------------- */
 /*                                  VERSION_1                                 */
 /* -------------------------------------------------------------------------- */
-import { useNavigation } from "@react-navigation/native";
-import { Box, Center, Image } from "native-base";
-import React from "react";
-import { BackgroundWrapper } from "../components";
+
+import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  Box,
+  Center,
+  HStack,
+  Spinner,
+  Text,
+  FlatList,
+  Input,
+  Icon,
+  VStack,
+} from "native-base";
+import React, { useEffect, useState } from "react";
+import { BackgroundWrapper, CircularProgress } from "../components";
+import { useThemeContext } from "../hooks/ThemeContext";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { Ionicons } from "@expo/vector-icons";
+import { browse } from "../../http/http";
+import { getObject } from "../api/apiClient";
 
 const NoteScreen = () => {
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
+  const { isDarkMode } = useThemeContext();
+  const [grades, setGrades] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    if (query.trim() === "") {
+      setFilteredData(grades);
+    } else {
+      const filtered = grades.filter((item) =>
+        item.subject_id[1].toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredData(filtered);
+    }
+  };
+  useEffect(() => {
+    const fetchGrades = async () => {
+      setLoading(true);
+      try {
+        const userId = await getObject("connectedUser");
+        if (userId) {
+          const gradeData = await browse("craft.grade", [
+            "id",
+            "subject_id",
+            "criteria_id",
+            "value",
+            "level_id",
+            "class_id",
+          ]);
+
+          setGrades(gradeData);
+          setFilteredData(gradeData); // Initialize filtered data
+        }
+      } catch (error) {
+        console.error("Error fetching grades:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGrades();
+  }, []);
 
   return (
-    <Box flex={1} bg="white">
-      <BackgroundWrapper navigation={navigation}>
-        <Center
-          minH={"80%"}
-          //  bgColor={"amber.400"}
-        >
-          <Image
-            // bgColor={"blue.300"}
-            size="sm"
-            w={"90%"}
-            resizeMode="contain"
-            minH={"70%"}
-            p={2}
-            // m={"auto"}
-            source={require("../../assets/images/coming_soon.png")}
-            alt="Alternate Text"
-          />
+    <BackgroundWrapper navigation={navigation}>
+      {loading ? (
+        <Center h={"70%"} w={"90%"} mx={"auto"}>
+          <Spinner size="xl" />
         </Center>
-      </BackgroundWrapper>
-    </Box>
+      ) : (
+        <VStack
+          // background={"amber.300"}
+          flex={0.8}
+          borderTopWidth={1}
+          borderColor={
+            isDarkMode
+              ? MA_REUSSITE_CUSTOM_COLORS.Black
+              : MA_REUSSITE_CUSTOM_COLORS.LightDivider
+          }
+          space={4}
+        >
+          <VStack
+            borderBottomRadius={"2xl"}
+            shadow={1}
+            bg={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.Black
+                : MA_REUSSITE_CUSTOM_COLORS.White
+            }
+            p={4}
+          >
+            <HStack
+              w={"full"}
+              // bg={"amber.300"}
+              space={2}
+              alignItems="center"
+              mb={4}
+            >
+              <Text
+                color={
+                  isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.White
+                    : MA_REUSSITE_CUSTOM_COLORS.Black
+                }
+                fontSize={18}
+                fontWeight={"bold"}
+              >
+                {grades.length > 0 ? grades[0].class_id[1] : "Pas de niveau"}
+              </Text>
+
+              <Input
+                flex={0.9}
+                ml={"auto"}
+                placeholder="Filtrer les matières"
+                placeholderTextColor={
+                  isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.White
+                    : MA_REUSSITE_CUSTOM_COLORS.Black
+                }
+                value={searchQuery}
+                onChangeText={handleSearch}
+                color={
+                  isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.White
+                    : MA_REUSSITE_CUSTOM_COLORS.Black
+                }
+                borderColor={
+                  isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.White
+                    : MA_REUSSITE_CUSTOM_COLORS.Black
+                }
+                borderRadius="sm"
+                h={10}
+                bg={
+                  isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.Black
+                    : MA_REUSSITE_CUSTOM_COLORS.White
+                }
+                _focus={{
+                  borderColor: isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.White
+                    : MA_REUSSITE_CUSTOM_COLORS.Black,
+                  backgroundColor: isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.Black
+                    : MA_REUSSITE_CUSTOM_COLORS.White,
+                  color: isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.White
+                    : MA_REUSSITE_CUSTOM_COLORS.Black,
+                  cursorColor: isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.White
+                    : MA_REUSSITE_CUSTOM_COLORS.Black,
+                }}
+                size={"lg"}
+                selectionHandleColor={
+                  isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.White
+                    : MA_REUSSITE_CUSTOM_COLORS.Black
+                }
+                InputRightElement={
+                  <Icon
+                    as={<Ionicons name="search" />}
+                    size={5}
+                    mr={2}
+                    bg={
+                      isDarkMode
+                        ? MA_REUSSITE_CUSTOM_COLORS.Black
+                        : MA_REUSSITE_CUSTOM_COLORS.White
+                    }
+                    color={
+                      isDarkMode
+                        ? MA_REUSSITE_CUSTOM_COLORS.White
+                        : MA_REUSSITE_CUSTOM_COLORS.Black
+                    }
+                  />
+                }
+              />
+            </HStack>
+            <Text
+              color={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.White
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
+              }
+              fontSize={18}
+              fontWeight={"bold"}
+              textAlign={"center"}
+            >
+              Notes de l'étudiant
+            </Text>
+          </VStack>
+
+          <FlatList
+            flex={1}
+            data={filteredData}
+            keyExtractor={(item) => item.id.toString()}
+            ListEmptyComponent={
+              <Center flex={1} mt={10}>
+                <Text
+                  color={
+                    isDarkMode
+                      ? MA_REUSSITE_CUSTOM_COLORS.White
+                      : MA_REUSSITE_CUSTOM_COLORS.Black
+                  }
+                  fontSize={16}
+                  fontWeight={"bold"}
+                >
+                  Aucun résultat trouvé
+                </Text>
+              </Center>
+            }
+            renderItem={({ item }) => (
+              <Box
+                borderRadius={10}
+                shadow={2}
+                p={4}
+                my={2}
+                mx={4}
+                bg={
+                  isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.Black
+                    : MA_REUSSITE_CUSTOM_COLORS.White
+                }
+              >
+                <HStack alignItems="center">
+                  <CircularProgress
+                    progress={item.value}
+                    note={true}
+                    isDarkMode={isDarkMode}
+                  />
+                  <Box ml={4} flex={1}>
+                    <Text
+                      color={
+                        isDarkMode
+                          ? MA_REUSSITE_CUSTOM_COLORS.White
+                          : MA_REUSSITE_CUSTOM_COLORS.Black
+                      }
+                      fontSize={16}
+                      fontWeight={"bold"}
+                    >
+                      {item.subject_id[1]}
+                    </Text>
+                    <Text
+                      color={
+                        isDarkMode
+                          ? MA_REUSSITE_CUSTOM_COLORS.White
+                          : MA_REUSSITE_CUSTOM_COLORS.Black
+                      }
+                      fontSize={14}
+                      ml={4}
+                    >
+                      {item.criteria_id[1]}
+                    </Text>
+                  </Box>
+                </HStack>
+              </Box>
+            )}
+          />
+        </VStack>
+      )}
+    </BackgroundWrapper>
   );
 };
 

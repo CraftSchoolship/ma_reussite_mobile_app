@@ -1,100 +1,109 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList } from "react-native";
 import { Box, Text, HStack, VStack } from "native-base";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { browse } from "../../http/http";
 
-const attendanceData = [
-  {
-    id: "1",
-    date: "03/06/2024",
-    duration: "120 minutes",
-    status: "Présent(e)",
-  },
-  {
-    id: "2",
-    date: "30/05/2024",
-    duration: "120 minutes",
-    status: "Présent(e)",
-  },
-  { id: "3", date: "27/05/2024", duration: "120 minutes", status: "Absent(e)" },
-  {
-    id: "4",
-    date: "23/05/2024",
-    duration: "120 minutes",
-    status: "Présent(e)",
-  },
-  {
-    id: "5",
-    date: "20/05/2024",
-    duration: "120 minutes",
-    status: "Présent(e)",
-  },
-  { id: "6", date: "16/05/2024", duration: "120 minutes", status: "Absent(e)" },
-  {
-    id: "7",
-    date: "13/05/2024",
-    duration: "120 minutes",
-    status: "Présent(e)",
-  },
-  { id: "8", date: "09/05/2024", duration: "120 minutes", status: "Absent(e)" },
-  {
-    id: "9",
-    date: "06/05/2024",
-    duration: "120 minutes",
-    status: "Présent(e)",
-  },
-];
+const AttendanceTable = ({ isDarkMode, subjectId, isFutureSessions }) => {
+  const [attendanceData, setAttendanceData] = useState([]);
 
-const renderItem = ({ item, index, isDarkMode }) => (
-  <HStack
-    borderBottomWidth={1}
-    // borderLeftWidth={1}
-    // borderRightWidth={1}
-    borderBottomColor={isDarkMode ? "gray.700" : "gray.300"}
-    // borderLeftColor={/* isDarkMode ? "gray.700" : */ "gray.300"}
-    // borderRightColor={/* isDarkMode ? "gray.700" : */ "gray.300"}
-    padding={2}
-    backgroundColor={
-      index % 2 === 0
-        ? isDarkMode
-          ? "gray.800"
-          : "gray.100"
-        : isDarkMode
-        ? "gray.900"
-        : "white"
-    }
-  >
-    <VStack flex={1} alignItems="center">
-      <Text
-        color={
-          isDarkMode
-            ? MA_REUSSITE_CUSTOM_COLORS.White
-            : MA_REUSSITE_CUSTOM_COLORS.Black
-        }
-      >
-        {item.date}
-      </Text>
-    </VStack>
-    <VStack flex={1} alignItems="center">
-      <Text
-        color={
-          isDarkMode
-            ? MA_REUSSITE_CUSTOM_COLORS.White
-            : MA_REUSSITE_CUSTOM_COLORS.Black
-        }
-      >
-        {item.duration}
-      </Text>
-    </VStack>
-    <VStack flex={1} alignItems="center">
-      <Text color={item.status === "Présent(e)" ? "green.500" : "red.500"}>
-        {item.status}
-      </Text>
-    </VStack>
-  </HStack>
-);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const filters = isFutureSessions
+          ? {
+              subject_id: subjectId,
+              start_gt: new Date().toISOString(), // 'start' field with 'greater than or equal' filter
+            }
+          : { subject_id: subjectId };
 
-const AttendanceTable = ({ isDarkMode }) => {
+        const fields = isFutureSessions
+          ? ["start", "timing"]
+          : ["date", "timing", "present", "absent", "excused", "late"];
+
+        const model = isFutureSessions
+          ? "craft.session"
+          : "craft.attendance.line";
+
+        const data = await browse(model, fields, filters);
+
+        setAttendanceData(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [subjectId, isFutureSessions]);
+
+  const renderItem = ({ item, index }) => (
+    <HStack
+      borderBottomWidth={1}
+      borderBottomColor={isDarkMode ? "gray.700" : "gray.300"}
+      padding={2}
+      backgroundColor={
+        index % 2 === 0
+          ? isDarkMode
+            ? "gray.800"
+            : "gray.100"
+          : isDarkMode
+          ? "gray.900"
+          : "white"
+      }
+    >
+      <VStack flex={1} alignItems="center">
+        <Text
+          color={
+            isDarkMode
+              ? MA_REUSSITE_CUSTOM_COLORS.White
+              : MA_REUSSITE_CUSTOM_COLORS.Black
+          }
+        >
+          {isFutureSessions ? item.start : item.date}
+        </Text>
+      </VStack>
+      <VStack flex={1} alignItems="center">
+        <Text
+          color={
+            isDarkMode
+              ? MA_REUSSITE_CUSTOM_COLORS.White
+              : MA_REUSSITE_CUSTOM_COLORS.Black
+          }
+        >
+          {item.timing}
+        </Text>
+      </VStack>
+      {!isFutureSessions ? (
+        <VStack flex={1} alignItems="center">
+          {/* <Text color={getStatusColor(item.status)}>{item.status}</Text> */}
+          {item.present ? (
+            <Text color={"green.500"}>Present(e)</Text>
+          ) : item.late ? (
+            <Text color={"orange.500"}>Retard(e)</Text>
+          ) : item.absent ? (
+            <Text color={"red.500"}>Absent(e)</Text>
+          ) : item.excused ? (
+            <Text color={"purple.100"}> Excusé (e)</Text>
+          ) : (
+            "N/A"
+          )}
+        </VStack>
+      ) : (
+        <VStack flex={1} alignItems="center">
+          <Text
+            color={
+              isDarkMode
+                ? MA_REUSSITE_CUSTOM_COLORS.White
+                : MA_REUSSITE_CUSTOM_COLORS.Black
+            }
+          >
+            • • • {/* Dots for future sessions */}
+          </Text>
+        </VStack>
+      )}
+    </HStack>
+  );
+
   return (
     <Box
       padding={4}
@@ -104,7 +113,6 @@ const AttendanceTable = ({ isDarkMode }) => {
     >
       <HStack
         borderWidth={1}
-        // borderBottomWidth={2}
         borderColor={isDarkMode ? "gray.700" : "gray.300"}
         padding={2}
         bg={
@@ -113,7 +121,6 @@ const AttendanceTable = ({ isDarkMode }) => {
             : MA_REUSSITE_CUSTOM_COLORS.White
         }
         borderTopRadius={"lg"}
-        // borderRadius={"lg"}
       >
         <VStack flex={1} alignItems="center">
           <Text
@@ -148,27 +155,25 @@ const AttendanceTable = ({ isDarkMode }) => {
             }
             bold
           >
-            Attendance
+            {isFutureSessions ? "Sessions Futures" : "Statut"}
           </Text>
         </VStack>
       </HStack>
 
-      <Box
-        borderWidth={1}
-        borderColor={isDarkMode ? "gray.700" : "gray.300"}
-        // borderRadius={8} // optionnel, pour arrondir les bords
-        overflow="hidden" // pour s'assurer que le contenu ne dépasse pas des bords
-      >
+      {attendanceData.length === 0 ? (
+        <Box alignItems="center" padding={4}>
+          <Text color={isDarkMode ? "gray.500" : "gray.700"}>
+            There is nothing for now.
+          </Text>
+        </Box>
+      ) : (
         <FlatList
           data={attendanceData}
-          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
           showsVerticalScrollIndicator={false}
-          scrollEnabled={true}
-          renderItem={({ item, index }) =>
-            renderItem({ item, index, isDarkMode })
-          }
         />
-      </Box>
+      )}
     </Box>
   );
 };

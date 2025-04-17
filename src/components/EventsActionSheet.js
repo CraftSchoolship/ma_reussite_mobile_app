@@ -1,30 +1,31 @@
 import {
   Actionsheet,
   Box,
+  Button,
+  HStack,
+  Icon,
   ScrollView,
   Text,
-  useDisclose,
   VStack,
 } from "native-base";
 import React from "react";
-import { CalendarCard } from "../components";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export const EventsActionSheet = ({
   isDarkMode,
-  selectedDayEvents,
-  setSelectedDayEvents,
-  today,
+  user,
+  selectedEvent,
   isOpen,
   onClose,
+  navigation,
 }) => {
-  //   const { isOpen, onOpen, onClose } = useDisclose();
   return (
     <Actionsheet isOpen={isOpen} onClose={onClose}>
       <Actionsheet.Content
         bg={
           isDarkMode
-            ? MA_REUSSITE_CUSTOM_COLORS.DarkActionSheet
+            ? MA_REUSSITE_CUSTOM_COLORS.BackgroundDark
             : MA_REUSSITE_CUSTOM_COLORS.White
         }
       >
@@ -45,18 +46,103 @@ export const EventsActionSheet = ({
           contentContainerStyle={{ paddingBottom: 40 }}
         >
           <VStack space={4} px={4}>
-            {selectedDayEvents &&
-              selectedDayEvents.map((eventMarked, index) => (
-                <CalendarCard
-                  key={index}
-                  tag={eventMarked.tag}
-                  date={today}
-                  time={eventMarked.time}
-                  subject={eventMarked.subject}
-                  teacher={eventMarked.teacher}
-                  classroom={eventMarked.classroom}
-                />
-              ))}
+            <Box
+              borderRadius={10}
+              borderWidth={0.5}
+              borderColor={
+                isDarkMode
+                  ? MA_REUSSITE_CUSTOM_COLORS.Black
+                  : MA_REUSSITE_CUSTOM_COLORS.LightBorderCalendarCard
+              }
+              overflow={"hidden"}
+              mb={4}
+            >
+              <HStack
+                justifyContent="space-between"
+                alignItems="center"
+                bg={
+                  isDarkMode
+                    ? MA_REUSSITE_CUSTOM_COLORS.Black
+                    : MA_REUSSITE_CUSTOM_COLORS.LightBgCalendarCard
+                }
+                p={4}
+              >
+                <VStack w={"full"}>
+                  <HStack>
+                    <Icon
+                      as={MaterialIcons}
+                      name="trip-origin"
+                      color={"primary.500"}
+                      size={4}
+                      alignSelf={"center"}
+                      mr={0.5}
+                    />
+                    <Text
+                      color={
+                        isDarkMode
+                          ? MA_REUSSITE_CUSTOM_COLORS.White
+                          : MA_REUSSITE_CUSTOM_COLORS.Black
+                      }
+                      fontSize={"lg"}
+                    >
+                      {selectedEvent.date} à {selectedEvent.time}
+                    </Text>
+                  </HStack>
+                  <HStack my={1}>
+                    <Text
+                      color={
+                        isDarkMode
+                          ? MA_REUSSITE_CUSTOM_COLORS.White
+                          : MA_REUSSITE_CUSTOM_COLORS.Black
+                      }
+                      fontSize={"xl"}
+                      textTransform={"capitalize"}
+                      fontWeight={"bold"}
+                    >
+                      {`Cours : ${selectedEvent.subject}`}
+                    </Text>
+                  </HStack>
+                  <HStack my={2}>
+                    <Text
+                      color={
+                        isDarkMode
+                          ? MA_REUSSITE_CUSTOM_COLORS.White
+                          : MA_REUSSITE_CUSTOM_COLORS.Black
+                      }
+                      fontSize={"lg"}
+                      textTransform={"capitalize"}
+                    >{`Prof : ${selectedEvent.teacher}`}</Text>
+                  </HStack>
+                  <Text
+                    color={
+                      isDarkMode
+                        ? MA_REUSSITE_CUSTOM_COLORS.White
+                        : MA_REUSSITE_CUSTOM_COLORS.Black
+                    }
+                    fontSize={"lg"}
+                    textTransform={"capitalize"}
+                  >
+                    {`Salle : ${selectedEvent.classroom}`}
+                  </Text>
+                  {user?.role == "admin" ||
+                  user?.role == "teacher" ||
+                  user?.role == "staff" ? (
+                    <Button
+                      mt={8}
+                      mb={2}
+                      w={"full"}
+                      fontSize={"lg"}
+                      onPress={() => {
+                        onClose();
+                        navigation.navigate("AttendanceStaff", {session: selectedEvent._raw});
+                      }}
+                    >
+                      Présence
+                    </Button>
+                  ) : null}
+                </VStack>
+              </HStack>
+            </Box>
           </VStack>
         </ScrollView>
       </Actionsheet.Content>

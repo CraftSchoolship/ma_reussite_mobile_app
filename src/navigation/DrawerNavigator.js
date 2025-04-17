@@ -1,17 +1,16 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import React, { useEffect, useState } from "react";
 import { TabNavigator } from "./TabNavigator";
-// import { ParentTabNavigator } from "./ParentTabNavigator";
-// import { TeacherTabNavigator } from "./TeacherTabNavigator";
-// import { AdminTabNavigator } from "./AdminTabNavigator";
 import CustomDrawerContent from "../components/CustomDrawerContent";
 import { getObject } from "../api/apiClient";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Icon, IconButton } from "native-base";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { ProfileScreen } from "../screens";
+import AttendanceStaff from "../screens/AttendanceStaff";
 import SessionsScreen from "../screens/SessionsScreen";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import { loadParentData, getCurrencies } from "../utils/ParentLogic";
 
 const Drawer = createDrawerNavigator();
 
@@ -23,6 +22,8 @@ const DrawerNavigator = () => {
     const fetchUserData = async () => {
       try {
         const user = await getObject("connectedUser");
+        console.log("Connected User:", user);
+
         if (user) {
           setConnectedUser(user);
         }
@@ -37,9 +38,11 @@ const DrawerNavigator = () => {
   useEffect(() => {
     const fetchChildrenData = async () => {
       if (connectedUser?.role === "parent") {
-        // Fetch children data for parents
         try {
-          // Logic to fetch children data if necessary
+          await getCurrencies();
+          if (connectedUser?.craft_parent_id) {
+            await loadParentData(connectedUser);
+          }
         } catch (error) {
           console.error("Error fetching children data:", error);
         }
@@ -49,25 +52,9 @@ const DrawerNavigator = () => {
     fetchChildrenData();
   }, [connectedUser]);
 
-  // const getTabNavigatorForRole = (role) => {
-  //   switch (role) {
-  //     case "parent":
-  //       return ParentTabNavigator;
-  //     case "teacher":
-  //       return TeacherTabNavigator;
-  //     case "admin":
-  //       return AdminTabNavigator;
-  //     case "student":
-  //     default:
-  //       return TabNavigator;
-  //   }
-  // };
-
   if (!connectedUser) {
     return null;
   }
-
-  // const TabNavigatorComponent = getTabNavigatorForRole(connectedUser.role);
 
   return (
     <Drawer.Navigator
@@ -135,6 +122,14 @@ const DrawerNavigator = () => {
         }}
         name="Session"
         component={SessionsScreen}
+      />
+      <Drawer.Screen
+        options={{
+          headerBackTitleVisible: false,
+          headerShown: false,
+        }}
+        name="AttendanceStaff"
+        component={AttendanceStaff}
       />
     </Drawer.Navigator>
   );

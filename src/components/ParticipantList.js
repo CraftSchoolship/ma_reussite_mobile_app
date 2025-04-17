@@ -11,19 +11,7 @@ import {
 import React from "react";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
-const participants = [
-  { id: "1", name: "Samir Tata (Enseignant)" },
-  { id: "2", name: "Mohamed Mohamed" },
-  { id: "3", name: "Khalil Galalem" },
-  { id: "4", name: "Berthonge Christ" },
-  { id: "5", name: "Nagil Glad" },
-  { id: "6", name: "Rayen Dhmaied" },
-  { id: "7", name: "Asad Babur" },
-  { id: "8", name: "Wael Mbarek" },
-  { id: "9", name: "Khadija Amri" },
-];
-
-const ParticipantList = ({ isDarkMode }) => {
+const ParticipantList = ({ isDarkMode, students }) => {
   const renderParticipant = ({ item }) => (
     <Pressable>
       <Box
@@ -32,7 +20,6 @@ const ParticipantList = ({ isDarkMode }) => {
             ? MA_REUSSITE_CUSTOM_COLORS.Black
             : MA_REUSSITE_CUSTOM_COLORS.White
         }
-        p={4}
         borderTopColor={
           isDarkMode
             ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
@@ -43,6 +30,7 @@ const ParticipantList = ({ isDarkMode }) => {
             ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
             : MA_REUSSITE_CUSTOM_COLORS.LightDivider
         }
+        p={4}
         shadow={1}
         borderBottomWidth={1}
         borderTopWidth={1}
@@ -68,7 +56,7 @@ const ParticipantList = ({ isDarkMode }) => {
                 : MA_REUSSITE_CUSTOM_COLORS.Black
             }
           >
-            {item?.name}
+            {item}
           </Text>
         </HStack>
       </Box>
@@ -78,15 +66,31 @@ const ParticipantList = ({ isDarkMode }) => {
   return (
     <Box
       minH={"full"}
-      bg={isDarkMode && MA_REUSSITE_CUSTOM_COLORS.Black}
-      mt={6}
-      flex={0.9}
+      bg={
+        isDarkMode
+          ? MA_REUSSITE_CUSTOM_COLORS.Black
+          : MA_REUSSITE_CUSTOM_COLORS.White
+      }
+      p={2}
     >
-      <FlatList
-        data={participants}
-        keyExtractor={(item) => item.id}
-        renderItem={renderParticipant}
-      />
+      {students.length > 0 ? (
+        <FlatList
+          data={students}
+          renderItem={renderParticipant}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      ) : (
+        <Text
+          textAlign={"center"}
+          color={
+            isDarkMode
+              ? MA_REUSSITE_CUSTOM_COLORS.White
+              : MA_REUSSITE_CUSTOM_COLORS.Black
+          }
+        >
+          Aucun étudiant
+        </Text>
+      )}
     </Box>
   );
 };

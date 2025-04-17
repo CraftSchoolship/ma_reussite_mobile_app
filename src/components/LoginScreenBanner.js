@@ -1,20 +1,29 @@
 import React from "react";
-import { Box, Image, Platform } from "native-base";
+import { Box, Image } from "native-base";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import { useThemeContext } from "../hooks/ThemeContext";
+import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 function LoginScreenBanner() {
   const insets = useSafeAreaInsets();
+  const { isDarkMode } = useThemeContext();
+
   return (
     <>
-      <StatusBar barStyle="dark-content" />
-      <Box style={{ paddingTop: insets.top }}>
+      <Box
+        style={{
+          paddingTop: insets.top,
+          backgroundColor: isDarkMode
+            ? MA_REUSSITE_CUSTOM_COLORS.Black
+            : MA_REUSSITE_CUSTOM_COLORS.White,
+        }}
+      >
         <Image
-          size="sm"
-          w={"100%"}
-          backgroundColor="primary.500"
+          size="md"
+          w={"full"}
+          backgroundColor={MA_REUSSITE_CUSTOM_COLORS.Primary}
           resizeMode="contain"
-          padding={10}
           source={require("../../assets/images/ma_reussite_login_screen.png")}
           alt="Alternate Text"
         />

@@ -1,10 +1,11 @@
 import { MaterialIcons } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native";
 import { Box, HStack, Icon, Text, VStack } from "native-base";
 import React from "react";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
-function CalendarCard({ date, tag, time, subject, teacher, classroom }) {
+function CalendarCard({ name, date, tag, time, subject, teacher, classroom, onClick }) {
   const { isDarkMode } = useThemeContext();
   let tagColor = "";
   if (tag === "cours") {
@@ -14,6 +15,7 @@ function CalendarCard({ date, tag, time, subject, teacher, classroom }) {
   }
 
   return (
+    <TouchableOpacity onPress={onClick}>
     <Box
       borderRadius={10}
       borderWidth={0.5}
@@ -23,6 +25,7 @@ function CalendarCard({ date, tag, time, subject, teacher, classroom }) {
           : MA_REUSSITE_CUSTOM_COLORS.LightBorderCalendarCard
       }
       overflow={"hidden"}
+      mb={4}
     >
       <HStack
         justifyContent="space-between"
@@ -48,10 +51,11 @@ function CalendarCard({ date, tag, time, subject, teacher, classroom }) {
               color={
                 isDarkMode
                   ? MA_REUSSITE_CUSTOM_COLORS.White
-                  : MA_REUSSITE_CUSTOM_COLORS.LightTextCalendarCard
+                  : MA_REUSSITE_CUSTOM_COLORS.Black
               }
+              fontSize={"lg"}
             >
-              {date}, {time}, {`(Salle ${classroom})`}
+              {time} à {classroom}
             </Text>
           </HStack>
           <HStack my={1}>
@@ -61,9 +65,9 @@ function CalendarCard({ date, tag, time, subject, teacher, classroom }) {
                   ? MA_REUSSITE_CUSTOM_COLORS.White
                   : MA_REUSSITE_CUSTOM_COLORS.Black
               }
-              fontWeight="bold"
-              fontSize={"lg"}
+              fontSize={"xl"}
               textTransform={"capitalize"}
+              fontWeight={"bold"}
             >
               {`Cours : ${subject}`}
             </Text>
@@ -72,12 +76,15 @@ function CalendarCard({ date, tag, time, subject, teacher, classroom }) {
             color={
               isDarkMode
                 ? MA_REUSSITE_CUSTOM_COLORS.White
-                : MA_REUSSITE_CUSTOM_COLORS.LightTextCalendarCard
+                : MA_REUSSITE_CUSTOM_COLORS.Black
             }
+            fontSize={"lg"}
+            textTransform={"capitalize"}
           >{`Prof : ${teacher}`}</Text>
         </VStack>
       </HStack>
     </Box>
+    </TouchableOpacity>
   );
 }
 
