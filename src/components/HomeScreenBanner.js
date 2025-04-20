@@ -1,54 +1,35 @@
-import { MaterialIcons } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import {
-  Avatar,
-  Box,
-  Center,
-  HStack,
-  Icon,
-  IconButton,
-  Image,
-  Pressable,
-  Text,
-  VStack,
-} from "native-base";
 import React, { useEffect, useState } from "react";
-import { getObject } from "../api/apiClient";
+import { Box, HStack, Avatar, Text, Image, Pressable, VStack, IconButton , Icon} from "native-base";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import { useAppContext } from "../hooks/AppProvider";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useThemeContext } from "../hooks/ThemeContext";
+import { useAuth } from "../utils/AuthContext";
+import { getUserInfo } from "../utils/authLogic";
+
 
 const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
-  const route = useRoute();
-  const navigation = useNavigation();
+  const navigation = useAuth();
+  const drawer = useNavigation();
   const [connectedUser, setConnectedUser] = useState({});
   const [loading, setLoading] = useState(true);
-  const [account, setAccount] = useState();
   const { selectedChild, setSelectedChild } = useAppContext();
   const { isDarkMode } = useThemeContext();
 
   useEffect(() => {
     const fetchUser = async () => {
-      const user = await getObject("connectedUser");
+      const user = await getUserInfo();
       setConnectedUser(user);
-      if (connectedUser?.role === "parent") {
-        const storedSelectedChild = await getObject("selectedChild");
-        setSelectedChild(storedSelectedChild);
-      }
       setLoading(false);
     };
     fetchUser();
-  }, [connectedUser]);
+  }, []);
 
   useEffect(() => {
-    if (connectedUser?.role === "parent" && selectedChild?.self) {
-      setAccount(
-        <Text color={"white"} fontWeight={"medium"}>
-          {selectedChild?.self[1]}
-        </Text>
-      );
+    if (selectedChild?.name) {
     }
-  }, [connectedUser?.role, selectedChild]);
+  }, [selectedChild]);
 
   return (
     <Box
@@ -92,7 +73,7 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
             }
             alt="Alternate Text"
           />
-          <Pressable m={"auto"} onPress={() => navigation.openDrawer()}>
+          <Pressable m={"auto"} onPress={() => drawer.openDrawer()}>
             {loading ? (
               <Avatar size="md" source={{ uri: null }} />
             ) : (
@@ -122,13 +103,13 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
                   _pressed={{
                     bg: "primary.600:alpha.20",
                   }}
-                  onPress={() => navigation.openDrawer()}
+                  onPress={() => drawer.openDrawer()}
                 />
               </Avatar>
             )}
           </Pressable>
         </HStack>
-        {connectedUser?.role === "parent" && selectedChild?.self && (
+        {connectedUser?.role === "parent" && selectedChild?.name && (
           <Box
             alignSelf={"baseline"}
             ml={8}
@@ -138,7 +119,7 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
             borderRadius={"sm"}
             bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
           >
-            {account}
+            {selectedChild.name}
           </Box>
         )}
       </VStack>

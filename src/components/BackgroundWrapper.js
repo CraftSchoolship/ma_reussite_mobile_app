@@ -1,5 +1,5 @@
 import React from "react";
-import { ImageBackground, SafeAreaView, StyleSheet } from "react-native";
+import { ImageBackground } from "react-native";
 import HomeScreenBanner from "./HomeScreenBanner";
 import { StatusBar, View } from "native-base";
 import { useSafeAreaInsets } from "react-native-safe-area-context";

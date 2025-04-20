@@ -10,7 +10,6 @@ import {
   PaymentScreen,
 } from "../screens";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
-import AppProvider from "../hooks/AppProvider";
 import IconHome from "../../assets/images/home.png";
 import IconPayment from "../../assets/images/payment.png";
 import IconNotifications from "../../assets/images/notifications.png";
@@ -19,7 +18,7 @@ import IconNotes from "../../assets/images/notes.png";
 import { Image } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CustomTabBarButton from "../components/CustomTabBarButton";
-import { getObject } from "../api/apiClient";
+import { getUserInfo } from "../utils/authLogic";
 
 const Tab = createBottomTabNavigator();
 
@@ -32,9 +31,7 @@ export const TabNavigator = () => {
   useEffect(() => {
     const fetchConnectedUser = async () => {
       try {
-        const storedUser = await getObject("connectedUser");
-        // console.log("storedUser...", storedUser);
-
+        const storedUser = await getUserInfo();
         setConnectedUser(storedUser);
       } catch (error) {}
     };
@@ -79,7 +76,6 @@ export const TabNavigator = () => {
   };
 
   return (
-    <AppProvider>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: () => {
@@ -145,6 +141,5 @@ export const TabNavigator = () => {
           }}
         />
     </Tab.Navigator>
-  </AppProvider>
   );
 };

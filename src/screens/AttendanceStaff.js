@@ -25,7 +25,7 @@ import {
   Modal,
   View,
 } from "react-native";
-import { browse, execute, update } from "../../http/http";
+import { browse, create, update } from "../../http/http";
 import { useIsFocused, useRoute } from "@react-navigation/native";
 import { ToastAlert } from "../components";
 
@@ -71,13 +71,24 @@ const AttendanceStaff = () => {
   };
 
   const submit_attendance = async (barcode) => {
+    let student_id = parseInt(barcode.split("").filter((_, index) => index % 2 === 0).join(""));
     try {
-      await execute("craft.attendance.line", "create_from_barcode", [
-        {
+      let attendance_line = await browse("craft.attendance.line", ["id", "present", "late", "absent", "excused"], { session_id: session.id, student_id: student_id });
+      if (attendance_line.length > 0) {
+        let status = attendance_line[0];
+        if (!status.present) {
+          await update("craft.attendance.line", status.id, { present: true, late: false, absent: false, excused: false });
+        }
+      }else {
+        await create ("craft.attendance.line", {
           session_id: session.id,
-          barcode: barcode,
-        },
-      ]);
+          student_id: student_id,
+          present: true,
+          late: false,
+          absent: false,
+          excused: false,
+        });
+      }
       setAttendance(null);
 
       toast.show({
@@ -93,7 +104,7 @@ const AttendanceStaff = () => {
         ),
       });
     } catch (error) {
-      let message = error.data.arguments[0];
+      let message = error.message;
       toast.show({
         render: () => (
           <ToastAlert

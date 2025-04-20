@@ -2,7 +2,6 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import React, { useEffect, useState } from "react";
 import { TabNavigator } from "./TabNavigator";
 import CustomDrawerContent from "../components/CustomDrawerContent";
-import { getObject } from "../api/apiClient";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Icon, IconButton } from "native-base";
 import { useThemeContext } from "../hooks/ThemeContext";
@@ -11,6 +10,7 @@ import AttendanceStaff from "../screens/AttendanceStaff";
 import SessionsScreen from "../screens/SessionsScreen";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { loadParentData, getCurrencies } from "../utils/ParentLogic";
+import { getUserInfo } from "../utils/authLogic";
 
 const Drawer = createDrawerNavigator();
 
@@ -21,9 +21,7 @@ const DrawerNavigator = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const user = await getObject("connectedUser");
-        console.log("Connected User:", user);
-
+        const user = await getUserInfo();
         if (user) {
           setConnectedUser(user);
         }

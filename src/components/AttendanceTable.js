@@ -85,7 +85,7 @@ const AttendanceTable = ({ isDarkMode, subjectId, isFutureSessions }) => {
           ) : item.excused ? (
             <Text color={"purple.100"}> Excusé (e)</Text>
           ) : (
-            "N/A"
+            <Text color={"purple.100"}> N/A</Text>
           )}
         </VStack>
       ) : (

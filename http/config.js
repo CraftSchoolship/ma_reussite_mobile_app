@@ -1,5 +1,6 @@
 const config = {
   baseUrl: "https://ma-reussite.com",
+  ServerBaseUrl: "https://notification.craftschoolship.com",
   database: "bitnami_odoo",
   passwordEncodingKey: "craftschoolship",
   debug: false,
@@ -15,7 +16,6 @@ const config = {
   workspace: {
     erp: {
       url: "https://ma-reussite.com",
-      database: "bitnami_odoo",
     },
   },
 };

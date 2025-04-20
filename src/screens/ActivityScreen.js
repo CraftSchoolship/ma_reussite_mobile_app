@@ -1,15 +1,15 @@
 import { Box, IconButton, ScrollView, Text, VStack, Center } from "native-base";
 import React, { useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import { BackgroundWrapper } from "../components";
 import { NotificationCard } from "../components/NotificationCard";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { NotificationDetail } from "../components/NotificationDetail";
+import { useAuth } from "../utils/AuthContext";
 
 const NotificationScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useAuth();
   const { isDarkMode } = useThemeContext();
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [selectedNotificationId, setSelectedNotificationId] = useState(null);

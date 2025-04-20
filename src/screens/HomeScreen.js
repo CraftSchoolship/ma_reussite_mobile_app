@@ -1,15 +1,11 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
 import {
-  Actionsheet,
   Box,
   ScrollView,
-  Text,
   VStack,
   useDisclose,
 } from "native-base";
 import React, { useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
-import { getObject } from "../api/apiClient";
 import { CalendarCard } from "../components";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import CalendarLocalConfig from "../utils/CalendarLocalConfig";
@@ -18,11 +14,13 @@ import { browse } from "../../http/http";
 import { useThemeContext } from "../hooks/ThemeContext";
 import CalendarTheme from "../utils/CalendarTheme";
 import { EventsActionSheet } from "../components/EventsActionSheet";
+import { useAuth } from "../utils/AuthContext";
+import { getUserInfo } from "../utils/authLogic";
 
 CalendarLocalConfig;
 
 const HomeScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useAuth();
   const { isOpen, onOpen, onClose } = useDisclose();
   const [user, setUser] = useState({});
   const [user_id, setUserId] = useState(null);
@@ -36,7 +34,7 @@ const HomeScreen = () => {
   useEffect(() => {
     const fetchConnectedUser = async () => {
       try {
-        const connectedUser = await getObject("connectedUser");
+        const connectedUser = await getUserInfo();
         setUser(connectedUser);
         setUserId(connectedUser.id);
       } catch (error) {
@@ -60,15 +58,15 @@ const HomeScreen = () => {
             "subject_id",
             "teacher_id",
             "state",
-          ], // Fields array is correctly passed here
+          ],
           {
             // start_gte: new Date().toISOString().substring(0, 10),
-            // state: "confirm", // Filters are correctly passed
+            state: "confirm",
           }
         );
 
         setEvents(eventsData);
-        console.log("Events Data:", eventsData);
+        // console.log("Events Data:", eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);
       }

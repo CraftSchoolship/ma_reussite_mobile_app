@@ -1,11 +1,10 @@
 import React from "react";
 import { Box, Text } from "native-base";
-import { AnimatedCircularProgress } from "react-native-circular-progress";
+import CircularProgress from "react-native-circular-progress-indicator";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
-const CircularProgress = ({
+const CustomCircularProgress = ({
   progress = 50,
-  width = 10,
   size = 70,
   note = false,
   isDarkMode,
@@ -17,41 +16,35 @@ const CircularProgress = ({
     return MA_REUSSITE_CUSTOM_COLORS.Secondary;
   };
 
-  // Calculate fill progress
-  const fillProgress = note ? (progress / 20) * 100 : progress;
+  const value = note ? progress : progress;
+  const maxValue = note ? 20 : 100;
 
   return (
-    <Box alignItems={"center"} justifyContent={"center"}>
-      <AnimatedCircularProgress
-        size={size}
-        width={width}
-        fill={fillProgress}
-        tintColor={
+    <Box alignItems="center" justifyContent="center">
+      <CircularProgress
+        value={value}
+        radius={size / 2}
+        duration={1000}
+        maxValue={maxValue}
+        progressValueColor={
+          isDarkMode
+            ? MA_REUSSITE_CUSTOM_COLORS.White
+            : MA_REUSSITE_CUSTOM_COLORS.Black
+        }
+        activeStrokeColor={
           note
             ? getProgressColor(progress)
             : MA_REUSSITE_CUSTOM_COLORS.Secondary
         }
-        backgroundColor="#CED3DE"
-        rotation={0}
-        duration={3000}
-        delay={500}
-      >
-        {() => (
-          <Text
-            color={
-              isDarkMode
-                ? MA_REUSSITE_CUSTOM_COLORS.White
-                : MA_REUSSITE_CUSTOM_COLORS.Black
-            }
-            fontSize={"lg"}
-            fontWeight={"bold"}
-          >
-            {note ? progress : `${progress}%`}
-          </Text>
-        )}
-      </AnimatedCircularProgress>
+        inActiveStrokeColor="#CED3DE"
+        inActiveStrokeOpacity={0.5}
+        title=""
+        progressValueFontSize={16}
+        activeStrokeWidth={10}
+        inActiveStrokeWidth={10}
+      />
     </Box>
   );
 };
 
-export default CircularProgress;
+export default CustomCircularProgress;

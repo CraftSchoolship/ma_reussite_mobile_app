@@ -1,6 +1,5 @@
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { useNavigation } from "@react-navigation/native";
 import {
   Avatar,
   Box,
@@ -17,35 +16,33 @@ import {
   VStack,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import { getObject, storeObject } from "../api/apiClient";
+import { storeObject } from "../api/apiClient";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { logout } from "../../http/http";
+import { loadParentData } from "../utils/ParentLogic";
+import { useAppContext } from "../hooks/AppProvider";
 
 const CustomDrawerContent = ({ connectedUser, ...props }) => {
   const [childrenList, setChildrenList] = useState([]);
-  const [selectedChild, setSelectedChild] = useState(null);
-  const navigation = useNavigation();
+  const {selectedChild, setSelectedChild} = useAppContext();
   const { isDarkMode, toggleDarkMode } = useThemeContext();
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         if (connectedUser.role === "parent") {
-          const children = await getObject("children");
-          if (children) setChildrenList(children);
-
-          const storedChild = await getObject("selectedChild");
-          if (storedChild) setSelectedChild(storedChild);
+          const { childrenList, selectedChild } = await loadParentData(connectedUser);
+          setChildrenList(childrenList);
+          setSelectedChild(selectedChild);
         }
       } catch (error) {
         console.error("Error fetching connectedUser data:", error);
       }
     };
 
-    if (childrenList?.length < 1) fetchUserData();
-  }, [childrenList]);
-
+    if (childrenList.length < 1) fetchUserData();
+  }, [connectedUser]);
   return (
     <>
       <DrawerContentScrollView {...props}>

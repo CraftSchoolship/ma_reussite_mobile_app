@@ -2,12 +2,10 @@
 /*                                  VERSION_1                                 */
 /* -------------------------------------------------------------------------- */
 
-import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   Box,
   Center,
   HStack,
-  Spinner,
   Text,
   FlatList,
   Input,
@@ -20,10 +18,12 @@ import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { Ionicons } from "@expo/vector-icons";
 import { browse } from "../../http/http";
-import { getObject } from "../api/apiClient";
+import { getUserInfo } from "../utils/authLogic";
+import { useAuth } from "../utils/AuthContext";
+import { ActivityIndicator } from "react-native";
 
 const NoteScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useAuth();
   const [loading, setLoading] = useState(false);
   const { isDarkMode } = useThemeContext();
   const [grades, setGrades] = useState([]);
@@ -45,7 +45,7 @@ const NoteScreen = () => {
     const fetchGrades = async () => {
       setLoading(true);
       try {
-        const userId = await getObject("connectedUser");
+        const userId = await getUserInfo();
         if (userId) {
           const gradeData = await browse("craft.grade", [
             "id",
@@ -73,7 +73,7 @@ const NoteScreen = () => {
     <BackgroundWrapper navigation={navigation}>
       {loading ? (
         <Center h={"70%"} w={"90%"} mx={"auto"}>
-          <Spinner size="xl" />
+          <ActivityIndicator size="large" color="#0000ff" />
         </Center>
       ) : (
         <VStack

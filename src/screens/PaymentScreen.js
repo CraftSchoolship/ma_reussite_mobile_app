@@ -1,5 +1,4 @@
 // import { MaterialIcons } from "@expo/vector-icons";
-// import { useNavigation } from "@react-navigation/native";
 // import {
 //   Actionsheet,
 //   Box,
@@ -102,7 +101,6 @@
 // ];
 
 // const PaymentScreen = () => {
-//   const navigation = useNavigation();
 //   const { isOpen, onOpen, onClose } = useDisclose();
 //   const [sortOrder, setSortOrder] = useState("recent");
 //   const [sortedPayments, setSortedPayments] = useState(payments);
@@ -336,7 +334,6 @@
 
 // export default PaymentScreen;
 import { MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import {
   Actionsheet,
   Box,
@@ -357,10 +354,12 @@ import { BackgroundWrapper, PaymentCard, PaymentCardPlus } from "../components";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { browse } from "../../http/http";
-import { getObject } from "../api/apiClient";
+import { getUserInfo } from "../utils/authLogic";
+import { useAuth } from "../utils/AuthContext";
+import { ActivityIndicator } from "react-native";
 
 const PaymentScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useAuth();
   const { isOpen, onOpen, onClose } = useDisclose();
   const [sortOrder, setSortOrder] = useState("recent");
   const [sortedPayments, setSortedPayments] = useState([]);
@@ -384,7 +383,7 @@ const PaymentScreen = () => {
     const fetchPayments = async () => {
       setLoading(true);
       try {
-        const userId = await getObject("connectedUser");
+        const userId = await getUserInfo();
         if (userId) {
           const paymentsData = await browse(
             "craft.tuition.invoice",
@@ -514,7 +513,7 @@ const PaymentScreen = () => {
 
         {loading ? (
           <Center h="70%" w="90%" mx="auto">
-            <Spinner size="xl" />
+             <ActivityIndicator size="large" color="#0000ff" />
           </Center>
         ) : (
           <ScrollView

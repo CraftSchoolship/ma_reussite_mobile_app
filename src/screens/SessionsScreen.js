@@ -2,13 +2,14 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { NavigationContainer } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
-import { Text, Box, IconButton, Spinner } from "native-base";
+import { Text, Box, IconButton } from "native-base";
 import { useRoute } from "@react-navigation/native";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import AttendanceTable from "../components/AttendanceTable";
 import HomeScreenBanner from "../components/HomeScreenBanner";
 import ParticipantList from "../components/ParticipantList";
+import { ActivityIndicator } from "react-native";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -137,7 +138,7 @@ const SessionsScreen = () => {
                   children={() =>
                     isLoading ? (
                       <Box flex={1} justifyContent="center" alignItems="center">
-                        <Spinner color={isDarkMode ? "white" : "black"} />
+                        <ActivityIndicator size="large" color={isDarkMode ? "white" : "black"} />
                       </Box>
                     ) : (
                       <AttendanceTable
@@ -157,7 +158,7 @@ const SessionsScreen = () => {
                   children={() =>
                     isLoading ? (
                       <Box flex={1} justifyContent="center" alignItems="center">
-                        <Spinner color={isDarkMode ? "white" : "black"} />
+                        <ActivityIndicator size="large" color={isDarkMode ? "white" : "black"} />
                       </Box>
                     ) : (
                       <AttendanceTable
@@ -174,7 +175,7 @@ const SessionsScreen = () => {
                   children={() =>
                     isLoading ? (
                       <Box flex={1} justifyContent="center" alignItems="center">
-                        <Spinner color={isDarkMode ? "white" : "black"} />
+                        <ActivityIndicator size="large" color={isDarkMode ? "white" : "black"} />
                       </Box>
                     ) : (
                       <AttendanceTable

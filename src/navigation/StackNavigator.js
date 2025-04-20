@@ -15,6 +15,8 @@ const prefix = Linking.createURL('/');
 
 const Stack = createStackNavigator();
 
+
+
 export const StackNavigator = () => {
    const linking = {
       prefixes: [prefix, 'https://app.craftschoolship.com'],

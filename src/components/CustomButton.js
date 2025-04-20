@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, HStack, Spinner, Text, Image } from "native-base";
+import { Button, HStack, Text, Image } from "native-base";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const CustomButton = ({
@@ -44,7 +44,9 @@ const CustomButton = ({
         </HStack>
       ) : (
         <HStack alignItems="center">
-          <Spinner size="sm" color={textColor} />
+          <Text fontSize="lg" color={textColor} >
+            Chargement...
+         </Text>
         </HStack>
       )}
     </Button>

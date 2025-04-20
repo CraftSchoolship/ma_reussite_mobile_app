@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, Image } from "native-base";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
@@ -13,7 +12,7 @@ function LoginScreenBanner() {
     <>
       <Box
         style={{
-          paddingTop: insets.top,
+          paddingTop: insets.top ,
           backgroundColor: isDarkMode
             ? MA_REUSSITE_CUSTOM_COLORS.Black
             : MA_REUSSITE_CUSTOM_COLORS.White,

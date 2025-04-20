@@ -3,7 +3,6 @@ import {
   Center,
   HStack,
   ScrollView,
-  Spinner,
   Text,
   VStack,
 } from "native-base";
@@ -13,21 +12,37 @@ import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { TouchableOpacity } from "react-native";
 import { browse } from "../../http/http";
-import { getObject } from "../api/apiClient";
+import { getUserInfo } from "../utils/authLogic";
+import {ActivityIndicator} from 'react-native';
+
 
 const GroupScreen = ({ navigation }) => {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const { isDarkMode } = useThemeContext();
 
-  useEffect(() => {
-    const fetchGroups = async () => {
-      setLoading(true);
-      try {
-        const userId = await getObject("connectedUser");
-        console.log("User ID:", userId);
-        if (userId) {
-          const groupsData = await browse(
+    useEffect(() => {
+      const fetchGroups = async () => {
+        setLoading(true);
+        try {
+          const user = await getUserInfo();
+
+          if (!user )
+            return;
+
+          const role = user.craft_role;
+          let groupsData = [];
+
+          if (role =="student"){
+            const lines = await browse(
+            "craft.group.student.line",
+            ["class_id"],
+            {
+              student_id: user.craft_student_id[0],
+            }
+          );
+
+          groupsData = await browse(
             "craft.class",
             [
               "name",
@@ -36,21 +51,80 @@ const GroupScreen = ({ navigation }) => {
               "hourly_volume_progress",
               "subject_id",
             ],
-            []
+            { id_in : lines.map((line) => line.class_id[0]).join(",") }
           );
+          } else if (role == "teacher") {
+            const teacherData = await browse(
+              "craft.teacher",
+              ["id"],
+              { user_id: user.id }
+            );
 
+            const teacherId = teacherData[0].id;
+
+            groupsData = await browse(
+              "craft.class",
+              [
+                "name",
+                "student_ids",
+                "level_id",
+                "hourly_volume_progress",
+                "subject_id",
+                "teacher_id"
+              ],
+              { teacher_id: teacherId }
+            );
+            }else if (role === "parent") {
+              // Get parent record with children
+              const parentData = await browse(
+                "craft.parent",
+                ["id"],
+                { user_id: user.id }
+              );
+
+              if (!parentData || parentData.length === 0) {
+                return;
+              }
+              // Get children records
+              const childLines = await browse(
+                "craft.parent.child.line",
+                ["child_id"],
+                { parent_id: parentData[0].id }
+              );
+
+              const allClassLines = await browse(
+                "craft.group.student.line",
+                ["class_id"],
+                { student_id_in:  childLines.map(line => line.child_id[0]).join(",") }
+              );
+
+              groupsData = await browse(
+                "craft.class",
+                [
+                "name",
+                "student_ids",
+                "level_id",
+                "hourly_volume_progress",
+                "subject_id",
+                "teacher_id"
+                ],
+                { id_in: allClassLines.map(line => line.class_id[0]).join(",") }
+              );
+            }
+            else {
+              console.error("Unknown or missing role:", role);
+              return;
+            }
           setGroups(groupsData);
+
+        } catch (error) {
+          console.error("Error fetching groups:", error);
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error("Error fetching groups:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchGroups();
-  }, []);
-
+      };
+          fetchGroups();
+      }, []);
   // Fetch students when a group is selected
   const handleGroupPress = async (group) => {
     try {
@@ -92,10 +166,10 @@ const GroupScreen = ({ navigation }) => {
             {groups.length > 0 ? groups[0].level_id[1] : "Pas de niveau"}
           </Text>
         </Box>
-        {loading ? (
-          <Center h={"70%"} w={"90%"} mx={"auto"}>
-            <Spinner size="xl" />
-          </Center>
+          {loading ? (
+            <Center h={"70%"} w={"90%"} mx={"auto"}>
+             <ActivityIndicator size="large" color="#0000ff" />
+            </Center>
         ) : (
           <ScrollView
             h={"80%"}

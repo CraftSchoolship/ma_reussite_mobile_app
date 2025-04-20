@@ -4,8 +4,7 @@ import {
   TouchableWithoutFeedback,
   StyleSheet,
   Animated,
-  Dimensions,
-} from "react-native";
+  } from "react-native";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 const CustomTabBarButton = ({ children, accessibilityState, onPress }) => {
   const isFocused = accessibilityState.selected;
