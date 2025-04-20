@@ -25,6 +25,7 @@ import { ProfileUserEdit, ProfileUserInfo, ToastAlert } from "../components";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { getUserInfo } from "../utils/authLogic";
+import { useAuth } from "../utils/AuthContext";
 
 const ProfileScreen = () => {
   const route = useRoute();
@@ -44,6 +45,7 @@ const ProfileScreen = () => {
   const [loading, setLoading] = useState(true);
   const [isProfileEdit, setIsProfileEdit] = useState(false);
   const { isDarkMode } = useThemeContext();
+  const navigation = useAuth();
 
   useEffect(() => {
     route?.params?.edit ? setIsProfileEdit(true) : setIsProfileEdit(false);
@@ -80,10 +82,13 @@ const ProfileScreen = () => {
               status={"success"}
               isClosable={true}
               variant={"left-accent"}
-              duration={50000}
+              duration={3000}
             />
           ),
         });
+        setTimeout(() => {
+          navigation.navigate("Home");
+        }, 3000);
       }
     } catch (error) {
       console.error(

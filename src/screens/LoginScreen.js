@@ -12,6 +12,8 @@ import microsoftIcon from "../../assets/images/microsoft.png";
 import * as WebBrowser from 'expo-web-browser';
 import { useAuth } from "../utils/AuthContext";
 import { getUserInfo } from "../utils/authLogic";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { registerDevice } from "../utils/Notification";
 
 const LoginScreen = () => {
   const [error, setError] = useState("");
@@ -38,6 +40,8 @@ const LoginScreen = () => {
     if (success) {
       const connectedUser = await getUserInfo();
       if (connectedUser) {
+        const uid = config.workspace.erp.uid;
+        await registerDevice(uid);
         navigation.navigate("DrawerNavigator", { connectedUser });
       } else {
         setError("Failed to fetch user info.");
@@ -69,6 +73,8 @@ const LoginScreen = () => {
           if (success) {
             const connectedUser = await getUserInfo();
             if (connectedUser) {
+              const uid = config.workspace.erp.uid;
+              await registerDevice(uid);
               navigation.navigate("DrawerNavigator", { connectedUser });
             } else {
               setError("Failed to fetch user info.");
