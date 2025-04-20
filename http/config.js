@@ -1,8 +1,9 @@
 const config = {
   baseUrl: "https://ma-reussite.com",
+  ServerBaseUrl: "https://notification.craftschoolship.com",
   database: "bitnami_odoo",
   passwordEncodingKey: "craftschoolship",
-  debug: true,
+  debug: false,
   auth: {
     providers: [
       {
