@@ -179,11 +179,8 @@ const GroupScreen = ({ navigation }) => {
           >
             <VStack w={"100%"} mb={"20%"}>
               {groups.length > 0 ? (
-                groups.map((group, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => handleGroupPress(group)}
-                  >
+                groups.map((group) => (
+                  <TouchableOpacity key={group.key} onPress={() => handleGroupPress(group)}>
                     <Box
                       p={4}
                       mx={2}

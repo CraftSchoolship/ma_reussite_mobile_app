@@ -1,6 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { read } from "../../http/http";
+import { getToken, read } from "../../http/http";
 import config from "../../http/config";
+
+
+
+export const is_authenticated = async () => {
+  const isAuthenticatedInERP = await getToken();
+  return isAuthenticatedInERP;
+};
 
 const wrapProfileImageBase64 = (profileImage) => {
   if (!profileImage || typeof profileImage !== "string")
@@ -34,10 +41,10 @@ export const authenticate = async (auth, ...args) => {
 };
 
 export const getUserInfo = async () => {
-  const user_id = await AsyncStorage.getItem("erp_user_id");
+  await getToken();
 
+  const user_id = config.workspace.erp.uid;
   if (!user_id) return null;
-
   const user = await read("res.users", [user_id], [
     "self",
     "name",

@@ -1,6 +1,8 @@
 import React from "react";
 import { Button, HStack, Text, Image } from "native-base";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
+import {ActivityIndicator} from 'react-native';
+
 
 const CustomButton = ({
   onPress,
@@ -44,9 +46,7 @@ const CustomButton = ({
         </HStack>
       ) : (
         <HStack alignItems="center">
-          <Text fontSize="lg" color={textColor} >
-            Chargement...
-         </Text>
+          <ActivityIndicator size="large" color={textColor} />
         </HStack>
       )}
     </Button>

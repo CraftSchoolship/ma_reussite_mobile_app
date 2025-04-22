@@ -40,8 +40,6 @@ const LoginScreen = () => {
     if (success) {
       const connectedUser = await getUserInfo();
       if (connectedUser) {
-        const uid = config.workspace.erp.uid;
-        await registerDevice(uid);
         navigation.navigate("DrawerNavigator", { connectedUser });
       } else {
         setError("Failed to fetch user info.");
@@ -73,8 +71,6 @@ const LoginScreen = () => {
           if (success) {
             const connectedUser = await getUserInfo();
             if (connectedUser) {
-              const uid = config.workspace.erp.uid;
-              await registerDevice(uid);
               navigation.navigate("DrawerNavigator", { connectedUser });
             } else {
               setError("Failed to fetch user info.");

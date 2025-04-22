@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import config from "../http/config";
 import { encode } from "../http/password_encoding";
 import { decode as atob } from "base-64"; // Importing base-64 decode
+import { registerDevice } from "../src/utils/Notification";
 
 // Get the token
 export const getToken = async () => {
@@ -15,6 +16,7 @@ export const getToken = async () => {
     let base64 = config.workspace.erp.token.split('.')[1];
     let payload = JSON.parse(atob(base64 + "=".repeat((4 - (base64.length % 4)) % 4 )));
     config.workspace.erp.uid = payload['sub'];
+    await registerDevice(config.workspace.erp.uid);
     config.workspace.erp.tokenExpirationTimestamp = payload['exp'];
   }
 
