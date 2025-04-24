@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { is_authenticated } from './authLogic';
+import { is_authenticated } from './AuthService';
 import config from '../../http/config';
 import { useNavigation } from '@react-navigation/native';
 

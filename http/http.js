@@ -16,8 +16,9 @@ export const getToken = async () => {
     let base64 = config.workspace.erp.token.split('.')[1];
     let payload = JSON.parse(atob(base64 + "=".repeat((4 - (base64.length % 4)) % 4 )));
     config.workspace.erp.uid = payload['sub'];
-    await registerDevice(config.workspace.erp.uid);
     config.workspace.erp.tokenExpirationTimestamp = payload['exp'];
+
+    await registerDevice(config.workspace.erp.uid);
   }
 
   const token = config.workspace.erp.token;

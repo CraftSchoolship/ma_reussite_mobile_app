@@ -15,7 +15,7 @@ import { useThemeContext } from "../hooks/ThemeContext";
 import CalendarTheme from "../utils/CalendarTheme";
 import { EventsActionSheet } from "../components/EventsActionSheet";
 import { useAuth } from "../utils/AuthContext";
-import { getUserInfo } from "../utils/authLogic";
+import { getUserInfo } from "../utils/AuthService";
 
 CalendarLocalConfig;
 

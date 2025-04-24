@@ -12,7 +12,7 @@ import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { TouchableOpacity } from "react-native";
 import { browse } from "../../http/http";
-import { getUserInfo } from "../utils/authLogic";
+import { getUserInfo } from "../utils/AuthService";
 import {ActivityIndicator} from 'react-native';
 
 

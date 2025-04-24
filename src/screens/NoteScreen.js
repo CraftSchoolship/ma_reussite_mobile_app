@@ -18,7 +18,7 @@ import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { Ionicons } from "@expo/vector-icons";
 import { browse } from "../../http/http";
-import { getUserInfo } from "../utils/authLogic";
+import { getUserInfo } from "../utils/AuthService";
 import { useAuth } from "../utils/AuthContext";
 import { ActivityIndicator } from "react-native";
 

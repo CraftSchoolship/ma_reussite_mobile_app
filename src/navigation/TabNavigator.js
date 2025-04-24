@@ -18,7 +18,7 @@ import IconNotes from "../../assets/images/notes.png";
 import { Image } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CustomTabBarButton from "../components/CustomTabBarButton";
-import { getUserInfo } from "../utils/authLogic";
+import { getUserInfo } from "../utils/AuthService";
 
 const Tab = createBottomTabNavigator();
 

@@ -5,15 +5,13 @@ import { Formik } from "formik";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { loginValidationSchema } from "../validation/formValidation";
 import { CustomButton, CustomInput } from "../components";
-import { authenticate } from "../utils/authLogic";
+import { authenticate } from "../utils/AuthService";
 import { authenticateWithUsernameAndPassword, authenticateWithOAuth } from "../../http/http";
 import config from "../../http/config";
 import microsoftIcon from "../../assets/images/microsoft.png";
 import * as WebBrowser from 'expo-web-browser';
 import { useAuth } from "../utils/AuthContext";
-import { getUserInfo } from "../utils/authLogic";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { registerDevice } from "../utils/Notification";
+import { getUserInfo } from "../utils/AuthService";
 
 const LoginScreen = () => {
   const [error, setError] = useState("");

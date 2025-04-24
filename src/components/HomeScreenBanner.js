@@ -6,7 +6,7 @@ import { useAppContext } from "../hooks/AppProvider";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { useAuth } from "../utils/AuthContext";
-import { getUserInfo } from "../utils/authLogic";
+import { getUserInfo } from "../utils/AuthService";
 
 
 const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {

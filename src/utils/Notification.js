@@ -4,6 +4,7 @@ import { Platform } from 'react-native';
 import axios from 'axios';
 import config from '../../http/config';
 import { getToken } from '../../http/http';
+import Constants from "expo-constants";
 
 export async function registerDevice(userId) {
   if (!Device.isDevice) {
@@ -25,10 +26,10 @@ export async function registerDevice(userId) {
     return;
   }
 
-  let DeviceToken;
+  let deviceToken;
   try {
-    DeviceToken = (await Notifications.getDevicePushTokenAsync({
-      projectId: '4851c23f-ab7b-43da-8a23-655dd4c59f28',
+    deviceToken = (await Notifications.getDevicePushTokenAsync({
+      projectId: Constants.expoConfig.extra.eas.projectId,
     })).data;
   } catch (error) {
     console.error("Error getting push token:", error);
@@ -44,14 +45,15 @@ export async function registerDevice(userId) {
     });
   }
 
-
-console.log("Device Token:", DeviceToken);
+const uid= config.notification.scope_prefix + userId ;
+console.log("Device Token:", deviceToken);
+console.log("uid:", uid);
 
   try {
-    const response = await axios.post(`${config.ServerBaseUrl}/register`,
+    const response = await axios.post(`${config.notification.server}/register`,
     {
-      uid:userId,
-      token:DeviceToken,
+      uid:uid,
+      token:deviceToken,
       type:Platform.OS
     },
       {

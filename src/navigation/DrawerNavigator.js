@@ -10,7 +10,7 @@ import AttendanceStaff from "../screens/AttendanceStaff";
 import SessionsScreen from "../screens/SessionsScreen";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { loadParentData, getCurrencies } from "../utils/ParentLogic";
-import { getUserInfo } from "../utils/authLogic";
+import { getUserInfo } from "../utils/AuthService";
 
 const Drawer = createDrawerNavigator();
 

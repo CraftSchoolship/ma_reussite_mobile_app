@@ -7,7 +7,6 @@ import { EditProfileValidationSchema } from "../validation/formValidation";
 import ToastAlert from "./ToastAlert";
 import { storeObject } from "../api/apiClient";
 import { update } from "../../http/http";
-import { useAuth } from "../utils/AuthContext";
 
 export const ProfileUserEdit = ({ isDarkMode, connectedUser }) => {
   const toast = useToast();
@@ -17,8 +16,6 @@ export const ProfileUserEdit = ({ isDarkMode, connectedUser }) => {
     phone: "",
     address: "",
   });
-
-  const navigation = useAuth();
 
   useEffect(() => {
     if (connectedUser) {
@@ -60,9 +57,6 @@ export const ProfileUserEdit = ({ isDarkMode, connectedUser }) => {
             />
           ),
         });
-        setTimeout(() => {
-          navigation.navigate("Home");
-        }, 3000);
       } else {
         throw new Error("Échec de la mise à jour sur le serveur.");
       }

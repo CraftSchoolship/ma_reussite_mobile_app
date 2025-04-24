@@ -354,7 +354,7 @@ import { BackgroundWrapper, PaymentCard, PaymentCardPlus } from "../components";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { browse } from "../../http/http";
-import { getUserInfo } from "../utils/authLogic";
+import { getUserInfo } from "../utils/AuthService";
 import { useAuth } from "../utils/AuthContext";
 import { ActivityIndicator } from "react-native";
 
