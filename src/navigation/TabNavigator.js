@@ -2,13 +2,11 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import {
-  ActivityScreen,
-  GroupScreen,
-  HomeScreen,
-  NoteScreen,
-  PaymentScreen,
-} from "../screens";
+import ActivityScreen from "../screens/ActivityScreen";
+import GroupScreen from "../screens/GroupScreen";
+import HomeScreen from "../screens/HomeScreen";
+import NoteScreen from "../screens/NoteScreen";
+import PaymentScreen from "../screens/PaymentScreen";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import IconHome from "../../assets/images/home.png";
 import IconPayment from "../../assets/images/payment.png";
@@ -16,30 +14,22 @@ import IconNotifications from "../../assets/images/notifications.png";
 import IconGroups from "../../assets/images/group.png";
 import IconNotes from "../../assets/images/notes.png";
 import { Image } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CustomTabBarButton from "../components/CustomTabBarButton";
-import { getUserInfo } from "../utils/authLogic";
+import { getUserInfo } from "../utils/AuthService";
 
 const Tab = createBottomTabNavigator();
 
 export const TabNavigator = () => {
-  const insets = useSafeAreaInsets();
-
-  const propagedRoute = useRoute();
-  const [connectedUser, setConnectedUser] = useState(null);
+  const propagatedRoute = useRoute();
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const fetchConnectedUser = async () => {
-      try {
-        const storedUser = await getUserInfo();
-        setConnectedUser(storedUser);
-      } catch (error) {}
-    };
-    if (!connectedUser) fetchConnectedUser();
-  }, [connectedUser]);
+    const run = async () => setUser(await getUserInfo());
+    run();
+  }, []);
 
   const getPaymentTab = () => {
-    switch (connectedUser?.role) {
+    switch (user?.craft_role) {
       case "student":
       case "parent":
       case "teacher":
@@ -58,7 +48,7 @@ export const TabNavigator = () => {
   };
 
   const getNoteTab = () => {
-    switch (connectedUser?.role) {
+    switch (user?.craft_role) {
       case "student":
       case "parent":
         return (
@@ -80,7 +70,7 @@ export const TabNavigator = () => {
         screenOptions={({ route }) => ({
           tabBarIcon: () => {
             let CustomIcon;
-            route.params = propagedRoute?.params;
+            route.params = propagatedRoute?.params;
 
             if (route.name === "Home") {
               CustomIcon = IconHome;
@@ -111,11 +101,13 @@ export const TabNavigator = () => {
 
           tabBarStyle: {
             backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
+            height: 72,
+            paddingTop: 8
           },
           headerShown: false,
           tabBarShowLabel: true,
         })}
-        safeAreaInsets={{ bottom: 40 }}
+        safeAreaInsets={{ bottom: 12 }}
       >
         <Tab.Screen
           name="Home"

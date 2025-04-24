@@ -3,7 +3,6 @@ import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import {
   Avatar,
   Box,
-  Checkbox,
   Divider,
   HStack,
   Icon,
@@ -16,33 +15,52 @@ import {
   VStack,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import { storeObject } from "../api/apiClient";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useThemeContext } from "../hooks/ThemeContext";
-import { logout } from "../../http/http";
-import { loadParentData } from "../utils/ParentLogic";
-import { useAppContext } from "../hooks/AppProvider";
+import { browse, logout } from "../../http/http";
+import { getUserInfo, wrapProfileImageBase64 } from "../utils/AuthService";
 
-const CustomDrawerContent = ({ connectedUser, ...props }) => {
+const CustomDrawerContent = ({ ...props }) => {
   const [childrenList, setChildrenList] = useState([]);
-  const {selectedChild, setSelectedChild} = useAppContext();
+  const [user, setUser] = useState([]);
   const { isDarkMode, toggleDarkMode } = useThemeContext();
 
   useEffect(() => {
     const fetchUserData = async () => {
+      const user = await getUserInfo();
+      setUser(user);
+
+      if (user.craft_role !== "parent")
+        return;
+
       try {
-        if (connectedUser.role === "parent") {
-          const { childrenList, selectedChild } = await loadParentData(connectedUser);
-          setChildrenList(childrenList);
-          setSelectedChild(selectedChild);
-        }
+        const craftParentChildLines = await browse(
+          "craft.parent.child.line",
+          ["child_id"],
+          { parent_id: user.craft_parent_id[0] }
+        );
+
+        const studentIds = craftParentChildLines.map((child) => child.child_id[0]);
+
+        if (studentIds.length === 0) return [];
+
+        const children = await browse(
+          "craft.student",
+          ["id", "name", "image_128"],
+          { id_in: studentIds.join(",") }
+        );
+
+        setChildrenList(children.map((child) => ({
+          ...child,
+          image_128: wrapProfileImageBase64(child.image_128),
+        })));
       } catch (error) {
-        console.error("Error fetching connectedUser data:", error);
+        console.error("Error fetching user data:", error);
       }
     };
 
-    if (childrenList.length < 1) fetchUserData();
-  }, [connectedUser]);
+    fetchUserData();
+  }, []);
   return (
     <>
       <DrawerContentScrollView {...props}>
@@ -106,7 +124,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                   size="sm"
                   bg="blue.500"
                   source={{
-                    uri: connectedUser?.profileImage || null,
+                    uri: user?.avatar || null,
                   }}
                   bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
                 >
@@ -144,7 +162,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                 bold
                 ml={4}
               >
-                {connectedUser?.self?.[1] || "Prénom Nom"}
+                {user?.name || "Prénom Nom"}
               </Text>
               <Pressable
                 onPress={() =>
@@ -215,15 +233,6 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                       ? MA_REUSSITE_CUSTOM_COLORS.DarkDivider
                       : MA_REUSSITE_CUSTOM_COLORS.LightDivider
                   }
-                  onPress={async () => {
-                    try {
-                      await storeObject("selectedChild", child);
-                      setSelectedChild(child);
-                      props.navigation.navigate("Home", { child });
-                    } catch (error) {
-                      console.error("Error while selecting child:", error);
-                    }
-                  }}
                 >
                   <HStack
                     px={4}
@@ -235,7 +244,7 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                         size="sm"
                         mr={2}
                         source={{
-                          uri: `${child.image_256}` || null,
+                          uri: `${child.image_128}` || null,
                         }}
                         bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
                       >
@@ -267,18 +276,9 @@ const CustomDrawerContent = ({ connectedUser, ...props }) => {
                         }
                         fontSize={"md"}
                       >
-                        {child.contact_id[1]}
+                        {child.name}
                       </Text>
                     </HStack>
-                    {child.id === selectedChild?.id ? (
-                      <Checkbox
-                        value="checkboxValue"
-                        colorScheme={MA_REUSSITE_CUSTOM_COLORS.CheckBoxColor}
-                        aria-label="label"
-                        size={"sm"}
-                        isChecked
-                      />
-                    ) : null}
                   </HStack>
                 </Pressable>
               ))}

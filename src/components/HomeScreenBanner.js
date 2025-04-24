@@ -2,34 +2,26 @@ import React, { useEffect, useState } from "react";
 import { Box, HStack, Avatar, Text, Image, Pressable, VStack, IconButton , Icon} from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { useAppContext } from "../hooks/AppProvider";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { useAuth } from "../utils/AuthContext";
-import { getUserInfo } from "../utils/authLogic";
+import { getUserInfo } from "../utils/AuthService";
 
 
 const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
   const navigation = useAuth();
   const drawer = useNavigation();
-  const [connectedUser, setConnectedUser] = useState({});
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { selectedChild, setSelectedChild } = useAppContext();
   const { isDarkMode } = useThemeContext();
 
   useEffect(() => {
     const fetchUser = async () => {
-      const user = await getUserInfo();
-      setConnectedUser(user);
+      setUser(await getUserInfo());
       setLoading(false);
     };
     fetchUser();
   }, []);
-
-  useEffect(() => {
-    if (selectedChild?.name) {
-    }
-  }, [selectedChild]);
 
   return (
     <Box
@@ -38,10 +30,9 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
           ? MA_REUSSITE_CUSTOM_COLORS.Black
           : MA_REUSSITE_CUSTOM_COLORS.White
       }
-      pb={4}
+      pb={2}
     >
-      <VStack>
-        <HStack>
+        <HStack justifyContent={"space-between"} alignItems={"center"}>
           {displayGoBackButton ? (
             <IconButton
               position={"absolute"}
@@ -64,7 +55,7 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
           <Image
             key={isDarkMode ? "dark" : "light"}
             size="sm"
-            w={"70%"}
+            w={"206px"}
             ml={displayGoBackButton ? 6 : 2}
             source={
               isDarkMode
@@ -73,16 +64,14 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
             }
             alt="Alternate Text"
           />
-          <Pressable m={"auto"} onPress={() => drawer.openDrawer()}>
+          <Pressable onPress={() => drawer.openDrawer()}>
             {loading ? (
               <Avatar size="md" source={{ uri: null }} />
             ) : (
               <Avatar
                 size="md"
                 mr={2}
-                source={{
-                  uri: connectedUser?.profileImage || null,
-                }}
+                source={{ uri: user?.avatar || null }}
                 bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
               >
                 <IconButton
@@ -109,20 +98,6 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
             )}
           </Pressable>
         </HStack>
-        {connectedUser?.role === "parent" && selectedChild?.name && (
-          <Box
-            alignSelf={"baseline"}
-            ml={8}
-            px={2}
-            py={0.5}
-            mb={1}
-            borderRadius={"sm"}
-            bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
-          >
-            {selectedChild.name}
-          </Box>
-        )}
-      </VStack>
     </Box>
   );
 };

@@ -4,14 +4,13 @@ import { useThemeContext } from "../hooks/ThemeContext";
 import { Formik } from "formik";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { loginValidationSchema } from "../validation/formValidation";
-import { CustomButton, CustomInput } from "../components";
-import { authenticate } from "../utils/authLogic";
+import CustomButton from "../components/CustomButton";
+import CustomInput from "../components/CustomInput";
 import { authenticateWithUsernameAndPassword, authenticateWithOAuth } from "../../http/http";
 import config from "../../http/config";
 import microsoftIcon from "../../assets/images/microsoft.png";
 import * as WebBrowser from 'expo-web-browser';
 import { useAuth } from "../utils/AuthContext";
-import { getUserInfo } from "../utils/authLogic";
 
 const LoginScreen = () => {
   const [error, setError] = useState("");
@@ -30,20 +29,11 @@ const LoginScreen = () => {
     setIsLoginLoading(true);
     setIsOAuthLoading(false);
     setError("");
-    const { success, error: authError } = await authenticate(
-      authenticateWithUsernameAndPassword,
-      values.email,
-      values.password
-    );
+    const success = await authenticateWithUsernameAndPassword(values.email, values.password);
     if (success) {
-      const connectedUser = await getUserInfo();
-      if (connectedUser) {
-        navigation.navigate("DrawerNavigator", { connectedUser });
-      } else {
-        setError("Failed to fetch user info.");
-      }
+      navigation.navigate("DrawerNavigator");
     } else {
-      setError(authError);
+      setError("Login failed");
     }
     setIsLoginLoading(false);
   };
@@ -65,14 +55,9 @@ const LoginScreen = () => {
           const parsedUrl = new URL('http://example.com' + r); // the domain name does not matter here
           const token = parsedUrl.searchParams.get("access_token");
 
-          const { success } = await authenticate(authenticateWithOAuth, provider.id, token);
+          const success = await authenticateWithOAuth(provider.id, token);
           if (success) {
-            const connectedUser = await getUserInfo();
-            if (connectedUser) {
-              navigation.navigate("DrawerNavigator", { connectedUser });
-            } else {
-              setError("Failed to fetch user info.");
-            }
+            navigation.navigate("DrawerNavigator");
           }
         }
         let result = await WebBrowser.openAuthSessionAsync(provider.url, new URL(provider.url).searchParams.get('redirect_uri'),);

@@ -8,9 +8,7 @@ import { useThemeContext } from "../hooks/ThemeContext";
 
 const BackgroundWrapper = ({
   children,
-  selectedChild,
   navigation,
-  listOfChildren,
   isLoginScreen = false,
 }) => {
   const { isDarkMode } = useThemeContext();
@@ -32,7 +30,6 @@ const BackgroundWrapper = ({
       {isLoginScreen ? null : (
         <HomeScreenBanner
           navigation={navigation}
-          selectedChild={selectedChild}
         />
       )}
       <ImageBackground

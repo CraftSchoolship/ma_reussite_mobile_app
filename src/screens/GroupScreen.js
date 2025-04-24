@@ -7,12 +7,13 @@ import {
   VStack,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import { BackgroundWrapper, CircularProgress } from "../components";
+import BackgroundWrapper from "../components/BackgroundWrapper";
+import CircularProgress from "../components/CircularProgress";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { TouchableOpacity } from "react-native";
 import { browse } from "../../http/http";
-import { getUserInfo } from "../utils/authLogic";
+import { getUserInfo } from "../utils/AuthService";
 import {ActivityIndicator} from 'react-native';
 
 
@@ -179,11 +180,8 @@ const GroupScreen = ({ navigation }) => {
           >
             <VStack w={"100%"} mb={"20%"}>
               {groups.length > 0 ? (
-                groups.map((group, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => handleGroupPress(group)}
-                  >
+                groups.map((group) => (
+                  <TouchableOpacity key={group.key} onPress={() => handleGroupPress(group)}>
                     <Box
                       p={4}
                       mx={2}
