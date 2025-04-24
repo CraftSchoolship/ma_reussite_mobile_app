@@ -7,6 +7,8 @@ import { getToken } from '../../http/http';
 import Constants from "expo-constants";
 
 export async function registerDevice(userId) {
+
+
   if (!Device.isDevice) {
     console.log("Must use physical device for Push Notifications");
     return;
@@ -45,9 +47,7 @@ export async function registerDevice(userId) {
     });
   }
 
-const uid= config.notification.scope_prefix + userId ;
-console.log("Device Token:", deviceToken);
-console.log("uid:", uid);
+  const uid = config.notification.scope_prefix + userId;
 
   try {
     const response = await axios.post(`${config.notification.server}/register`,

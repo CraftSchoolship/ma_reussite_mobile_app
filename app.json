@@ -4,7 +4,7 @@
     "slug": "ma-reussite",
     "version": "1.0.7",
     "scheme": "mareussite",
-    "platforms": ["ios","android"],
+    "platforms": ["ios", "android"],
     "owner": "craftschoolship",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
