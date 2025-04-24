@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { NativeBaseProvider, extendTheme } from "native-base";
+import customTheme from "../themes/customTheme";
 
 const ThemeContext = createContext();
 
@@ -21,9 +23,19 @@ const ThemeProvider = ({ children }) => {
     await AsyncStorage.setItem("darkMode", JSON.stringify(!isDarkMode));
   };
 
+  const darkTheme = extendTheme({
+    colors: {
+      primary: { 500: "#2b1b94" },
+      background: "#000",
+      text: "#fff",
+    },
+  });
+
   return (
     <ThemeContext.Provider value={{ isDarkMode, toggleDarkMode }}>
-      {children}
+      <NativeBaseProvider theme={isDarkMode ? darkTheme : customTheme}>
+        {children}
+      </NativeBaseProvider>
     </ThemeContext.Provider>
   );
 };

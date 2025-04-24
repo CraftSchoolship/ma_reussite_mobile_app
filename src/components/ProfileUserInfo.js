@@ -1,8 +1,21 @@
 import { Box, Heading, Link, ScrollView, Text, VStack } from "native-base";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useThemeContext } from "../hooks/ThemeContext";
+import { getUserInfo } from "../utils/AuthService";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
-export const ProfileUserInfo = ({ isDarkMode, connectedUser }) => {
+export const ProfileUserInfo = () => {
+  const { isDarkMode } = useThemeContext();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      setUser(await getUserInfo());
+    };
+
+    fetchUser();
+  }, []);
+
   return (
     <ScrollView
       mt={2}
@@ -36,7 +49,7 @@ export const ProfileUserInfo = ({ isDarkMode, connectedUser }) => {
             >
               Adresse email :
             </Text>
-            <Link href={connectedUser && connectedUser.email}>
+            <Link href={"mailto:" + user?.email}>
               <Text
                 color={
                   isDarkMode
@@ -44,7 +57,7 @@ export const ProfileUserInfo = ({ isDarkMode, connectedUser }) => {
                     : MA_REUSSITE_CUSTOM_COLORS.Primary
                 }
               >
-                {connectedUser && connectedUser.email}
+                {user?.email}
               </Text>
             </Link>
           </VStack>

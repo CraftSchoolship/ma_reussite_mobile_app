@@ -1,8 +1,8 @@
 import { Box, IconButton, ScrollView, Text, VStack, Center } from "native-base";
 import React, { useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
-import { BackgroundWrapper } from "../components";
-import { NotificationCard } from "../components/NotificationCard";
+import BackgroundWrapper from "../components/BackgroundWrapper";
+import NotificationCard from "../components/NotificationCard";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { NotificationDetail } from "../components/NotificationDetail";

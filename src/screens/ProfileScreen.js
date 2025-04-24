@@ -19,9 +19,10 @@ import {
 } from "native-base";
 import React, { useEffect, useState } from "react";
 import { Alert } from "react-native";
-import { storeObject } from "../api/apiClient";
 import { update } from "../../http/http";
-import { ProfileUserEdit, ProfileUserInfo, ToastAlert } from "../components";
+import { ProfileUserEdit } from "../components/ProfileUserEdit";
+import { ProfileUserInfo } from "../components/ProfileUserInfo";
+import ToastAlert from "../components/ToastAlert";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { getUserInfo } from "../utils/AuthService";
@@ -30,53 +31,41 @@ const ProfileScreen = () => {
   const route = useRoute();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclose();
-  const [connectedUser, setConnectedUser] = useState({
-    id: "",
-    email: "",
-    password: "",
-    self: "",
-    role: "",
-    profileImage: null,
-    name: "",
-    phone: "",
-    street: "",
-  });
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isProfileEdit, setIsProfileEdit] = useState(false);
   const { isDarkMode } = useThemeContext();
+
+  const fetchUser = async () => {
+    setLoading(true);
+    setUser(await getUserInfo());
+    setLoading(false);
+  };
 
   useEffect(() => {
     route?.params?.edit ? setIsProfileEdit(true) : setIsProfileEdit(false);
   }, [route]);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const user = await getUserInfo();
-      setConnectedUser(user);
-      setLoading(false);
-    };
     fetchUser();
   }, []);
 
   const updateUserProfileImage = async (imageUri) => {
     try {
-      const imageBase64 = await FileSystem.readAsStringAsync(imageUri, {
-        encoding: FileSystem.EncodingType.Base64,
+      const response = await update("res.users", user.id, {
+        image_1920: await FileSystem.readAsStringAsync(imageUri, {
+          encoding: FileSystem.EncodingType.Base64,
+        })
       });
 
-      // Mettre à jour l'utilisateur dans Odoo
-      const response = await update("res.users", connectedUser.id, {
-        image_1920: imageBase64,
-      });
+      await fetchUser();
 
       if (response) {
         toast.show({
           render: () => (
             <ToastAlert
               title={"Succès"}
-              description={
-                "Votre photo de profil a été mise à jour avec succès."
-              }
+              description={"Votre photo de profil a été mise à jour avec succès."}
               status={"success"}
               isClosable={true}
               variant={"left-accent"}
@@ -100,8 +89,6 @@ const ProfileScreen = () => {
     }
   };
 
-  const handleProfileImagePress = () => onOpen();
-
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -120,11 +107,7 @@ const ProfileScreen = () => {
     });
 
     if (!result.canceled) {
-      const imageUri = result.assets[0].uri;
-      const updatedUser = { ...connectedUser, profileImage: imageUri };
-      setConnectedUser(updatedUser);
-      await storeObject("connectedUser", updatedUser);
-      await updateUserProfileImage(imageUri);
+      await updateUserProfileImage(result.assets[0].uri);
     }
     onClose();
   };
@@ -146,11 +129,7 @@ const ProfileScreen = () => {
     });
 
     if (!result.canceled) {
-      const imageUri = result.assets[0].uri;
-      const updatedUser = { ...connectedUser, profileImage: imageUri };
-      setConnectedUser(updatedUser);
-      await storeObject("connectedUser", updatedUser);
-      await updateUserProfileImage(imageUri);
+      await updateUserProfileImage(result.assets[0].uri);
     }
     onClose();
   };
@@ -166,7 +145,7 @@ const ProfileScreen = () => {
         ) : (
           <Avatar
             size="xl"
-            source={{ uri: connectedUser?.profileImage }}
+            source={{ uri: user?.avatar }}
             bgColor={MA_REUSSITE_CUSTOM_COLORS.Secondary}
           >
             <Avatar.Badge
@@ -201,7 +180,7 @@ const ProfileScreen = () => {
                 _icon={{
                   size: "xs",
                 }}
-                onPress={handleProfileImagePress}
+                onPress={() => onOpen()}
               />
             </Avatar.Badge>
             <IconButton
@@ -233,7 +212,7 @@ const ProfileScreen = () => {
           }
           mt={2}
         >
-          {connectedUser && connectedUser.self[1]}
+          {user?.name}
         </Heading>
       </Center>
       <Divider
@@ -245,17 +224,8 @@ const ProfileScreen = () => {
         h={"0.5"}
         mt={2}
       />
-      {isProfileEdit ? (
-        <ProfileUserEdit
-          isDarkMode={isDarkMode}
-          connectedUser={connectedUser}
-        />
-      ) : (
-        <ProfileUserInfo
-          isDarkMode={isDarkMode}
-          connectedUser={connectedUser}
-        />
-      )}
+
+      {isProfileEdit ? (<ProfileUserEdit />) : (<ProfileUserInfo />)}
 
       <Actionsheet isOpen={isOpen} onClose={onClose}>
         <Actionsheet.Content

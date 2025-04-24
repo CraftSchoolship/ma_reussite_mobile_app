@@ -4,47 +4,41 @@ import React, { useEffect, useState } from "react";
 import CustomButton from "./CustomButton";
 import CustomInput from "./CustomInput";
 import { EditProfileValidationSchema } from "../validation/formValidation";
+import { useThemeContext } from "../hooks/ThemeContext";
 import ToastAlert from "./ToastAlert";
-import { storeObject } from "../api/apiClient";
 import { update } from "../../http/http";
+import { getUserInfo } from "../utils/AuthService";
 
-export const ProfileUserEdit = ({ isDarkMode, connectedUser }) => {
+export const ProfileUserEdit = () => {
+  const { isDarkMode } = useThemeContext();
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [initialValues, setInitialValues] = useState({
+  const [user, setUser] = useState({
     name: "",
     phone: "",
-    address: "",
+    street: "",
   });
 
+  const fetchUser = async () => {
+    setIsLoading(true);
+    setUser(await getUserInfo());
+    setIsLoading(false);
+  };
+
   useEffect(() => {
-    if (connectedUser) {
-      setInitialValues({
-        name: connectedUser.name || "",
-        phone: connectedUser.phone || "",
-        address: connectedUser.street || "",
-      });
-    }
-  }, [connectedUser]);
+    fetchUser();
+  }, []);
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
     try {
-      const response = await update("res.users", connectedUser.id, {
+      const response = await update("res.users", user.id, {
         name: values.name,
         phone: values.phone,
-        street: values.address,
+        street: values.street,
       });
 
       if (response) {
-        const updatedUser = {
-          ...connectedUser,
-          name: values.name,
-          phone: values.phone,
-          address: values.address,
-        };
-        await storeObject("connectedUser", updatedUser);
-
         toast.show({
           render: () => (
             <ToastAlert
@@ -82,7 +76,7 @@ export const ProfileUserEdit = ({ isDarkMode, connectedUser }) => {
       px={"10"}
     >
       <Formik
-        initialValues={initialValues}
+        initialValues={user}
         enableReinitialize={true}
         validationSchema={EditProfileValidationSchema}
         onSubmit={handleSubmit}

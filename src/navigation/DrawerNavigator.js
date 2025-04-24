@@ -1,58 +1,19 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { TabNavigator } from "./TabNavigator";
 import CustomDrawerContent from "../components/CustomDrawerContent";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Icon, IconButton } from "native-base";
 import { useThemeContext } from "../hooks/ThemeContext";
-import { ProfileScreen } from "../screens";
+import ProfileScreen from "../screens/ProfileScreen";
 import AttendanceStaff from "../screens/AttendanceStaff";
 import SessionsScreen from "../screens/SessionsScreen";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
-import { loadParentData, getCurrencies } from "../utils/ParentLogic";
-import { getUserInfo } from "../utils/AuthService";
 
 const Drawer = createDrawerNavigator();
 
 const DrawerNavigator = () => {
-  const [connectedUser, setConnectedUser] = useState(null);
   const { isDarkMode } = useThemeContext();
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const user = await getUserInfo();
-        if (user) {
-          setConnectedUser(user);
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  useEffect(() => {
-    const fetchChildrenData = async () => {
-      if (connectedUser?.role === "parent") {
-        try {
-          await getCurrencies();
-          if (connectedUser?.craft_parent_id) {
-            await loadParentData(connectedUser);
-          }
-        } catch (error) {
-          console.error("Error fetching children data:", error);
-        }
-      }
-    };
-
-    fetchChildrenData();
-  }, [connectedUser]);
-
-  if (!connectedUser) {
-    return null;
-  }
 
   return (
     <Drawer.Navigator
@@ -66,7 +27,7 @@ const DrawerNavigator = () => {
         drawerType: "front",
       }}
       drawerContent={(props) => (
-        <CustomDrawerContent {...props} connectedUser={connectedUser} />
+        <CustomDrawerContent {...props} />
       )}
     >
       <Drawer.Screen

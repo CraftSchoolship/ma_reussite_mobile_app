@@ -13,7 +13,8 @@ import {
   VStack,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import { BackgroundWrapper, CircularProgress } from "../components";
+import BackgroundWrapper from "../components/BackgroundWrapper";
+import CircularProgress from "../components/CircularProgress";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { Ionicons } from "@expo/vector-icons";

@@ -12,7 +12,7 @@ const CustomTabBarButton = ({ children, accessibilityState, onPress }) => {
 
   useEffect(() => {
     Animated.spring(translateY, {
-      toValue: isFocused ? 5 : 5,
+      toValue: isFocused ? -15 : 0,
       useNativeDriver: true,
     }).start();
   }, [isFocused]);
@@ -48,10 +48,12 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   focusedCircle: {
-    width: 80,
-    height: 78,
-    borderRadius: 90,
+    width: 72,
+    height: 70,
+    borderRadius: 100,
     backgroundColor: MA_REUSSITE_CUSTOM_COLORS.Primary,
-    paddingTop: 30,
+    boxShadow: "0px 4px 4px #00000040",
+    paddingBottom: 12,
+    paddingTop: 12,
   },
 });

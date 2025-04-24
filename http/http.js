@@ -1,7 +1,6 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import config from "../http/config";
-import { encode } from "../http/password_encoding";
 import { decode as atob } from "base-64"; // Importing base-64 decode
 import { registerDevice } from "../src/utils/Notification";
 
@@ -105,15 +104,6 @@ export const authenticate = async (
 
       // Save token and expiration to AsyncStorage
       await AsyncStorage.setItem("erp_token", token);
-      await AsyncStorage.setItem(
-        "erp_token_expiration",
-        payload.exp.toString()
-      );
-
-      await AsyncStorage.setItem("erp_user_id", payload.sub.toString());
-      //Check on it later
-      await AsyncStorage.setItem("erp_username", username);
-      await AsyncStorage.setItem("erp_password", encode(password));
 
       // Token is valid
       return true;
@@ -131,10 +121,7 @@ export const authenticate = async (
 export const logout = async () => {
   try {
     await AsyncStorage.removeItem("erp_token");
-    await AsyncStorage.removeItem("erp_token_expiration");
-    await AsyncStorage.removeItem("erp_user_id");
-    await AsyncStorage.removeItem("erp_username");
-    await AsyncStorage.removeItem("erp_password");
+    config.workspace.erp.token = undefined
   } catch (error) {
     console.error("Logout error:", error);
     throw error;

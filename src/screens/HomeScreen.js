@@ -6,7 +6,7 @@ import {
 } from "native-base";
 import React, { useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
-import { CalendarCard } from "../components";
+import CalendarCard from "../components/CalendarCard";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import CalendarLocalConfig from "../utils/CalendarLocalConfig";
 import { formatOdooEvents } from "../utils/MarkedDatesFormatage";
@@ -23,7 +23,6 @@ const HomeScreen = () => {
   const navigation = useAuth();
   const { isOpen, onOpen, onClose } = useDisclose();
   const [user, setUser] = useState({});
-  const [user_id, setUserId] = useState(null);
   const [events, setEvents] = useState(null);
   const [markedDate, setMarkedDate] = useState({});
   const [today, setToday] = useState();
@@ -32,18 +31,12 @@ const HomeScreen = () => {
   const { isDarkMode } = useThemeContext();
 
   useEffect(() => {
-    const fetchConnectedUser = async () => {
-      try {
-        const connectedUser = await getUserInfo();
-        setUser(connectedUser);
-        setUserId(connectedUser.id);
-      } catch (error) {
-        console.error("Error fetching connected user:", error);
-      }
+    const fetchUser = async () => {
+      setUser(await getUserInfo());
     };
 
-    if (!user_id) fetchConnectedUser();
-  }, [user_id]);
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -72,10 +65,8 @@ const HomeScreen = () => {
       }
     };
 
-    if (user_id) {
-      fetchEvents();
-    }
-  }, [user_id]);
+    fetchEvents();
+  }, []);
 
   useEffect(() => {
     if (events) {
