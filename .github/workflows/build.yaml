@@ -1,0 +1,53 @@
+name: Build Production App
+on: workflow_dispatch
+    
+jobs:
+  build-production:
+    name: Install, Build, Publish and Notify
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.10.0
+          cache: yarn
+      
+      - name: Setup Expo and EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      
+      - name: Install Dependencies
+        run: yarn install
+      
+      - name: Inject FCM service account file
+        run: echo "${{ secrets.FCM_GOOGLE_SERVICES_FILE }}" > google-services.json
+
+      - name: EAS Production Build
+        run: eas build --platform android --non-interactive --no-wait --profile production
+
+      - name: Extract build URL for Android
+        run: |
+          project=$(eas build:list --json --limit=1 --non-interactive --platform android |  jq -r .[0].project.slug)
+          android_id=$(eas build:list --json --limit=1 --non-interactive --platform android |  jq -r .[0].id)
+          echo 'android_build_url="https://expo.dev/accounts/craftschoolship/projects/$project/builds/$android_id"' >> $GITHUB_ENV
+
+      - name: Extract build URL for IOS
+        run: |
+          project=$(eas build:list --json --limit=1 --non-interactive --platform ios |  jq -r .[0].project.slug)
+          ios_id=$(eas build:list --json --limit=1 --non-interactive --platform android |  jq -r .[0].id)
+          echo 'ios_build_url="https://expo.dev/accounts/craftschoolship/projects/$project/builds/$ios_id"' >> $GITHUB_ENV
+
+      - name: Notify on Mattermost
+        uses: mattermost/action-mattermost-notify@master
+        with:
+          MATTERMOST_WEBHOOK_URL: ${{ secrets.MM_WEBHOOK_URL }}
+          MATTERMOST_CHANNEL: mobile-development
+          TEXT: |
+            @here,
+            New ${{ github.event.repository.name }} production release is being published!
