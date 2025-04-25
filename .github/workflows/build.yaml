@@ -42,8 +42,8 @@ jobs:
       - name: Install Dependencies
         run: yarn install
       
-      - name: Inject FCM service account file
-        run: echo "${{ secrets.FCM_GOOGLE_SERVICES_FILE }}" > google-services.json
+      - name: Inject FCM Google Services - Base64
+        run: echo "${{ secrets.FCM_GOOGLE_SERVICES_FILE_B64 }}" | base64 --decode > google-services.json
 
       - name: EAS Production Build
         run: eas build --platform ${{ github.event.inputs.platform }} --non-interactive --no-wait --profile ${{ github.event.inputs.profile }}
@@ -68,5 +68,6 @@ jobs:
           MATTERMOST_WEBHOOK_URL: ${{ secrets.MM_WEBHOOK_URL }}
           MATTERMOST_CHANNEL: mobile-development
           TEXT: |
-            @here,
-            New ${{ github.event.repository.name }} ${{ github.event.inputs.profile }} release is being built!
+            Good day, everyone! :wave:,
+            I'm glad to let you know that a new `${{ github.event.repository.name }}` *${{ github.event.inputs.profile }}* release is being built!
+            Stay tuned, and Happy Crafting! :sparkles:
