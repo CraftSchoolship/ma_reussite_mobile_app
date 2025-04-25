@@ -1,5 +1,22 @@
 name: Build Production App
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        type: choice
+        required: true
+        description: EAS Build Profile
+        options: 
+        - production
+        - preview
+      platform:
+        type: choice
+        required: true
+        description: EAS Build Platform
+        options: 
+        - android
+        - ios
+        - all
     
 jobs:
   build-production:
@@ -29,15 +46,17 @@ jobs:
         run: echo "${{ secrets.FCM_GOOGLE_SERVICES_FILE }}" > google-services.json
 
       - name: EAS Production Build
-        run: eas build --platform android --non-interactive --no-wait --profile production
+        run: eas build --platform ${{ github.event.inputs.platform }} --non-interactive --no-wait --profile ${{ github.event.inputs.profile }}
 
       - name: Extract build URL for Android
+        if: ${{ github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all' }}
         run: |
           project=$(eas build:list --json --limit=1 --non-interactive --platform android |  jq -r .[0].project.slug)
           android_id=$(eas build:list --json --limit=1 --non-interactive --platform android |  jq -r .[0].id)
           echo 'android_build_url="https://expo.dev/accounts/craftschoolship/projects/$project/builds/$android_id"' >> $GITHUB_ENV
 
       - name: Extract build URL for IOS
+        if: ${{ github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all' }}
         run: |
           project=$(eas build:list --json --limit=1 --non-interactive --platform ios |  jq -r .[0].project.slug)
           ios_id=$(eas build:list --json --limit=1 --non-interactive --platform android |  jq -r .[0].id)
@@ -50,4 +69,4 @@ jobs:
           MATTERMOST_CHANNEL: mobile-development
           TEXT: |
             @here,
-            New ${{ github.event.repository.name }} production release is being published!
+            New ${{ github.event.repository.name }} ${{ github.event.inputs.profile }} release is being built!
