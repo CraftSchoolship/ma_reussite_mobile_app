@@ -8,6 +8,13 @@ import Constants from "expo-constants";
 
 export async function registerDevice(userId) {
 
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    }),
+  });
 
   if (!Device.isDevice) {
     console.log("Must use physical device for Push Notifications");
