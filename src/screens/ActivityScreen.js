@@ -23,22 +23,22 @@ const NotificationScreen = () => {
         style={[
           styles.itemContainer,
           {
-            backgroundColor: isDarkMode ? MA_REUSSITE_CUSTOM_COLORS.Black: MA_REUSSITE_CUSTOM_COLORS.White,
+            backgroundColor: isDarkMode ? "#2c2c2e" : "#f9f9f9",
           },
         ]}
       >
         <Text
           style={[
             styles.title,
-            { color: isDarkMode ? MA_REUSSITE_CUSTOM_COLORS.Black : MA_REUSSITE_CUSTOM_COLORS.White },
+            { color: isDarkMode ? "#fff" : "#202244" },
           ]}
         >
           {item.title}
         </Text>
-        <Text style={[styles.body, { color: isDarkMode ? MA_REUSSITE_CUSTOM_COLORS.Black : MA_REUSSITE_CUSTOM_COLORS.White }]}>
+        <Text style={[styles.body, { color: isDarkMode ? "#aaa" : "#555" }]}>
           {item.body}
         </Text>
-        <Text style={[styles.date, { color: isDarkMode ? MA_REUSSITE_CUSTOM_COLORS.Black : MA_REUSSITE_CUSTOM_COLORS.White }]}>
+        <Text style={[styles.date, { color: isDarkMode ? "#999" : "#888" }]}>
           {date}
         </Text>
       </View>
@@ -46,7 +46,7 @@ const NotificationScreen = () => {
   };
 
   return (
-    <BackgroundWrapper navigation={navigation}>
+    <BackgroundWrapper>
       <Box
         bg={
           isDarkMode
@@ -77,7 +77,7 @@ const NotificationScreen = () => {
           <Text
             fontSize="2xl"
             fontWeight="400"
-            color={isDarkMode ? MA_REUSSITE_CUSTOM_COLORS.Black : MA_REUSSITE_CUSTOM_COLORS.White}
+            color={isDarkMode ? "#fff" : "#202244"}
             textAlign="center"
           >
             There is No{" "}
@@ -88,7 +88,7 @@ const NotificationScreen = () => {
           <Text
             fontSize="md"
             fontWeight="400"
-            color={isDarkMode ? MA_REUSSITE_CUSTOM_COLORS.Black : MA_REUSSITE_CUSTOM_COLORS.White}
+            color={isDarkMode ? "#ddd" : "#202244"}
             mt={4}
             textAlign="center"
           >
@@ -101,7 +101,7 @@ const NotificationScreen = () => {
           keyExtractor={(item, idx) => idx.toString()}
           renderItem={renderItem}
           contentContainerStyle={styles.list}
-          style={{ backgroundColor: isDarkMode ? MA_REUSSITE_CUSTOM_COLORS.Black : MA_REUSSITE_CUSTOM_COLORS.White, flex: 1 }}
+          style={{ backgroundColor: isDarkMode ? "#000" : "#fff", flex: 1 }}
         />
       )}
     </BackgroundWrapper>
