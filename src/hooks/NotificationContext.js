@@ -117,8 +117,10 @@ export const NotificationProvider = ({ children }) => {
     });
 
     return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
-      Notifications.removeNotificationSubscription(responseListener.current);
+        notificationListener.current &&
+        Notifications.removeNotificationSubscription(notificationListener.current);
+        responseListener.current &&
+        Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, [navigation]);
 
