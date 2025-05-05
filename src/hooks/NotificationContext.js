@@ -86,27 +86,20 @@ export const NotificationProvider = ({ children }) => {
       });
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      const action = response?.notification?.request?.content?.data?.action;
       const data = response?.notification?.request?.content?.data;
-
-      console.log('Tapped notification action:', action);
-      console.log('Tapped notification:', JSON.stringify(response));
-      switch (action) {
-        case "open_session_detail":
-          navigation.navigate(SessionsScreen)
+      switch (data?.action) {
+        case "open_class_detail":
+          navigation.navigate("Groups")
           break;
-        // case "open_class_detail":
-        //   navigation.navigate(routes.PARTICIPANTS,{class_id: data.class_id})
-        //   break;
         case "open_invoice_detail":
-          navigation.navigate(PaymentScreen)
+          navigation.navigate("Payment")
           break;
         case "open_grade_detail":
-          navigation.navigate(NoteScreen)
+          navigation.navigate("Notes")
           break;
-        // case "absent_session":
-        //   navigation.navigate(routes.ATTENDANCE)
-        //   break;
+        // case "open_session_detail":
+        //   navigation.navigate("Session")
+        //   break;  
         default:
           break
       }
