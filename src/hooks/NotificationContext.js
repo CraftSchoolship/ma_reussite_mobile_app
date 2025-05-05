@@ -53,23 +53,12 @@ export async function registerDevice(userId) {
   }
 }
 
-const NotificationContext = createContext({
-  scheduleLocalNotification: async () => {},
-  notifications: [],
-});
+const NotificationContext = createContext({});
 
 export const NotificationProvider = ({ children }) => {
-  const [notifications, setNotifications] = useState([]);
   const navigation = useNavigation();
   const notificationListener = useRef();
   const responseListener = useRef();
-
-  useEffect(() => {
-    (async () => {
-      const stored = await AsyncStorage.getItem('notifications');
-      if (stored) setNotifications(JSON.parse(stored));
-    })();
-  }, []);
 
   useEffect(() => {
     notificationListener.current = Notifications.addNotificationReceivedListener(async notification => {
@@ -78,11 +67,11 @@ export const NotificationProvider = ({ children }) => {
         const timestamp = Date.now();
         const newItem = { title, body, data, timestamp };
 
-        setNotifications(prev => {
-          const updated = [newItem, ...prev];
-          AsyncStorage.setItem('notifications', JSON.stringify(updated));
-          return updated;
-        });
+        const OldNotifications = AsyncStorage.getItem('notifications');
+        const parsed = OldNotifications ? JSON.parse(OldNotifications) : []
+        const updated = [newItem, ...parsed];
+        console.log(updated)
+        AsyncStorage.setItem('notifications', JSON.stringify(updated));         
       });
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
@@ -104,9 +93,6 @@ export const NotificationProvider = ({ children }) => {
           break
       }
 
-      notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-        console.log('Notification received:',notification);
-      });
     });
 
     return () => {
@@ -117,12 +103,9 @@ export const NotificationProvider = ({ children }) => {
     };
   }, [navigation]);
 
-  const scheduleLocalNotification = async ({ title, body, data, trigger }) => {
-    await Notifications.scheduleNotificationAsync({ content: { title, body, data }, trigger: trigger || null });
-  };
 
   return (
-    <NotificationContext.Provider value={{ scheduleLocalNotification, notifications }}>
+    <NotificationContext.Provider>
       {children}
     </NotificationContext.Provider>
   );
