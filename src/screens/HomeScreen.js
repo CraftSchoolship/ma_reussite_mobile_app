@@ -16,6 +16,7 @@ import CalendarTheme from "../utils/CalendarTheme";
 import { EventsActionSheet } from "../components/EventsActionSheet";
 import { useAuth } from "../utils/AuthContext";
 import { getUserInfo } from "../utils/AuthService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 CalendarLocalConfig;
 
@@ -29,6 +30,26 @@ const HomeScreen = () => {
   const [selectedEvent, setSelectedEvent] = useState({});
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
   const { isDarkMode } = useThemeContext();
+ 
+  useEffect(() => {
+    (async () => {
+      const testNotification = {
+        title: 'Session Alert',
+        body: 'This is a test notification saved from HomePage',
+        data: { "action": 'open_grade_detail' },
+        timestamp: Date.now(),
+      };
+      try {
+        const stored = await AsyncStorage.getItem('notifications');
+        let existing = stored ? JSON.parse(stored) : [];
+        existing.unshift(testNotification);
+        await AsyncStorage.setItem('notifications', JSON.stringify(existing));
+        console.log("Test notification saved.");
+      } catch (e) {
+        console.error("Failed to save notification:", e);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {

@@ -15,22 +15,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const NotificationScreen = () => {
   const { isDarkMode } = useThemeContext();
   const navigation = useNavigation();
-  const [notifications, SetNotifications]= useState([]);
+  const [notifications, setNotifications]= useState([]);
 
  useEffect(() => {
   const LoadNotification = async () => {
     try {
-      const stored = await AsyncStorage.getItem('notifications');
-      if (stored){
-        console.log(JSON.parse(stored)[0])
-        SetNotifications(JSON.parse(stored));
-      }
+      setNotifications(JSON.parse((await AsyncStorage.getItem('notifications')) ?? '[]'));
     } catch (error) {
       console.log(error)
     }
   }
   LoadNotification()
-  }, [notifications]);
+  }, []);
 
   const NotificationNavigation = (data) => {
     console.log(data?.action)

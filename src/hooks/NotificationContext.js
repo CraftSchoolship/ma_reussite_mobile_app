@@ -67,10 +67,8 @@ export const NotificationProvider = ({ children }) => {
         const timestamp = Date.now();
         const newItem = { title, body, data, timestamp };
 
-        const OldNotifications = AsyncStorage.getItem('notifications');
-        const parsed = OldNotifications ? JSON.parse(OldNotifications) : []
+        const parsed = JSON.parse((await AsyncStorage.getItem('notifications')) ?? '[]')
         const updated = [newItem, ...parsed];
-        console.log(updated)
         AsyncStorage.setItem('notifications', JSON.stringify(updated));         
       });
 
