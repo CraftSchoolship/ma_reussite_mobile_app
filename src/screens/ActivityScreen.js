@@ -95,7 +95,7 @@ const NotificationScreen = () => {
         ) : (
           <Center py={10}>
             <Text fontSize="2xl" fontWeight="400" color={isDarkMode ? "#fff" : "#202244"} textAlign="center">
-              il n'y aucune {" "}
+              Il n’y a aucune {" "}
               <Text fontWeight="bold">notification!</Text>
             </Text>
             <Text fontSize="md" fontWeight="400" color={isDarkMode ? "#ddd" : "#202244"} mt={4} textAlign="center">
