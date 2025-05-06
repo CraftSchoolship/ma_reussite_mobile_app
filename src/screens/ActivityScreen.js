@@ -9,12 +9,12 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
-import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../utils/AuthContext";
 
 const NotificationScreen = () => {
   const { isDarkMode } = useThemeContext();
-  const navigation = useNavigation();
+  const navigation = useAuth();
   const [notifications, setNotifications]= useState([]);
 
  useEffect(() => {
@@ -87,30 +87,15 @@ const NotificationScreen = () => {
               ]}
               onPress={() => NotificationNavigation(notif?.data)}
             >
-              <Text
-                style={[
-                  styles.title,
-                  { color: isDarkMode ? "#fff" : "#202244" },
-                ]}
-              >
-                {notif.title}
-              </Text>
-              <Text
-                style={[styles.body, { color: isDarkMode ? "#aaa" : "#555" }]}
-              >
-                {notif.body}
-              </Text>
-              <Text
-                style={[styles.date, { color: isDarkMode ? "#999" : "#888" }]}
-              >
-                {new Date(notif.timestamp).toLocaleString("en-GB")}
-              </Text>
+              <Text style={[styles.title, { color: isDarkMode ? "#fff" : "#202244" }]}>{notif.title}</Text>
+              <Text style={[styles.body, { color: isDarkMode ? "#aaa" : "#555" }]}>{notif.body}</Text>
+              <Text style={[styles.date, { color: isDarkMode ? "#999" : "#888" }]}>{new Date(notif.timestamp).toLocaleString("en-GB")}</Text>
             </TouchableOpacity>
           ))
         ) : (
           <Center py={10}>
             <Text fontSize="2xl" fontWeight="400" color={isDarkMode ? "#fff" : "#202244"} textAlign="center">
-              il n'y a aucune {" "}
+              il n'y aucune {" "}
               <Text fontWeight="bold">notification!</Text>
             </Text>
             <Text fontSize="md" fontWeight="400" color={isDarkMode ? "#ddd" : "#202244"} mt={4} textAlign="center">

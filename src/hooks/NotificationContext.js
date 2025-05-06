@@ -7,10 +7,7 @@ import axios from 'axios';
 import Constants from 'expo-constants';
 import config from '../../http/config';
 import { getToken } from '../../http/http';
-import { useNavigation } from "@react-navigation/native";
-import SessionsScreen from '../screens/SessionsScreen';
-import PaymentScreen from '../screens/PaymentScreen';
-import NoteScreen from '../screens/NoteScreen';
+import { useAuth } from '../utils/AuthContext';
 
 
 export async function registerDevice(userId) {
@@ -56,7 +53,7 @@ export async function registerDevice(userId) {
 const NotificationContext = createContext({});
 
 export const NotificationProvider = ({ children }) => {
-  const navigation = useNavigation();
+  const navigation = useAuth();
   const notificationListener = useRef();
   const responseListener = useRef();
 
@@ -69,7 +66,7 @@ export const NotificationProvider = ({ children }) => {
 
         const parsed = JSON.parse((await AsyncStorage.getItem('notifications')) ?? '[]')
         const updated = [newItem, ...parsed];
-        AsyncStorage.setItem('notifications', JSON.stringify(updated));         
+        AsyncStorage.setItem('notifications', JSON.stringify(updated));
       });
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
