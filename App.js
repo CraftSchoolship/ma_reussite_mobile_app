@@ -11,6 +11,16 @@ import PolicyScreen from "./src/screens/PolicyScreen";
 import DrawerNavigator from "./src/navigation/DrawerNavigator";
 import LoginScreenBanner from "./src/components/LoginScreenBanner";
 import * as Linking from 'expo-linking';
+import { NotificationProvider } from "./src/hooks/NotificationContext";
+import * as Notifications from 'expo-notifications';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert:   true,
+    shouldPlaySound:   true,
+    shouldSetBadge:    true,
+  }),
+});
 
 const prefix = Linking.createURL('/');
 const Stack = createStackNavigator();
@@ -37,7 +47,7 @@ const App = () => {
     <ThemeProvider>
       <NavigationContainer>
         <AuthProvider>
-
+          <NotificationProvider>
 
           <Stack.Navigator initialRouteName="Splash" linking={linking}>
             <Stack.Screen
@@ -68,6 +78,7 @@ const App = () => {
             />
           </Stack.Navigator>
 
+          </NotificationProvider>
         </AuthProvider>
       </NavigationContainer>
     </ThemeProvider>

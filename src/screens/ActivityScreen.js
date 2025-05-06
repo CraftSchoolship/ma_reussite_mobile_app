@@ -1,58 +1,56 @@
-import { Box, IconButton, ScrollView, Text, VStack, Center } from "native-base";
-import React, { useState } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
+import {
+  Box,
+  Text,
+  Center,
+  ScrollView,
+} from "native-base";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
-import NotificationCard from "../components/NotificationCard";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
-import { NotificationDetail } from "../components/NotificationDetail";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../utils/AuthContext";
 
 const NotificationScreen = () => {
-  const navigation = useAuth();
   const { isDarkMode } = useThemeContext();
-  const [notificationOpen, setNotificationOpen] = useState(false);
-  const [selectedNotificationId, setSelectedNotificationId] = useState(null);
-  const [notificationList, updateNotificationList] = useState([
-    // {
-    //   id: 1,
-    //   title: "Mise à jour de l'horaire du Cours Big Data",
-    //   description:
-    //     "L’horaire de votre cours de Big Data a été mis à jour, la nouvelle session se déroulera le 03/06/24 à partir de 16h et non pas le 02/06/24.",
-    //   time: "3:00 PM",
-    //   unread: true,
-    //   redirectTo: "Groups",
-    // },
-    // {
-    //   id: 2,
-    //   title: "Changement d'enseignant du Cours Big Data",
-    //   description:
-    //     "Notez que pour votre séance de Big Data, un nouvel enseignant a été attribué.",
-    //   time: "10:00 AM",
-    //   unread: true,
-    //   redirectTo: "Groups",
-    // },
-    // {
-    //   id: 3,
-    //   title: "Facturation du Mois de Mars",
-    //   description:
-    //     "Vous avez effectué la totalité du paiement du mois de Mars.",
-    //   time: "03/06/24",
-    //   unread: false,
-    //   redirectTo: "Payment",
-    // },
-    // {
-    //   id: 4,
-    //   title: "Mise à jour de l'horaire du Cours Big Data",
-    //   description: "L'horaire de votre cours de Big Data a été mis à jour.",
-    //   time: "10/05/24",
-    //   unread: false,
-    //   redirectTo: "Groups",
-    // },
-  ]);
+  const navigation = useAuth();
+  const [notifications, setNotifications]= useState([]);
+
+ useEffect(() => {
+  const LoadNotification = async () => {
+    try {
+      setNotifications(JSON.parse((await AsyncStorage.getItem('notifications')) ?? '[]'));
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  LoadNotification()
+  }, []);
+
+  const NotificationNavigation = (data) => {
+    console.log(data?.action)
+    switch (data?.action) {
+      case "open_class_detail":
+        navigation.navigate("Groups")
+        break;
+      case "open_invoice_detail":
+        navigation.navigate("Payment")
+        break;
+      case "open_grade_detail":
+        navigation.navigate("Notes")
+        break;
+      // case "open_session_detail":
+      //   navigation.navigate("Session")
+      //   break;  
+      default:
+        break
+    }
+
+  }
 
   return (
-    <BackgroundWrapper navigation={navigation}>
+    <BackgroundWrapper>
       <Box
         bg={
           isDarkMode
@@ -63,32 +61,6 @@ const NotificationScreen = () => {
         shadow={4}
         borderBottomRadius="xl"
       >
-        {notificationOpen && (
-          <Box
-            position="absolute"
-            top={0}
-            left={0}
-            zIndex={2}
-            alignItems="center"
-            w="10%"
-          >
-            <IconButton
-              mr="auto"
-              icon={
-                <MaterialIcons
-                  name="chevron-left"
-                  size={34}
-                  color={
-                    isDarkMode
-                      ? MA_REUSSITE_CUSTOM_COLORS.White
-                      : MA_REUSSITE_CUSTOM_COLORS.Black
-                  }
-                />
-              }
-              onPress={() => setNotificationOpen(false)}
-            />
-          </Box>
-        )}
         <Text
           color={
             isDarkMode
@@ -103,57 +75,61 @@ const NotificationScreen = () => {
           Notifications
         </Text>
       </Box>
-      <ScrollView py={4} flexGrow={1}>
-        <VStack>
-          {notificationOpen ? (
-            <NotificationDetail
-              notification={notificationList[selectedNotificationId - 1]}
-              index={selectedNotificationId}
-            />
-          ) : notificationList.length === 0 ? (
-            <Center flex={1} mt={10}>
-                <Text
-                  color={
-                    isDarkMode
-                      ? MA_REUSSITE_CUSTOM_COLORS.White
-                      : MA_REUSSITE_CUSTOM_COLORS.Black
-                  }
-                  fontSize={16}
-                  fontWeight={"bold"}
-                >
-                  Aucun résultat trouvé
-                </Text>
-              </Center>
-          ) : (
-            notificationList.map((notification, index) => (
-              <NotificationCard
-                key={notification.id}
-                setId={setSelectedNotificationId}
-                notification={notification}
-                index={index}
-                setIsNotificationOpen={setNotificationOpen}
-                setNotifications={updateNotificationList}
-              />
-            ))
-            (<Text
-              mt={"30%"}
-              color={
-                isDarkMode
-                  ? MA_REUSSITE_CUSTOM_COLORS.White
-                  : MA_REUSSITE_CUSTOM_COLORS.Black
-              }
-              textAlign={"center"}
-              fontSize={"2xl"}
-              fontWeight={"bold"}
+
+      <ScrollView contentContainerStyle={{ padding: 20 }}>
+        {notifications.length > 0 ? (
+          notifications.map((notif, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.itemContainer,
+                { backgroundColor: isDarkMode ? "#2c2c2e" : "#f9f9f9" },
+              ]}
+              onPress={() => NotificationNavigation(notif?.data)}
             >
-              Pas de notifications
-            </Text>)
-          )}
-        </VStack>
+              <Text style={[styles.title, { color: isDarkMode ? "#fff" : "#202244" }]}>{notif.title}</Text>
+              <Text style={[styles.body, { color: isDarkMode ? "#aaa" : "#555" }]}>{notif.body}</Text>
+              <Text style={[styles.date, { color: isDarkMode ? "#999" : "#888" }]}>{new Date(notif.timestamp).toLocaleString("en-GB")}</Text>
+            </TouchableOpacity>
+          ))
+        ) : (
+          <Center py={10}>
+            <Text fontSize="2xl" fontWeight="400" color={isDarkMode ? "#fff" : "#202244"} textAlign="center">
+              Il n’y a aucune {" "}
+              <Text fontWeight="bold">notification!</Text>
+            </Text>
+            <Text fontSize="md" fontWeight="400" color={isDarkMode ? "#ddd" : "#202244"} mt={4} textAlign="center">
+              Pas de notifications pour le moment
+            </Text>
+          </Center>
+        )}
       </ScrollView>
     </BackgroundWrapper>
   );
 };
 
+const styles = StyleSheet.create({
+  list: {
+    padding: 20,
+  },
+  itemContainer: {
+    marginBottom: 20,
+    padding: 15,
+    borderRadius: 8,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  body: {
+    fontSize: 14,
+    marginTop: 5,
+  },
+  date: {
+    fontSize: 12,
+    marginTop: 8,
+    textAlign: "right",
+  },
+});
 
 export default NotificationScreen;

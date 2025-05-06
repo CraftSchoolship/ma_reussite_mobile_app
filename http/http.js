@@ -2,7 +2,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import config from "../http/config";
 import { decode as atob } from "base-64"; // Importing base-64 decode
-import { registerDevice } from "../src/utils/Notification";
+import { registerDevice } from "../src/hooks/NotificationContext";
 
 // Get the token
 export const getToken = async () => {

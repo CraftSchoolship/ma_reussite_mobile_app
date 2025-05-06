@@ -10,7 +10,6 @@ import {
   Pressable,
   Text,
   Image,
-  Button,
   VStack,
   useToast,
 } from "native-base";
