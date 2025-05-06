@@ -16,7 +16,6 @@ import CalendarTheme from "../utils/CalendarTheme";
 import { EventsActionSheet } from "../components/EventsActionSheet";
 import { useAuth } from "../utils/AuthContext";
 import { getUserInfo } from "../utils/AuthService";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 CalendarLocalConfig;
 
@@ -30,7 +29,7 @@ const HomeScreen = () => {
   const [selectedEvent, setSelectedEvent] = useState({});
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
   const { isDarkMode } = useThemeContext();
- 
+
   useEffect(() => {
     const fetchUser = async () => {
       setUser(await getUserInfo());
