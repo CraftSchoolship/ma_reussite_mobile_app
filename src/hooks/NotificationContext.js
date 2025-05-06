@@ -96,7 +96,7 @@ export const NotificationProvider = ({ children }) => {
         responseListener.current &&
         Notifications.removeNotificationSubscription(responseListener.current);
     };
-  }, [navigation]);
+  }, []);
 
 
   return (
