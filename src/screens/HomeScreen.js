@@ -32,26 +32,6 @@ const HomeScreen = () => {
   const { isDarkMode } = useThemeContext();
  
   useEffect(() => {
-    (async () => {
-      const testNotification = {
-        title: 'Session Alert',
-        body: 'This is a test notification saved from HomePage',
-        data: { "action": 'open_grade_detail' },
-        timestamp: Date.now(),
-      };
-      try {
-        const stored = await AsyncStorage.getItem('notifications');
-        let existing = stored ? JSON.parse(stored) : [];
-        existing.unshift(testNotification);
-        await AsyncStorage.setItem('notifications', JSON.stringify(existing));
-        console.log("Test notification saved.");
-      } catch (e) {
-        console.error("Failed to save notification:", e);
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
     const fetchUser = async () => {
       setUser(await getUserInfo());
     };
