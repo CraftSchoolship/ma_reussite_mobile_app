@@ -2,7 +2,7 @@
   "expo": {
     "name": "ma-reussite",
     "slug": "ma-reussite",
-    "version": "1.0.7",
+    "version": "1.1.0",
     "scheme": "mareussite",
     "platforms": ["ios", "android"],
     "owner": "craftschoolship",
@@ -19,8 +19,7 @@
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "This app uses the photo library to allow you to choose and upload a profile picture.",
         "NSCameraUsageDescription": "This app uses the camera to take profile pictures and to scan qr codes on student cards."
-      },
-      "buildNumber": "2"
+      }
     },
     "android": {
       "googleServicesFile": "./google-services.json",
