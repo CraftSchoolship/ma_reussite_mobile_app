@@ -19,7 +19,8 @@
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "This app uses the photo library to allow you to choose and upload a profile picture.",
         "NSCameraUsageDescription": "This app uses the camera to take profile pictures and to scan qr codes on student cards."
-      }
+      },
+      "buildNumber": "2"
     },
     "android": {
       "googleServicesFile": "./google-services.json",
@@ -28,7 +29,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.craftschoolship.mareussite",
-      "versionCode": 7,
+      "versionCode": 8,
       "permissions": ["com.google.android.gms.permission.AD_ID"]
     },
     "web": {
