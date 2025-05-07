@@ -95,6 +95,7 @@ export const TabNavigator = () => {
               />
             );
           },
+          unmountOnBlur: true,
           tabBarActiveTintColor: "white",
           tabBarInactiveTintColor: "white",
           tabBarActiveBackgroundColor: "white",
