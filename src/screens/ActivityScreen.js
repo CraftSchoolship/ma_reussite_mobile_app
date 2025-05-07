@@ -31,7 +31,7 @@ const NotificationScreen = () => {
     }
   }
   LoadNotification()
-  }, []);
+  }, [notifications]);
 
   const NotificationNavigation = (data) => {
     console.log(data?.action)

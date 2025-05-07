@@ -107,7 +107,7 @@ export const TabNavigator = () => {
           headerShown: false,
           tabBarShowLabel: true,
         })}
-        safeAreaInsets={{ bottom: 12 }}
+        safeAreaInsets={{ bottom: 20 }}
       >
         <Tab.Screen
           name="Home"
