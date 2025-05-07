@@ -10,6 +10,12 @@ import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../utils/AuthContext";
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import 'dayjs/locale/fr';
+
+dayjs.extend(relativeTime);
+dayjs.locale('fr');
 
 const NotificationScreen = () => {
   const { isDarkMode } = useThemeContext();
@@ -88,7 +94,7 @@ const NotificationScreen = () => {
             >
               <Text style={[styles.title, { color: isDarkMode ? "#fff" : "#202244" }]}>{notif.title}</Text>
               <Text style={[styles.body, { color: isDarkMode ? "#aaa" : "#555" }]}>{notif.body}</Text>
-              <Text style={[styles.date, { color: isDarkMode ? "#999" : "#888" }]}>{new Date(notif.timestamp).toLocaleString("en-GB")}</Text>
+              <Text style={[styles.date, { color: isDarkMode ? "#999" : "#888" }]}> {dayjs(notif.timestamp).fromNow()}</Text>
             </TouchableOpacity>
           ))
         ) : (
@@ -108,9 +114,6 @@ const NotificationScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  list: {
-    padding: 20,
-  },
   itemContainer: {
     marginBottom: 20,
     padding: 15,

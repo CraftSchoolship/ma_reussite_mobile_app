@@ -19,6 +19,7 @@
     "axios": "^1.7.2",
     "base-64": "^1.0.0",
     "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
     "expo": "~52.0.46",
     "expo-asset": "~11.0.5",
     "expo-camera": "~16.0.18",
@@ -47,6 +48,7 @@
     "react-native-svg": "15.8.0",
     "react-native-tab-view": "^3.5.2",
     "react-native-webview": "13.12.5",
+    "relative-time": "^1.0.0",
     "rrule": "^2.8.1",
     "yup": "^1.4.0"
   },
