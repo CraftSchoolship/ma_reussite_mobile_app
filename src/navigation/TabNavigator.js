@@ -95,6 +95,7 @@ export const TabNavigator = () => {
               />
             );
           },
+          unmountOnBlur: true,
           tabBarActiveTintColor: "white",
           tabBarInactiveTintColor: "white",
           tabBarActiveBackgroundColor: "white",
@@ -107,7 +108,7 @@ export const TabNavigator = () => {
           headerShown: false,
           tabBarShowLabel: true,
         })}
-        safeAreaInsets={{ bottom: 12 }}
+        safeAreaInsets={{ bottom: 20 }}
       >
         <Tab.Screen
           name="Home"
