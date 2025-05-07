@@ -2,10 +2,9 @@ import {
   Box,
   Text,
   Center,
-  ScrollView,
 } from "native-base";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import BackgroundWrapper from "../components/BackgroundWrapper";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
