@@ -62,12 +62,30 @@ jobs:
           ios_id=$(eas build:list --json --limit=1 --non-interactive --platform android |  jq -r .[0].id)
           echo 'ios_build_url="https://expo.dev/accounts/craftschoolship/projects/$project/builds/$ios_id"' >> $GITHUB_ENV
 
+      - name: Generate build links for message
+        run: |
+          links=""
+          if [[ -n "${android_build_url}" && -n "${ios_build_url}" ]]; then
+            links="[Android Build](${android_build_url}), [iOS Build](${ios_build_url})"
+          elif [[ -n "${android_build_url}" ]]; then
+            links="[Android Build](${android_build_url})"
+          elif [[ -n "${ios_build_url}" ]]; then
+            links="[iOS Build](${ios_build_url})"
+          fi
+          echo "links=$links" >> $GITHUB_ENV
+
       - name: Notify on Mattermost
         uses: mattermost/action-mattermost-notify@master
         with:
           MATTERMOST_WEBHOOK_URL: ${{ secrets.MM_WEBHOOK_URL }}
           MATTERMOST_CHANNEL: mobile-development
           TEXT: |
-            Good day, everyone! :wave:,
-            I'm glad to let you know that a new `${{ github.event.repository.name }}` *${{ github.event.inputs.profile }}* release is being built!
-            Stay tuned, and Happy Crafting! :sparkles:
+            🎉 **Hey craftsmen!**  
+            Guess what? A brand-new build of **`${{ github.event.repository.name }}`** is kicking off! 🚀
+            
+            **Platform**: `${{ github.event.inputs.platform }}`
+            **Profile**: `${{ github.event.inputs.profile }}`
+            **Expo**: ${{ env.links }}
+            
+            Get ready for greatness — stay tuned and keep being legendary! 💫  
+            **Happy Crafting!** 🛠️✨
