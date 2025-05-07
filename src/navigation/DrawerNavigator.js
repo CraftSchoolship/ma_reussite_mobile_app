@@ -25,6 +25,7 @@ const DrawerNavigator = () => {
           backgroundColor: isDarkMode ? "#000" : "#fff",
         },
         drawerType: "front",
+        unmountOnBlur: true,
       }}
       drawerContent={(props) => (
         <CustomDrawerContent {...props} />

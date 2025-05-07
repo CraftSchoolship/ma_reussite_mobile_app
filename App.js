@@ -49,7 +49,7 @@ const App = () => {
         <AuthProvider>
           <NotificationProvider>
 
-          <Stack.Navigator initialRouteName="Splash" linking={linking}>
+          <Stack.Navigator screenOptions={{ unmountOnBlur: true }} initialRouteName="Splash" linking={linking}>
             <Stack.Screen
               options={{ headerShown: false }}
               name="Splash"
