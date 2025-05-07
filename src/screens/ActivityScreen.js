@@ -81,7 +81,7 @@ const NotificationScreen = () => {
         </Text>
       </Box>
 
-      <ScrollView contentContainerStyle={{ padding: 20 }}>
+      <ScrollView contentContainerStyle={{ padding: 20 , paddingBottom:70}}>
         {notifications.length > 0 ? (
           notifications.map((notif, index) => (
             <TouchableOpacity
