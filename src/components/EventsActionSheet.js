@@ -124,9 +124,9 @@ export const EventsActionSheet = ({
                   >
                     {`Salle : ${selectedEvent.classroom}`}
                   </Text>
-                  {user?.role == "admin" ||
-                  user?.role == "teacher" ||
-                  user?.role == "staff" ? (
+                  {user?.craft_role == "admin" ||
+                  user?.craft_role == "teacher" ||
+                  user?.craft_role == "staff" ? (
                     <Button
                       mt={8}
                       mb={2}

@@ -26,7 +26,7 @@ import {
 } from "react-native";
 import { browse, create, update } from "../../http/http";
 import { useIsFocused, useRoute } from "@react-navigation/native";
-import { ToastAlert } from "../components/ToastAlert";
+import  ToastAlert  from "../components/ToastAlert";
 
 const AttendanceStaff = () => {
   const route = useRoute();
@@ -395,7 +395,7 @@ const AttendanceStaff = () => {
           ? MA_REUSSITE_CUSTOM_COLORS.Black
           : MA_REUSSITE_CUSTOM_COLORS.White
       }
-      pt={8}
+      pt={12}
       flex={0.9}
     >
       <HomeScreenBanner displayGoBackButton={true} previous={"Home"} />

@@ -29,11 +29,11 @@ const CustomInput = ({
         {label}
       </FormControl.Label>
       <Input
+        _stack={{ style:{}}}
         height={52}
         ref={inputRef}
         keyboardType={keyboardType}
         autoCapitalize="none"
-        returnKeyType="next"
         color={isDarkMode ? "white" : "black"}
         value={value}
         onChangeText={onChange(name)}

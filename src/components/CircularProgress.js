@@ -5,7 +5,7 @@ import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
 const CustomCircularProgress = ({
   progress = 50,
-  size = 70,
+  size = 80,
   note = false,
   isDarkMode,
 }) => {
@@ -24,7 +24,7 @@ const CustomCircularProgress = ({
       <CircularProgress
         value={value}
         radius={size / 2}
-        duration={1000}
+        duration={100}
         maxValue={maxValue}
         progressValueColor={
           isDarkMode

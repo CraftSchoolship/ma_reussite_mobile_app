@@ -9,10 +9,10 @@ import BackgroundWrapper from "../components/BackgroundWrapper";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useAuth } from "../utils/AuthContext";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import 'dayjs/locale/fr';
+import { useAuth } from "../utils/AuthContext";
 
 dayjs.extend(relativeTime);
 dayjs.locale('fr');
