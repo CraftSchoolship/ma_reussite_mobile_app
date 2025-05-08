@@ -26,7 +26,7 @@ import {
 } from "react-native";
 import { browse, create, update } from "../../http/http";
 import { useIsFocused, useRoute } from "@react-navigation/native";
-import { ToastAlert } from "../components/ToastAlert";
+import  ToastAlert  from "../components/ToastAlert";
 
 const AttendanceStaff = () => {
   const route = useRoute();
