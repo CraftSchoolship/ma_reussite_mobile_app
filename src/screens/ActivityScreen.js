@@ -12,14 +12,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import 'dayjs/locale/fr';
-import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../utils/AuthContext";
 
 dayjs.extend(relativeTime);
 dayjs.locale('fr');
 
 const NotificationScreen = () => {
   const { isDarkMode } = useThemeContext();
-  const navigation = useNavigation();
+  const navigation = useAuth();
   const [notifications, setNotifications]= useState([]);
 
  useEffect(() => {
