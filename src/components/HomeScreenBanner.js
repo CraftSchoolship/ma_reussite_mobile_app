@@ -49,7 +49,7 @@ const HomeScreenBanner = ({ displayGoBackButton = false, previous }) => {
                   }
                 />
               }
-              onPress={() => navigation.navigate(previous)}
+              onPress={() => navigation.navigate('TabNavigator', { screen: previous })}
             />
           ) : null}
           <Image

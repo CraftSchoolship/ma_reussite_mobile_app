@@ -395,7 +395,7 @@ const AttendanceStaff = () => {
           ? MA_REUSSITE_CUSTOM_COLORS.Black
           : MA_REUSSITE_CUSTOM_COLORS.White
       }
-      pt={8}
+      pt={12}
       flex={0.9}
     >
       <HomeScreenBanner displayGoBackButton={true} previous={"Home"} />
