@@ -2,7 +2,6 @@ import React from "react";
 import { Box, Text } from "native-base";
 import CircularProgress from "react-native-circular-progress-indicator";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
-import { Platform } from "react-native";
 
 const CustomCircularProgress = ({
   progress = 50,
