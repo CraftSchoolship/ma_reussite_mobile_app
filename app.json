@@ -2,7 +2,7 @@
   "expo": {
     "name": "ma-reussite",
     "slug": "ma-reussite",
-    "version": "1.1.2",
+    "version": "1.1.3",
     "scheme": "mareussite",
     "platforms": ["ios", "android"],
     "owner": "craftschoolship",
@@ -28,7 +28,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.craftschoolship.mareussite",
-      "versionCode": 8,
+      "versionCode": 9,
       "permissions": ["com.google.android.gms.permission.AD_ID"]
     },
     "web": {
@@ -52,7 +52,17 @@
         {
           "icon": "./assets/icon.png"
         }
-      ]
+      ],
+      [
+      "expo-build-properties",
+      {
+        "android": {
+          "compileSdkVersion": 35,
+          "targetSdkVersion": 35,
+          "buildToolsVersion": "35.0.0"
+        }
+      }
+    ]
     ]
   }
 }
