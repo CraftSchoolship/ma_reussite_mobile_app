@@ -54,8 +54,11 @@ const formatOdooEvents = (events) => {
 
       const dateKey = startDate.toISOString().split("T")[0];
 
-      const startTime = startDate.toTimeString().split(" ")[0].substring(0, 5);
-      const endTime = endDate.toTimeString().split(" ")[0].substring(0, 5);
+      const options = { hour: '2-digit', minute: '2-digit', hour12: false };
+
+      const startTime = startDate.toLocaleTimeString([], options);
+      const endTime = endDate.toLocaleTimeString([], options);
+
       const time = `${startTime}-${endTime}`;
 
       const color = MA_REUSSITE_CUSTOM_COLORS.Primary;
