@@ -51,6 +51,7 @@ const HomeScreen = () => {
             "subject_id",
             "teacher_id",
             "state",
+            "timing"
           ],
           {
             // start_gte: new Date().toISOString().substring(0, 10),
@@ -59,6 +60,7 @@ const HomeScreen = () => {
         );
 
         setEvents(eventsData);
+        console.log(eventsData)
         // console.log("Events Data:", eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);
@@ -131,7 +133,7 @@ const HomeScreen = () => {
                 key={eventIndex}
                 tag={event.tag}
                 date={event.date}
-                time={event.time}
+                time={event.timing}
                 subject={event.subject}
                 teacher={event.teacher}
                 classroom={event.classroom}

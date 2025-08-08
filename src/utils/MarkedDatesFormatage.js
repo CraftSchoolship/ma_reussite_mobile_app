@@ -21,6 +21,7 @@ const generateRecurrenceDates = (event) => {
       _raw: event,
       start: startDate,
       stop: endDate,
+      timing: event.timing,
       subject: event.subject_id[1],
       classroom: event.classroom_id[1],
       teacher: event.teacher_id[1],
@@ -42,6 +43,7 @@ const formatOdooEvents = (events) => {
         _raw: event,
         start: new Date(event.start),
         stop: new Date(event.stop),
+        timing: event.timing,
         classroom: event.classroom_id[1],
         subject: event.subject_id[1],
         teacher: event.teacher_id[1],
@@ -59,7 +61,8 @@ const formatOdooEvents = (events) => {
       const startTime = startDate.toLocaleTimeString([], options);
       const endTime = endDate.toLocaleTimeString([], options);
 
-      const time = `${startTime}-${endTime}`;
+
+      const time = eventDetail.timing;
 
       const color = MA_REUSSITE_CUSTOM_COLORS.Primary;
       const tag = "cours";
