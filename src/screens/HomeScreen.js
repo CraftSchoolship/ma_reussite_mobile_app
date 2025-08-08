@@ -44,14 +44,11 @@ const HomeScreen = () => {
         const eventsData = await browse(
           "craft.session",
           [
-            "name",
             "classroom_id",
             "start",
             "stop",
             "subject_id",
             "teacher_id",
-            "state",
-            "timing"
           ],
           {
             // start_gte: new Date().toISOString().substring(0, 10),
@@ -60,7 +57,6 @@ const HomeScreen = () => {
         );
 
         setEvents(eventsData);
-        console.log(eventsData)
         // console.log("Events Data:", eventsData);
       } catch (error) {
         console.error("Error fetching events:", error);
@@ -129,11 +125,9 @@ const HomeScreen = () => {
           <Box>
             {selectedDayEvents.map((event, eventIndex) => (
               <CalendarCard
-                name={event.name}
                 key={eventIndex}
                 tag={event.tag}
-                date={event.date}
-                time={event.timing}
+                time={event.time}
                 subject={event.subject}
                 teacher={event.teacher}
                 classroom={event.classroom}
