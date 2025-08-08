@@ -44,13 +44,11 @@ const HomeScreen = () => {
         const eventsData = await browse(
           "craft.session",
           [
-            "name",
             "classroom_id",
             "start",
             "stop",
             "subject_id",
             "teacher_id",
-            "state",
           ],
           {
             // start_gte: new Date().toISOString().substring(0, 10),
@@ -127,10 +125,8 @@ const HomeScreen = () => {
           <Box>
             {selectedDayEvents.map((event, eventIndex) => (
               <CalendarCard
-                name={event.name}
                 key={eventIndex}
                 tag={event.tag}
-                date={event.date}
                 time={event.time}
                 subject={event.subject}
                 teacher={event.teacher}

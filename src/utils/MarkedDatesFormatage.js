@@ -40,8 +40,8 @@ const formatOdooEvents = (events) => {
       eventDates.push({
         ...event,
         _raw: event,
-        start: new Date(event.start),
-        stop: new Date(event.stop),
+        start: new Date(event.start + "Z"),
+        stop: new Date(event.stop + "Z"),
         classroom: event.classroom_id[1],
         subject: event.subject_id[1],
         teacher: event.teacher_id[1],
@@ -49,17 +49,16 @@ const formatOdooEvents = (events) => {
     }
 
     eventDates.forEach((eventDetail) => {
-      const startDate = new Date(eventDetail.start);
-      const endDate = new Date(eventDetail.stop);
 
-      const dateKey = startDate.toISOString().split("T")[0];
+      const dateKey = eventDetail.start.toISOString().split("T")[0];
 
       const options = { hour: '2-digit', minute: '2-digit', hour12: false };
 
-      const startTime = startDate.toLocaleTimeString([], options);
-      const endTime = endDate.toLocaleTimeString([], options);
+      const startTime = eventDetail.start.toLocaleTimeString([], options);
+      const endTime = eventDetail.stop.toLocaleTimeString([], options);
 
-      const time = `${startTime}-${endTime}`;
+
+      const time = `${startTime} - ${endTime}`;
 
       const color = MA_REUSSITE_CUSTOM_COLORS.Primary;
       const tag = "cours";

@@ -5,7 +5,7 @@ import React from "react";
 import { useThemeContext } from "../hooks/ThemeContext";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 
-function CalendarCard({ name, date, tag, time, subject, teacher, classroom, onClick }) {
+function CalendarCard({ tag, time, subject, teacher, classroom, onClick }) {
   const { isDarkMode } = useThemeContext();
   let tagColor = "";
   if (tag === "cours") {

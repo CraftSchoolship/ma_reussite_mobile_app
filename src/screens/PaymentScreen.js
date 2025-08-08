@@ -56,7 +56,7 @@ const PaymentScreen = () => {
           const paymentsData = await browse(
             "craft.tuition.invoice",
             [
-              "due_date",
+              "validity_date",
               "amount",
               "state",
               "order_id",
@@ -198,7 +198,7 @@ const PaymentScreen = () => {
                   <PaymentCard
                     isDarkMode={isDarkMode}
                     key={index}
-                    date={payment.due_date}
+                    date={payment.validity_date}
                     state={payment.state}
                     amount={payment.amount}
                     name={payment.order_id[1]}
