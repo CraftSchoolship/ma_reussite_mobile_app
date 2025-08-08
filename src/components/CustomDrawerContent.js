@@ -19,6 +19,7 @@ import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { useThemeContext } from "../hooks/ThemeContext";
 import { browse, logout } from "../../http/http";
 import { getUserInfo, wrapProfileImageBase64 } from "../utils/AuthService";
+import Constants from 'expo-constants';
 
 const CustomDrawerContent = ({ ...props }) => {
   const [childrenList, setChildrenList] = useState([]);
@@ -292,7 +293,6 @@ const CustomDrawerContent = ({ ...props }) => {
             : MA_REUSSITE_CUSTOM_COLORS.LightDivider
         }
         h={1}
-        bottom={"10%"}
       />
       <DrawerItem
         label={"Déconnexion"}
@@ -307,7 +307,6 @@ const CustomDrawerContent = ({ ...props }) => {
         }}
         px={4}
         w={"100%"}
-        bottom={"10%"}
         onPress={() => {
           logout();
           props.navigation.reset({
@@ -315,6 +314,14 @@ const CustomDrawerContent = ({ ...props }) => {
             routes: [{ name: "Login" }],
           });
         }}
+      />
+      <DrawerItem
+        label={"Version " + Constants.expoConfig.version}
+        labelStyle={{
+          textAlign: "center",
+          color: "gray",
+        }}
+        px={4}
       />
     </>
   );
