@@ -22,7 +22,7 @@ const AttendanceTable = ({ isDarkMode, subjectId, isFutureSessions }) => {
 
         const fields = isFutureSessions
           ? ["start", "timing"]
-          : ["date", "timing", "present", "absent", "excused", "late", ];
+          : ["date", "timing", "present", "absent", "excused", "late"];
 
         const model = isFutureSessions
           ? "craft.session"
