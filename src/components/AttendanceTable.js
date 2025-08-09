@@ -15,11 +15,14 @@ const AttendanceTable = ({ isDarkMode, subjectId, isFutureSessions }) => {
               subject_id: subjectId,
               start_gt: new Date().toISOString(), // 'start' field with 'greater than or equal' filter
             }
-          : { subject_id: subjectId };
+          : {
+            subject_id: subjectId,
+            date_lt: new Date().toISOString(),
+            };
 
         const fields = isFutureSessions
           ? ["start", "timing"]
-          : ["date", "timing", "present", "absent", "excused", "late"];
+          : ["date", "timing", "present", "absent", "excused", "late", ];
 
         const model = isFutureSessions
           ? "craft.session"
