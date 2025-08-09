@@ -91,7 +91,7 @@ export const ProfileUserEdit = () => {
             />
             <CustomInput
               label="Adresse"
-              name="address"
+              name="street"
               keyboardType="default"
               isDarkMode={isDarkMode}
             />

@@ -52,7 +52,7 @@ const HomeScreen = () => {
           ],
           {
             // start_gte: new Date().toISOString().substring(0, 10),
-            state: "confirm",
+            state_in: "confirm,start",
           }
         );
 
