@@ -53,14 +53,14 @@ jobs:
         run: |
           project=$(eas build:list --json --limit=1 --non-interactive --platform android |  jq -r .[0].project.slug)
           android_id=$(eas build:list --json --limit=1 --non-interactive --platform android |  jq -r .[0].id)
-          echo "android_build_url=\"https://expo.dev/accounts/craftschoolship/projects/${project}/builds/${android_id}\"" >> $GITHUB_ENV
+          echo "android_build_url=https://expo.dev/accounts/craftschoolship/projects/${project}/builds/${android_id}" >> $GITHUB_ENV
 
       - name: Extract build URL for IOS
         if: ${{ github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all' }}
         run: |
           project=$(eas build:list --json --limit=1 --non-interactive --platform ios |  jq -r .[0].project.slug)
           ios_id=$(eas build:list --json --limit=1 --non-interactive --platform android |  jq -r .[0].id)
-          echo "ios_build_url=\"https://expo.dev/accounts/craftschoolship/projects/${project}/builds/${ios_id}\"" >> $GITHUB_ENV
+          echo "ios_build_url=https://expo.dev/accounts/craftschoolship/projects/${project}/builds/${ios_id}" >> $GITHUB_ENV
 
       - name: Generate build links for message
         run: |
