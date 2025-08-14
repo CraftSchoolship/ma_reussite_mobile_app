@@ -1,7 +1,7 @@
 const config = {
   baseUrl: "https://ma-reussite.com",
   database: "bitnami_odoo",
-  debug: false,
+  debug: true,
   auth: {
     providers: [
       {
