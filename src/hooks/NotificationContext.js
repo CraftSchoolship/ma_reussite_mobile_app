@@ -100,7 +100,7 @@ export const NotificationProvider = ({ children }) => {
 
 
   return (
-    <NotificationContext.Provider>
+    <NotificationContext.Provider value={{}}>
       {children}
     </NotificationContext.Provider>
   );
