@@ -14,6 +14,7 @@ const AttendanceTable = ({ isDarkMode, subjectId, isFutureSessions }) => {
           ? {
               subject_id: subjectId,
               start_gt: new Date().toISOString(), // 'start' field with 'greater than or equal' filter
+              state_in: "confirm,start",
             }
           : {
             subject_id: subjectId,

@@ -2,7 +2,7 @@
   "expo": {
     "name": "ma-reussite",
     "slug": "ma-reussite",
-    "version": "1.1.6",
+    "version": "1.1.7",
     "scheme": "mareussite",
     "platforms": ["ios", "android"],
     "owner": "craftschoolship",
@@ -28,7 +28,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.craftschoolship.mareussite",
-      "versionCode": 12,
+      "versionCode": 13,
       "permissions": ["com.google.android.gms.permission.AD_ID"]
     },
     "web": {

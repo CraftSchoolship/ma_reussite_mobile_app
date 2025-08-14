@@ -1,25 +1,10 @@
-import {
-  Actionsheet,
-  Box,
-  Button,
-  HStack,
-  Icon,
-  ScrollView,
-  Text,
-  VStack,
-} from "native-base";
+import { Actionsheet, Box, Button, HStack, Icon, ScrollView, Text, VStack } from "native-base";
 import React from "react";
 import MA_REUSSITE_CUSTOM_COLORS from "../themes/variables";
 import { MaterialIcons } from "@expo/vector-icons";
 
-export const EventsActionSheet = ({
-  isDarkMode,
-  user,
-  selectedEvent,
-  isOpen,
-  onClose,
-  navigation,
-}) => {
+export const EventsActionSheet = ({ isDarkMode, user, selectedEvent, isOpen, onClose, navigation,}) => {
+
   return (
     <Actionsheet isOpen={isOpen} onClose={onClose}>
       <Actionsheet.Content
